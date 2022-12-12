@@ -34,5 +34,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid? SalesUnit { get; set; }
         public Guid? ItemId { get; set; }
         public string Description { get; set; }
+        public int OriginalQty { get; set; }
+        public decimal OriginalAmt { get; set; }
     }
 }

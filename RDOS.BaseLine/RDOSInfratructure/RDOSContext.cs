@@ -50,15 +50,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public virtual DbSet<AutoKpisTargetDevelopment> AutoKpisTargetDevelopments { get; set; }
         public virtual DbSet<AutoKpisTargetDevelopmentDetail> AutoKpisTargetDevelopmentDetails { get; set; }
         public virtual DbSet<BlAuditLog> BlAuditLogs { get; set; }
+        public virtual DbSet<BlBlprocess> BlBlprocesses { get; set; }
+        public virtual DbSet<BlBlsettingEmail> BlBlsettingEmails { get; set; }
+        public virtual DbSet<BlBlsettingInformation> BlBlsettingInformations { get; set; }
+        public virtual DbSet<BlBlsettingProcess> BlBlsettingProcesses { get; set; }
+        public virtual DbSet<BlBlsettingProcessPending> BlBlsettingProcessPendings { get; set; }
+        public virtual DbSet<BlBlsettingTransactionStatus> BlBlsettingTransactionStatuses { get; set; }
         public virtual DbSet<BlHistory> BlHistorys { get; set; }
-        public virtual DbSet<BlProcess> BlProcesses { get; set; }
         public virtual DbSet<BlRawPo> BlRawPos { get; set; }
         public virtual DbSet<BlRawSo> BlRawSos { get; set; }
-        public virtual DbSet<BlSettingEmail> BlSettingEmails { get; set; }
-        public virtual DbSet<BlSettingInformation> BlSettingInformations { get; set; }
-        public virtual DbSet<BlSettingProcess> BlSettingProcesses { get; set; }
-        public virtual DbSet<BlSettingProcessPending> BlSettingProcessPendings { get; set; }
-        public virtual DbSet<BlSettingTransactionStatus> BlSettingTransactionStatuses { get; set; }
         public virtual DbSet<City> Citys { get; set; }
         public virtual DbSet<CleanDataConfigure> CleanDataConfigures { get; set; }
         public virtual DbSet<Competitor> Competitors { get; set; }
@@ -1180,6 +1180,153 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             });
 
+            modelBuilder.Entity<BlBlprocess>(entity =>
+            {
+                entity.ToTable("BL_BLProcess");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.Description).HasMaxLength(255);
+
+                entity.Property(e => e.LinkApi)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnName("LinkAPI");
+
+                entity.Property(e => e.ProcessCode)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+            });
+
+            modelBuilder.Entity<BlBlsettingEmail>(entity =>
+            {
+                entity.ToTable("BL_BLSettingEmails");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.BaselineSettingRef)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Cc).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.From).HasMaxLength(25);
+
+                entity.Property(e => e.Subject).HasMaxLength(255);
+
+                entity.Property(e => e.To).HasMaxLength(25);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+            });
+
+            modelBuilder.Entity<BlBlsettingInformation>(entity =>
+            {
+                entity.ToTable("BL_BLSettingInformations");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.Description).HasMaxLength(80);
+
+                entity.Property(e => e.ProcessPendingTime).HasMaxLength(50);
+
+                entity.Property(e => e.ProcessTime).HasMaxLength(50);
+
+                entity.Property(e => e.SettingRef)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+            });
+
+            modelBuilder.Entity<BlBlsettingProcess>(entity =>
+            {
+                entity.ToTable("BL_BLSettingProcess");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.BaselineSettingRef)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.ProcessCode)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+            });
+
+            modelBuilder.Entity<BlBlsettingProcessPending>(entity =>
+            {
+                entity.ToTable("BL_BLSettingProcessPendings");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.BaselineSettingRef)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.Description).HasMaxLength(80);
+
+                entity.Property(e => e.FromStatus).HasMaxLength(25);
+
+                entity.Property(e => e.ToStatus).HasMaxLength(25);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+            });
+
+            modelBuilder.Entity<BlBlsettingTransactionStatus>(entity =>
+            {
+                entity.ToTable("BL_BLSettingTransactionStatus");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Code)
+                    .IsRequired()
+                    .HasMaxLength(25);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.Description).HasMaxLength(80);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+            });
+
             modelBuilder.Entity<BlHistory>(entity =>
             {
                 entity.ToTable("BL_Historys");
@@ -1205,32 +1352,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.StartTimeDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.Type).HasMaxLength(100);
-
-                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
-            });
-
-            modelBuilder.Entity<BlProcess>(entity =>
-            {
-                entity.ToTable("BL_Process");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.CreatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
-
-                entity.Property(e => e.Description).HasMaxLength(255);
-
-                entity.Property(e => e.LinkApi)
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .HasColumnName("LinkAPI");
-
-                entity.Property(e => e.ProcessCode)
-                    .IsRequired()
-                    .HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(250);
 
@@ -2129,131 +2250,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.WarehouseId).HasMaxLength(100);
 
                 entity.Property(e => e.WarehouseName).HasMaxLength(255);
-            });
-
-            modelBuilder.Entity<BlSettingEmail>(entity =>
-            {
-                entity.ToTable("BL_SettingEmails");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Cc).HasMaxLength(255);
-
-                entity.Property(e => e.CreatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
-
-                entity.Property(e => e.From).HasMaxLength(25);
-
-                entity.Property(e => e.Subject).HasMaxLength(255);
-
-                entity.Property(e => e.To).HasMaxLength(25);
-
-                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
-            });
-
-            modelBuilder.Entity<BlSettingInformation>(entity =>
-            {
-                entity.ToTable("BL_SettingInformations");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.CreatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
-
-                entity.Property(e => e.Description).HasMaxLength(80);
-
-                entity.Property(e => e.ProcessPendingTime).HasMaxLength(50);
-
-                entity.Property(e => e.ProcessTime).HasMaxLength(50);
-
-                entity.Property(e => e.SettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
-            });
-
-            modelBuilder.Entity<BlSettingProcess>(entity =>
-            {
-                entity.ToTable("BL_SettingProcess");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CreatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
-
-                entity.Property(e => e.ProcessCode)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
-            });
-
-            modelBuilder.Entity<BlSettingProcessPending>(entity =>
-            {
-                entity.ToTable("BL_SettingProcessPendings");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CreatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
-
-                entity.Property(e => e.Description).HasMaxLength(80);
-
-                entity.Property(e => e.FromStatus).HasMaxLength(25);
-
-                entity.Property(e => e.ToStatus).HasMaxLength(25);
-
-                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
-            });
-
-            modelBuilder.Entity<BlSettingTransactionStatus>(entity =>
-            {
-                entity.ToTable("BL_SettingTransactionStatus");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(25);
-
-                entity.Property(e => e.CreatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
-
-                entity.Property(e => e.Description).HasMaxLength(80);
-
-                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
-
-                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
             });
 
             modelBuilder.Entity<City>(entity =>
