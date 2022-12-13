@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  baseline_imagename:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=development
+      - ASPNETCORE_URLS=http://+:80
+      - CACHEEXPIRES=99999
+      - ROOTDOMAIN=1solution.link
+      - ECODOMAIN=eco.1solution.link
+      - ECOGATEWAY=https://principal-api.rdos.vn/v1
+      - HOSTEDZONEID=Z010374521WEMXI2TK74N
+      - AWSACCESSKEY=AKIAQHGUUWFHYVR4NH7I
+      - AWSSECRETKEY=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
+      - AWSACCESSKEYS3=AKIAQHGUUWFHYVR4NH7I
+      - AWSSECRETKEYS3=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
+      - CONNECTION=Server=103.98.160.114;Port=9092;Database=onesuat_system;User Id=postgresrdos;Password=RDOSGolive2022
+      - RDOS_CONNECTION=Server=db.rdos.online;Port=5494;Database=rdosuat_system;User Id=postgresrdos;Password=PAssword65464
+      - MONGOCONNECTION=mongodb://admin:password123@mongo.rdos.online:27017
+      - MONGODATABASE=onesuat_system
+      - IS_DEPLOY=true
+      - PRINCIPALCODE=ONES
+    ports:
+      - "9778:80"

@@ -1,0 +1,17 @@
+version: '3.4'
+services:
+  baseline_imagename:
+    image: ${DOCKER_REGISTRY-}baseline
+    container_name: 'baseline'
+    networks:
+      - baseline_network
+    build:
+      context: .
+      dockerfile: RDOS.BaseLine/Dockerfile
+networks:
+  baseline_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "199.13.17.8/17"
