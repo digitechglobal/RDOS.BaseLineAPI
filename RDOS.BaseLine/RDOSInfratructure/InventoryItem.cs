@@ -6,15 +6,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class InventoryItem
     {
         public Guid Id { get; set; }
-        public string InventoryItemId { get; set; }
-        public string Status { get; set; }
-        public string ShortName { get; set; }
-        public string ReportName { get; set; }
-        public string Description { get; set; }
-        public string Erpcode { get; set; }
-        public string DistribiutorCode { get; set; }
+        public string InventoryItemId { get; set; } = null!;
+        public string Status { get; set; } = null!;
+        public string ShortName { get; set; } = null!;
+        public string ReportName { get; set; } = null!;
+        public string Description { get; set; } = null!;
+        public string? Erpcode { get; set; }
+        public string? DistribiutorCode { get; set; }
         public bool IsStock { get; set; }
-        public string ItemType { get; set; }
+        public string ItemType { get; set; } = null!;
         public bool OrderItem { get; set; }
         public bool PurchaseItem { get; set; }
         public bool Lsnumber { get; set; }
@@ -33,18 +33,18 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid Attribute8 { get; set; }
         public Guid Attribute9 { get; set; }
         public Guid Attribute10 { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
         public int DelFlg { get; set; }
-        public string Avatar { get; set; }
-        public string GroupId { get; set; }
+        public string? Avatar { get; set; }
+        public string? GroupId { get; set; }
         public decimal Point { get; set; }
         public Guid Hierarchy { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
-        public string AvatarFileExt { get; set; }
-        public string AvatarFolderType { get; set; }
-        public string AvatarName { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
+        public string? AvatarFileExt { get; set; }
+        public string? AvatarFolderType { get; set; }
+        public string? AvatarName { get; set; }
     }
 }

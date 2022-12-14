@@ -10,11 +10,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid ContactId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public bool? IsMain { get; set; }
 
-        public virtual DistributorContact Contact { get; set; }
-        public virtual DistributorShipto Shipto { get; set; }
+        public virtual DistributorContact Contact { get; set; } = null!;
+        public virtual DistributorShipto Shipto { get; set; } = null!;
     }
 }

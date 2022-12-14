@@ -6,9 +6,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class AdjustPriceListUoMitemGroup
     {
         public Guid Id { get; set; }
-        public string ItemGroupCode { get; set; }
-        public string ItemGroupDescription { get; set; }
-        public string UoMitemGroup { get; set; }
+        public string? ItemGroupCode { get; set; }
+        public string? ItemGroupDescription { get; set; }
+        public string? UoMitemGroup { get; set; }
         public decimal CurrentPrice { get; set; }
         public decimal CurrentFreightCost { get; set; }
         public decimal CurrentDeductedValue { get; set; }
@@ -24,10 +24,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public bool IsDeleted { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
-        public virtual AdjustItemGroupPrice AdjustItemGroupPrice { get; set; }
-        public virtual PriceList PriceList { get; set; }
+        public virtual AdjustItemGroupPrice AdjustItemGroupPrice { get; set; } = null!;
+        public virtual PriceList PriceList { get; set; } = null!;
     }
 }

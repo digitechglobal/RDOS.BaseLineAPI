@@ -17,10 +17,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid CustomerSettingId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
-        public virtual CustomerSetting CustomerSetting { get; set; }
+        public virtual CustomerSetting CustomerSetting { get; set; } = null!;
         public virtual ICollection<CustomerHierarchyMapping> CustomerHierarchyMappings { get; set; }
         public virtual ICollection<DistributorHierarchyMapping> DistributorHierarchyMappings { get; set; }
     }

@@ -13,23 +13,23 @@ namespace RDOS.BaseLine.RDOSInfratructure
         }
 
         public Guid Id { get; set; }
-        public string PriceListTypeCode { get; set; }
-        public string Description { get; set; }
-        public string BasePriceCode { get; set; }
+        public string? PriceListTypeCode { get; set; }
+        public string? Description { get; set; }
+        public string? BasePriceCode { get; set; }
         public bool Status { get; set; }
         public bool Dsa { get; set; }
-        public string SalesTerritoryCode { get; set; }
-        public string PriceType { get; set; }
+        public string? SalesTerritoryCode { get; set; }
+        public string? PriceType { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
         public int? CurrentPriority { get; set; }
         public int OriginalPriority { get; set; }
-        public string SaleTerritoryLevel { get; set; }
-        public string SaleTerritoryLevelDescription { get; set; }
-        public string SalesTerritoryDescription { get; set; }
+        public string? SaleTerritoryLevel { get; set; }
+        public string? SaleTerritoryLevelDescription { get; set; }
+        public string? SalesTerritoryDescription { get; set; }
 
         public virtual ICollection<PriceListTypeAttributeList> PriceListTypeAttributeLists { get; set; }
         public virtual ICollection<PriceList> PriceLists { get; set; }

@@ -6,25 +6,25 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class DisDisplay
     {
         public Guid Id { get; set; }
-        public string Code { get; set; }
-        public string FullName { get; set; }
-        public string ShortName { get; set; }
-        public string Status { get; set; }
-        public string SaleOrg { get; set; }
-        public string TerritoryStructureCode { get; set; }
-        public string SicCode { get; set; }
-        public string FrequencyDisplay { get; set; }
-        public string Image1Path { get; set; }
-        public string Image1Name { get; set; }
-        public string Image2Path { get; set; }
-        public string Image2Name { get; set; }
-        public string Image3Path { get; set; }
-        public string Image3Name { get; set; }
-        public string Image4Path { get; set; }
-        public string Image4Name { get; set; }
-        public string ScopeType { get; set; }
-        public string ScopeSaleTerritoryLevel { get; set; }
-        public string ApplicableObjectType { get; set; }
+        public string Code { get; set; } = null!;
+        public string FullName { get; set; } = null!;
+        public string ShortName { get; set; } = null!;
+        public string Status { get; set; } = null!;
+        public string SaleOrg { get; set; } = null!;
+        public string TerritoryStructureCode { get; set; } = null!;
+        public string SicCode { get; set; } = null!;
+        public string FrequencyDisplay { get; set; } = null!;
+        public string? Image1Path { get; set; }
+        public string? Image1Name { get; set; }
+        public string? Image2Path { get; set; }
+        public string? Image2Name { get; set; }
+        public string? Image3Path { get; set; }
+        public string? Image3Name { get; set; }
+        public string? Image4Path { get; set; }
+        public string? Image4Name { get; set; }
+        public string? ScopeType { get; set; }
+        public string? ScopeSaleTerritoryLevel { get; set; }
+        public string? ApplicableObjectType { get; set; }
         public bool? IsCheckSalesOutput { get; set; }
         public int SalesOutput { get; set; }
         public bool? IndependentDisplay { get; set; }
@@ -36,23 +36,23 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public DateTime? ImplementationStartDate { get; set; }
         public DateTime? ImplementationEndDate { get; set; }
         public DateTime? ProgramCloseDate { get; set; }
-        public string ReasonCloseProgram { get; set; }
-        public string FilePathReasonCloseProgram { get; set; }
-        public string FileNameReasonCloseProgram { get; set; }
+        public string? ReasonCloseProgram { get; set; }
+        public string? FilePathReasonCloseProgram { get; set; }
+        public string? FileNameReasonCloseProgram { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public int DeleteFlag { get; set; }
-        public string FileExtReasonCloseProgram { get; set; }
-        public string FolderTypeReasonCloseProgram { get; set; }
-        public string Image1FileExt { get; set; }
-        public string Image1FolderType { get; set; }
-        public string Image2FileExt { get; set; }
-        public string Image2FolderType { get; set; }
-        public string Image3FileExt { get; set; }
-        public string Image3FolderType { get; set; }
-        public string Image4FileExt { get; set; }
-        public string Image4FolderType { get; set; }
+        public string? FileExtReasonCloseProgram { get; set; }
+        public string? FolderTypeReasonCloseProgram { get; set; }
+        public string? Image1FileExt { get; set; }
+        public string? Image1FolderType { get; set; }
+        public string? Image2FileExt { get; set; }
+        public string? Image2FolderType { get; set; }
+        public string? Image3FileExt { get; set; }
+        public string? Image3FolderType { get; set; }
+        public string? Image4FileExt { get; set; }
+        public string? Image4FolderType { get; set; }
     }
 }

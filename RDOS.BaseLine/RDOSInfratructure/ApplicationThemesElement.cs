@@ -6,10 +6,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class ApplicationThemesElement
     {
         public Guid Id { get; set; }
-        public string ComponentName { get; set; }
-        public string ElementName { get; set; }
-        public string ElementType { get; set; }
-        public string DefaultValue { get; set; }
+        public string? ComponentName { get; set; }
+        public string? ElementName { get; set; }
+        public string? ElementType { get; set; }
+        public string? DefaultValue { get; set; }
         public bool? IsEffectMainColor { get; set; }
         public Guid? AppId { get; set; }
         public Guid? CreatedBy { get; set; }

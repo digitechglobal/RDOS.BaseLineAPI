@@ -7,8 +7,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
     {
         public Guid Id { get; set; }
         public Guid? AppVersionId { get; set; }
-        public string AppVersion { get; set; }
-        public string PrincipleCode { get; set; }
+        public string? AppVersion { get; set; }
+        public string? PrincipleCode { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }
         public Guid? UpdatedBy { get; set; }

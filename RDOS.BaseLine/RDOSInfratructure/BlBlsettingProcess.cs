@@ -6,8 +6,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class BlBlsettingProcess
     {
         public Guid Id { get; set; }
-        public string ProcessCode { get; set; }
-        public string BaselineSettingRef { get; set; }
+        public string ProcessCode { get; set; } = null!;
+        public string BaselineSettingRef { get; set; } = null!;
         public int? Priority { get; set; }
         public bool? IsSequentialProcessing { get; set; }
         public DateTime CreatedDate { get; set; }

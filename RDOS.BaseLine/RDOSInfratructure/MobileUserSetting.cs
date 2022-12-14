@@ -10,7 +10,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public bool FingerPrint { get; set; }
         public bool IsPushNotification { get; set; }
         public bool IsSendEmail { get; set; }
-        public string Language { get; set; }
+        public string? Language { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public Guid? UpdatedBy { get; set; }

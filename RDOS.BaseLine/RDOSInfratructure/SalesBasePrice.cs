@@ -12,12 +12,12 @@ namespace RDOS.BaseLine.RDOSInfratructure
         }
 
         public Guid Id { get; set; }
-        public string SalesPriceCode { get; set; }
-        public string Description { get; set; }
-        public string SalesTerritoryCode { get; set; }
-        public string PriceType { get; set; }
+        public string? SalesPriceCode { get; set; }
+        public string? Description { get; set; }
+        public string? SalesTerritoryCode { get; set; }
+        public string? PriceType { get; set; }
         public int Status { get; set; }
-        public string PurchaseBasePriceCode { get; set; }
+        public string? PurchaseBasePriceCode { get; set; }
         public DateTime EffectiveTimeFrom { get; set; }
         public DateTime? EffectiveTimeTo { get; set; }
         public bool IsItemGroupCode { get; set; }
@@ -26,10 +26,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid? PurchaseBasePriceId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
-        public virtual PurchaseBasePrice PurchaseBasePrice { get; set; }
+        public virtual PurchaseBasePrice? PurchaseBasePrice { get; set; }
         public virtual ICollection<SalesPriceItemGroupReference> SalesPriceItemGroupReferences { get; set; }
         public virtual ICollection<SalesPriceItemGroup> SalesPriceItemGroups { get; set; }
     }

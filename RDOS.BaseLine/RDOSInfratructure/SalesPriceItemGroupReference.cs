@@ -11,19 +11,19 @@ namespace RDOS.BaseLine.RDOSInfratructure
         }
 
         public Guid Id { get; set; }
-        public string ItemGroupCode { get; set; }
-        public string Uom { get; set; }
+        public string? ItemGroupCode { get; set; }
+        public string? Uom { get; set; }
         public decimal Plus { get; set; }
-        public string PurchasePriceCode { get; set; }
-        public string SalesPriceCode { get; set; }
+        public string? PurchasePriceCode { get; set; }
+        public string? SalesPriceCode { get; set; }
         public bool IsDeleted { get; set; }
         public Guid SalesBasePriceId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
-        public virtual SalesBasePrice SalesBasePrice { get; set; }
+        public virtual SalesBasePrice SalesBasePrice { get; set; } = null!;
         public virtual ICollection<PurchasePriceItemGroup> PurchasePriceItemGroups { get; set; }
     }
 }

@@ -6,8 +6,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class ApplicationThemesSuggestion
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Status { get; set; }
+        public string? Name { get; set; }
+        public string? Status { get; set; }
         public Guid? AppId { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }

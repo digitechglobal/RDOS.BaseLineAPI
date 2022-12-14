@@ -6,9 +6,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class ApplicationThemesSetting
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public Guid? ThemeSuggestId { get; set; }
-        public string Status { get; set; }
+        public string? Status { get; set; }
         public Guid? AppId { get; set; }
         public Guid? PrincipleId { get; set; }
         public Guid? CreatedBy { get; set; }

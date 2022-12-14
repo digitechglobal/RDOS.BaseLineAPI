@@ -6,11 +6,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class AutoKpisTargetContributionBySicValue
     {
         public Guid Id { get; set; }
-        public string AutoKpisTargetCode { get; set; }
-        public string TerritoryStructureCode { get; set; }
-        public string Source { get; set; }
-        public string TerritoryValueBySource { get; set; }
-        public string Sic { get; set; }
+        public string? AutoKpisTargetCode { get; set; }
+        public string? TerritoryStructureCode { get; set; }
+        public string? Source { get; set; }
+        public string? TerritoryValueBySource { get; set; }
+        public string? Sic { get; set; }
         public decimal? Jan { get; set; }
         public decimal? Feb { get; set; }
         public decimal? Mar { get; set; }

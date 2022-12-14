@@ -6,13 +6,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class TpPromotionScopeDsa
     {
         public Guid Id { get; set; }
-        public string PromotionCode { get; set; }
-        public string ScopeDsaValue { get; set; }
+        public string PromotionCode { get; set; } = null!;
+        public string ScopeDsaValue { get; set; } = null!;
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public int DeleteFlag { get; set; }
-        public string SaleOrg { get; set; }
+        public string SaleOrg { get; set; } = null!;
     }
 }

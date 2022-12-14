@@ -14,10 +14,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
         }
 
         public Guid Id { get; set; }
-        public string AttributeMaster { get; set; }
-        public string Code { get; set; }
-        public string Description { get; set; }
-        public string ShortName { get; set; }
+        public string AttributeMaster { get; set; } = null!;
+        public string Code { get; set; } = null!;
+        public string Description { get; set; } = null!;
+        public string ShortName { get; set; } = null!;
         public DateTime EffectiveDate { get; set; }
         public DateTime? ValidUntil { get; set; }
         public bool IsDistributorAttribute { get; set; }
@@ -26,11 +26,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid CustomerSettingId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
-        public virtual CustomerSetting CustomerSetting { get; set; }
-        public virtual CustomerAttribute ParentCustomerAttribute { get; set; }
+        public virtual CustomerSetting CustomerSetting { get; set; } = null!;
+        public virtual CustomerAttribute? ParentCustomerAttribute { get; set; }
         public virtual ICollection<CustomerDmsAttribute> CustomerDmsAttributes { get; set; }
         public virtual ICollection<CustomerHierarchyMapping> CustomerHierarchyMappings { get; set; }
         public virtual ICollection<DistributorHierarchyMapping> DistributorHierarchyMappings { get; set; }

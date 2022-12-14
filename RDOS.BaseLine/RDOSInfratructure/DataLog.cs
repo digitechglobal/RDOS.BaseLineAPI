@@ -6,13 +6,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class DataLog
     {
         public int Id { get; set; }
-        public string ObjectName { get; set; }
-        public string ObjectId { get; set; }
-        public string OldValue { get; set; }
-        public string NewValue { get; set; }
-        public string FieldName { get; set; }
+        public string? ObjectName { get; set; }
+        public string? ObjectId { get; set; }
+        public string? OldValue { get; set; }
+        public string? NewValue { get; set; }
+        public string? FieldName { get; set; }
         public DateTime CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public int ActionTypeLog { get; set; }
     }
 }

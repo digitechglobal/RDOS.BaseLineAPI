@@ -8,16 +8,16 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid Id { get; set; }
         public int NodeId { get; set; }
         public bool IsSaleHierarchy { get; set; }
-        public string HierarchyAttribute1 { get; set; }
-        public string HierarchyAttribute2 { get; set; }
-        public string HierarchyAttribute3 { get; set; }
-        public string HierarchyAttribute4 { get; set; }
-        public string HierarchyAttribute5 { get; set; }
-        public string HierarchyAttribute6 { get; set; }
-        public string HierarchyAttribute7 { get; set; }
-        public string HierarchyAttribute8 { get; set; }
-        public string HierarchyAttribute9 { get; set; }
-        public string HierarchyAttribute10 { get; set; }
+        public string HierarchyAttribute1 { get; set; } = null!;
+        public string HierarchyAttribute2 { get; set; } = null!;
+        public string HierarchyAttribute3 { get; set; } = null!;
+        public string? HierarchyAttribute4 { get; set; }
+        public string? HierarchyAttribute5 { get; set; }
+        public string? HierarchyAttribute6 { get; set; }
+        public string? HierarchyAttribute7 { get; set; }
+        public string? HierarchyAttribute8 { get; set; }
+        public string? HierarchyAttribute9 { get; set; }
+        public string? HierarchyAttribute10 { get; set; }
         public Guid ValuesAttribute1 { get; set; }
         public Guid ValuesAttribute2 { get; set; }
         public Guid ValuesAttribute3 { get; set; }
@@ -31,7 +31,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public int DeleteFlag { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }

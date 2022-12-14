@@ -7,14 +7,14 @@ namespace RDOS.BaseLine.RDOSInfratructure
     {
         public Guid Id { get; set; }
         public Guid? AppId { get; set; }
-        public string AppName { get; set; }
-        public string AppVersion { get; set; }
-        public string Os { get; set; }
-        public string HostType { get; set; }
-        public string AppBuildFile { get; set; }
+        public string? AppName { get; set; }
+        public string? AppVersion { get; set; }
+        public string? Os { get; set; }
+        public string? HostType { get; set; }
+        public string? AppBuildFile { get; set; }
         public double? AppBuildFileRepoId { get; set; }
-        public string ReleasedNote { get; set; }
-        public string Status { get; set; }
+        public string? ReleasedNote { get; set; }
+        public string? Status { get; set; }
         public Guid? PrincipleId { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }
@@ -22,7 +22,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public DateTime? UpdatedDate { get; set; }
         public Guid? DeletedBy { get; set; }
         public DateTime? DeletedDate { get; set; }
-        public string Type { get; set; }
-        public string ApplyFor { get; set; }
+        public string? Type { get; set; }
+        public string? ApplyFor { get; set; }
     }
 }

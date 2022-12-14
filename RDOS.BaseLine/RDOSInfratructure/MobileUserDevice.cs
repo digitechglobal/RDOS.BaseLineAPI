@@ -7,16 +7,16 @@ namespace RDOS.BaseLine.RDOSInfratructure
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public string DeviceName { get; set; }
-        public string DeviceId { get; set; }
+        public string? DeviceName { get; set; }
+        public string? DeviceId { get; set; }
         /// <summary>
         ///  IMEI hay Serieral của thiết bị
         /// </summary>
-        public string Os { get; set; }
-        public string Osversion { get; set; }
+        public string? Os { get; set; }
+        public string? Osversion { get; set; }
         public Guid? AppId { get; set; }
-        public string AppVersion { get; set; }
-        public string Status { get; set; }
+        public string? AppVersion { get; set; }
+        public string? Status { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public Guid? UpdatedBy { get; set; }

@@ -9,12 +9,12 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid ItemId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
-        public string FileCreatedDateStr { get; set; }
-        public string FileExt { get; set; }
-        public string FileName { get; set; }
-        public string FilePath { get; set; }
-        public string FolderType { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
+        public string FileCreatedDateStr { get; set; } = null!;
+        public string FileExt { get; set; } = null!;
+        public string FileName { get; set; } = null!;
+        public string FilePath { get; set; } = null!;
+        public string FolderType { get; set; } = null!;
     }
 }

@@ -6,9 +6,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class ItemGroup
     {
         public Guid Id { get; set; }
-        public string Code { get; set; }
-        public string Description { get; set; }
-        public string Avatar { get; set; }
+        public string Code { get; set; } = null!;
+        public string Description { get; set; } = null!;
+        public string? Avatar { get; set; }
         public Guid Attribute1 { get; set; }
         public Guid Attribute2 { get; set; }
         public Guid Attribute3 { get; set; }
@@ -20,11 +20,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid Attribute9 { get; set; }
         public Guid Attribute10 { get; set; }
         public DateTime CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string UpdatedBy { get; set; }
-        public string AvatarFileExt { get; set; }
-        public string AvatarFolderType { get; set; }
-        public string AvatarName { get; set; }
+        public string? UpdatedBy { get; set; }
+        public string? AvatarFileExt { get; set; }
+        public string? AvatarFolderType { get; set; }
+        public string? AvatarName { get; set; }
     }
 }

@@ -9,11 +9,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public int PaginationCount { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public Guid FeatureId { get; set; }
-        public string FeatureCode { get; set; }
+        public string? FeatureCode { get; set; }
 
-        public virtual Feature Feature { get; set; }
+        public virtual Feature Feature { get; set; } = null!;
     }
 }

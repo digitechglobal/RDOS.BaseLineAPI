@@ -14,9 +14,14 @@ namespace RDOS.BaseLine.Controllers
     public class BaselineSettingController : NormalController<BaselineSettingModel>
     {
         private readonly IBaselineSettingService _baseLineSettingService;
-        public BaselineSettingController(IBaseService<BaselineSettingModel> service, IBaselineSettingService baseLineSettingService) : base(service)
+        private readonly IBaselineProcessService _blProcessService;
+        public BaselineSettingController(
+            IBaseService<BaselineSettingModel> service, 
+            IBaselineSettingService baseLineSettingService,
+            IBaselineProcessService blProcessService) : base(service)
         {
             _baseLineSettingService = baseLineSettingService;
+            _blProcessService = blProcessService;
         }
 
         [HttpGet]
@@ -60,6 +65,14 @@ namespace RDOS.BaseLine.Controllers
         public async Task<IActionResult> GetList(BaselineSearch input)
         {
             return Ok(await _baseLineSettingService.SearchBaselineSetting(input));
+        }
+
+        [HttpPost]
+        [Route("ProcessPO")]
+        public async Task<IActionResult> ProcessPO(ProcessPORequest input)
+        {
+            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
+            return Ok(await _blProcessService.ProcesPO(input.BaselineDate, input.SettingRef, username));
         }
     }
 }

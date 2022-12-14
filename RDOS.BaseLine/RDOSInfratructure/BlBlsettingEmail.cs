@@ -6,12 +6,12 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class BlBlsettingEmail
     {
         public Guid Id { get; set; }
-        public string BaselineSettingRef { get; set; }
-        public string From { get; set; }
-        public string To { get; set; }
-        public string Cc { get; set; }
-        public string Subject { get; set; }
-        public string Description { get; set; }
+        public string BaselineSettingRef { get; set; } = null!;
+        public string? From { get; set; }
+        public string? To { get; set; }
+        public string? Cc { get; set; }
+        public string? Subject { get; set; }
+        public string? Description { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? CreatedBy { get; set; }

@@ -7,7 +7,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
     {
         public Guid Id { get; set; }
         public Guid AutoKpisTargetDevelopmentId { get; set; }
-        public string SalePeriod { get; set; }
+        public string? SalePeriod { get; set; }
         public decimal? Value { get; set; }
     }
 }

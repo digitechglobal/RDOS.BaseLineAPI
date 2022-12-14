@@ -6,8 +6,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class BlBlsettingTransactionStatus
     {
         public Guid Id { get; set; }
-        public string Code { get; set; }
-        public string Description { get; set; }
+        public string Code { get; set; } = null!;
+        public string? Description { get; set; }
         public bool? IsSalesOrder { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }

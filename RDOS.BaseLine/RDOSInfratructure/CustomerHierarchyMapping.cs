@@ -11,11 +11,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid CustomerHierarchyId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
-        public virtual CustomerAttribute CustomerAttribute { get; set; }
-        public virtual CustomerHierarchy CustomerHierarchy { get; set; }
-        public virtual CustomerSettingHierarchy CustomerSettingHierarchy { get; set; }
+        public virtual CustomerAttribute CustomerAttribute { get; set; } = null!;
+        public virtual CustomerHierarchy CustomerHierarchy { get; set; } = null!;
+        public virtual CustomerSettingHierarchy CustomerSettingHierarchy { get; set; } = null!;
     }
 }

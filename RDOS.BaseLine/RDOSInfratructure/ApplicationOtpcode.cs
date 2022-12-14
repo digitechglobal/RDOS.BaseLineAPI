@@ -7,8 +7,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public string Otpcode { get; set; }
-        public string Purpose { get; set; }
+        public string? Otpcode { get; set; }
+        public string? Purpose { get; set; }
         public Guid? AppId { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -17,7 +17,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid? DeletedBy { get; set; }
         public DateTime? DeletedDate { get; set; }
         public DateTime? ActiveDate { get; set; }
-        public string Status { get; set; }
-        public string AppName { get; set; }
+        public string? Status { get; set; }
+        public string? AppName { get; set; }
     }
 }

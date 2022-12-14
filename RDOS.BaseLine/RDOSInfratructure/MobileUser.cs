@@ -6,13 +6,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class MobileUser
     {
         public Guid Id { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Password { get; set; }
-        public string FullName { get; set; }
-        public string EmailAddress { get; set; }
+        public string PhoneNumber { get; set; } = null!;
+        public string? Password { get; set; }
+        public string? FullName { get; set; }
+        public string? EmailAddress { get; set; }
         public bool? PhoneNumberConfirmed { get; set; }
         public bool? TwoFactorEnabled { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public bool Actived { get; set; }
         public bool Locked { get; set; }
         public Guid? CreatedBy { get; set; }
@@ -21,8 +21,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public DateTime? UpdatedDate { get; set; }
         public Guid? DeletedBy { get; set; }
         public DateTime? DeletedDate { get; set; }
-        public string Username { get; set; }
-        public string PhoneCountryCode { get; set; }
-        public string PhoneCountryIso { get; set; }
+        public string Username { get; set; } = null!;
+        public string? PhoneCountryCode { get; set; }
+        public string? PhoneCountryIso { get; set; }
     }
 }

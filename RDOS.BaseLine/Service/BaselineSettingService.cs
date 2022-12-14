@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Dapper;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.VariantTypes;
 using Microsoft.EntityFrameworkCore;
+using nProx.Helpers.Dapper;
 using nProx.Helpers.Services.Repository;
 using RDOS.BaseLine.Constants;
 using RDOS.BaseLine.Models.Request;
@@ -20,7 +22,9 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlBlsettingProcessPending> _blSettingProcessPendingRepo;
         private readonly IBaseRepository<BlBlsettingEmail> _blSettingEmailRepo;
         private readonly IBaseRepository<BlBlprocess> _blProcessRepo;
+        private readonly IBaseRepository<BlRawPo> _blRawPo;
         private readonly IMapper _mapper;
+        private readonly IDapperRepositories _dapper;
 
         public BaselineSettingService(
             ILogger<BaselineSettingService> logger, 
@@ -30,7 +34,9 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<BlBlsettingProcessPending> blSettingProcessPendingRepo, 
             IBaseRepository<BlBlsettingEmail> blSettingEmailRepo, 
             IBaseRepository<BlBlprocess> blProcessRepo,
-            IMapper mapper)
+            IBaseRepository<BlRawPo> blRawPo,
+            IMapper mapper,
+            IDapperRepositories dapper)
         {
             _logger = logger;
             _blSettingInfoRepo = blSettingInfoRepo;
@@ -40,6 +46,8 @@ namespace RDOS.BaseLine.Service
             _blSettingEmailRepo = blSettingEmailRepo;
             _blProcessRepo = blProcessRepo;
             _mapper = mapper;
+            _dapper = dapper;
+            _blRawPo = blRawPo;
         }
 
         public async Task<BaseResultModel> ChangeSetting(BaselineSettingModel dataInput, string userLogin)
@@ -121,7 +129,6 @@ namespace RDOS.BaseLine.Service
             {
                 foreach (var item in listProcess)
                 {
-                    //var itemExist = _blProcessRepo.Find(x => x.ProcessCode == item.ProcessCode).FirstOrDefault();
                     var itemExist = _blProcessRepo.FirstOrDefault(x => x.ProcessCode == item.ProcessCode);
 
                     if (itemExist == null)

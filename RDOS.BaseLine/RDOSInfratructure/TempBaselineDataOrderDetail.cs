@@ -6,9 +6,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class TempBaselineDataOrderDetail
     {
         public Guid Id { get; set; }
-        public string OrderCode { get; set; }
-        public string InventoryCode { get; set; }
-        public string UoM { get; set; }
+        public string? OrderCode { get; set; }
+        public string? InventoryCode { get; set; }
+        public string? UoM { get; set; }
         public decimal? Quantity { get; set; }
         public decimal? UnitPrice { get; set; }
         public bool? IsFree { get; set; }

@@ -6,23 +6,23 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class PoPoconfirmHeader
     {
         public Guid Id { get; set; }
-        public string PurchaseOrderConfirmNumber { get; set; }
-        public string PoPrincipalNumber { get; set; }
+        public string? PurchaseOrderConfirmNumber { get; set; }
+        public string? PoPrincipalNumber { get; set; }
         public DateTime TransactionDate { get; set; }
-        public string PrincipalWareHouseCode { get; set; }
+        public string? PrincipalWareHouseCode { get; set; }
         public DateTime ExpectReDate { get; set; }
         public decimal TotalDiscountAmount { get; set; }
-        public string PurchaseOrderNumber { get; set; }
+        public string? PurchaseOrderNumber { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
-        public string DistributorCode { get; set; }
-        public string DistributorShiptoCode { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
-        public string DistributorShiptoDescription { get; set; }
+        public string? DistributorCode { get; set; }
+        public string? DistributorShiptoCode { get; set; }
+        public string? Description { get; set; }
+        public string? Status { get; set; }
+        public string? DistributorShiptoDescription { get; set; }
         public decimal? TotalPromotion { get; set; }
     }
 }

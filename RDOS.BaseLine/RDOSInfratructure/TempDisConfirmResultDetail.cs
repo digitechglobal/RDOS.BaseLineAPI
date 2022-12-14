@@ -6,10 +6,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class TempDisConfirmResultDetail
     {
         public Guid Id { get; set; }
-        public string DisplayCode { get; set; }
-        public string DisplayName { get; set; }
-        public string DisplayLevelCode { get; set; }
-        public string DisplayLevelName { get; set; }
+        public string DisplayCode { get; set; } = null!;
+        public string DisplayName { get; set; } = null!;
+        public string DisplayLevelCode { get; set; } = null!;
+        public string DisplayLevelName { get; set; } = null!;
         /// <summary>
         /// Trường này không cần
         /// </summary>
@@ -24,11 +24,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
         /// Trường này không cần
         /// </summary>
         public decimal OutputRegistered { get; set; }
-        public string PeriodCode { get; set; }
-        public string CustomerCode { get; set; }
-        public string CustomerName { get; set; }
-        public string CustomerShiptoCode { get; set; }
-        public string CustomerAddress { get; set; }
+        public string? PeriodCode { get; set; }
+        public string CustomerCode { get; set; } = null!;
+        public string CustomerName { get; set; } = null!;
+        public string CustomerShiptoCode { get; set; } = null!;
+        public string CustomerAddress { get; set; } = null!;
         /// <summary>
         /// Trường này không cần
         /// </summary>
@@ -51,6 +51,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public decimal OutputPass { get; set; }
         public bool Result { get; set; }
         public DateTime VisitDate { get; set; }
-        public string VisitId { get; set; }
+        public string VisitId { get; set; } = null!;
     }
 }

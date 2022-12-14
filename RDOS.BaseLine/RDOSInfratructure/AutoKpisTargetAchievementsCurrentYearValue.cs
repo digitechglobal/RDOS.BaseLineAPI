@@ -6,11 +6,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class AutoKpisTargetAchievementsCurrentYearValue
     {
         public Guid Id { get; set; }
-        public string AutoKpisTargetCode { get; set; }
-        public string TerritoryStructureCode { get; set; }
-        public string Source { get; set; }
-        public string TerritoryValueBySource { get; set; }
-        public string BusinessModel { get; set; }
+        public string? AutoKpisTargetCode { get; set; }
+        public string? TerritoryStructureCode { get; set; }
+        public string? Source { get; set; }
+        public string? TerritoryValueBySource { get; set; }
+        public string? BusinessModel { get; set; }
         public decimal? NumberofOutlet { get; set; }
         public decimal? Vpo { get; set; }
         public decimal? Pc { get; set; }

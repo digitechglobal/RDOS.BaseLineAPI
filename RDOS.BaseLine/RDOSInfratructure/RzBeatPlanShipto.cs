@@ -6,7 +6,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class RzBeatPlanShipto
     {
         public Guid Id { get; set; }
-        public string BeatPlanCode { get; set; }
+        public string? BeatPlanCode { get; set; }
         public DateTime? EffectiveDate { get; set; }
         public bool Friday { get; set; }
         public bool IsDeleted { get; set; }
@@ -18,7 +18,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public bool Tuesday { get; set; }
         public DateTime? ValidUntil { get; set; }
         public DateTime? VisitDate { get; set; }
-        public string VisitOrder { get; set; }
+        public string? VisitOrder { get; set; }
         public bool Wednesday { get; set; }
     }
 }

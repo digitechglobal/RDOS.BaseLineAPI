@@ -6,8 +6,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class TpDiscountScopeDsa
     {
         public Guid Id { get; set; }
-        public string DiscountCode { get; set; }
-        public string SaleOrg { get; set; }
-        public string ScopeDsaValue { get; set; }
+        public string DiscountCode { get; set; } = null!;
+        public string SaleOrg { get; set; } = null!;
+        public string ScopeDsaValue { get; set; } = null!;
     }
 }

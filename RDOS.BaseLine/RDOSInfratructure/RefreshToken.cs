@@ -8,8 +8,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public DateTime? ExpiredDate { get; set; }
-        public string Os { get; set; }
-        public string AppVersion { get; set; }
+        public string? Os { get; set; }
+        public string? AppVersion { get; set; }
         public Guid? AppId { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -18,6 +18,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid? DeletedBy { get; set; }
         public DateTime? DeletedDate { get; set; }
         public Guid? PrincipleId { get; set; }
-        public string RefreshToken1 { get; set; }
+        public string? RefreshToken1 { get; set; }
     }
 }

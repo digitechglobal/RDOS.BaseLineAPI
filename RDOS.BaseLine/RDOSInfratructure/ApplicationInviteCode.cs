@@ -6,10 +6,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class ApplicationInviteCode
     {
         public Guid Id { get; set; }
-        public string PhoneNumber { get; set; }
-        public string EmployeeName { get; set; }
-        public string InviteCode { get; set; }
-        public string AcitveLink { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? EmployeeName { get; set; }
+        public string? InviteCode { get; set; }
+        public string? AcitveLink { get; set; }
         public Guid? AppId { get; set; }
         public DateTime? ExpiredDate { get; set; }
         public Guid? PrincipleId { get; set; }
@@ -20,9 +20,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid? DeletedBy { get; set; }
         public DateTime? DeletedDate { get; set; }
         public DateTime? ActiveDate { get; set; }
-        public string Status { get; set; }
-        public string EmployeeCode { get; set; }
-        public string MessageDetail { get; set; }
-        public string AppName { get; set; }
+        public string? Status { get; set; }
+        public string? EmployeeCode { get; set; }
+        public string? MessageDetail { get; set; }
+        public string? AppName { get; set; }
     }
 }

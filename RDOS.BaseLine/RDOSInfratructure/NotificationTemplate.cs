@@ -6,10 +6,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class NotificationTemplate
     {
         public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Body { get; set; }
-        public string Data { get; set; }
-        public string Purpose { get; set; }
+        public string Title { get; set; } = null!;
+        public string? Body { get; set; }
+        public string? Data { get; set; }
+        public string? Purpose { get; set; }
         public Guid? AppId { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }

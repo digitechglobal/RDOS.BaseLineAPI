@@ -16,445 +16,445 @@ namespace RDOS.BaseLine.RDOSInfratructure
         {
         }
 
-        public virtual DbSet<Action> Actions { get; set; }
-        public virtual DbSet<AdjustItemGroupPrice> AdjustItemGroupPrices { get; set; }
-        public virtual DbSet<AdjustPriceListUoMitemGroup> AdjustPriceListUoMitemGroups { get; set; }
-        public virtual DbSet<ApiMapping> ApiMappings { get; set; }
-        public virtual DbSet<Application> Applications { get; set; }
-        public virtual DbSet<ApplicationAudit> ApplicationAudits { get; set; }
-        public virtual DbSet<ApplicationInviteCode> ApplicationInviteCodes { get; set; }
-        public virtual DbSet<ApplicationLanguagePack> ApplicationLanguagePacks { get; set; }
-        public virtual DbSet<ApplicationLocalization> ApplicationLocalizations { get; set; }
-        public virtual DbSet<ApplicationLocalizationHistory> ApplicationLocalizationHistories { get; set; }
-        public virtual DbSet<ApplicationNotiDeviceToken> ApplicationNotiDeviceTokens { get; set; }
-        public virtual DbSet<ApplicationNotiMessage> ApplicationNotiMessages { get; set; }
-        public virtual DbSet<ApplicationNotiUrgent> ApplicationNotiUrgents { get; set; }
-        public virtual DbSet<ApplicationOtpcode> ApplicationOtpcodes { get; set; }
-        public virtual DbSet<ApplicationService> ApplicationServices { get; set; }
-        public virtual DbSet<ApplicationThemesConfigure> ApplicationThemesConfigures { get; set; }
-        public virtual DbSet<ApplicationThemesElement> ApplicationThemesElements { get; set; }
-        public virtual DbSet<ApplicationThemesSetting> ApplicationThemesSettings { get; set; }
-        public virtual DbSet<ApplicationThemesSuggestion> ApplicationThemesSuggestions { get; set; }
-        public virtual DbSet<ApplicationUserMapping> ApplicationUserMappings { get; set; }
-        public virtual DbSet<ApplicationVersion> ApplicationVersions { get; set; }
-        public virtual DbSet<ApplicationVersionPrinciple> ApplicationVersionPrinciples { get; set; }
-        public virtual DbSet<AsoRefResult> AsoRefResults { get; set; }
-        public virtual DbSet<AuditLog> AuditLogs { get; set; }
-        public virtual DbSet<AutoKpisTarget> AutoKpisTargets { get; set; }
-        public virtual DbSet<AutoKpisTargetAchievementsCurrentYear> AutoKpisTargetAchievementsCurrentYears { get; set; }
-        public virtual DbSet<AutoKpisTargetAchievementsCurrentYearValue> AutoKpisTargetAchievementsCurrentYearValues { get; set; }
-        public virtual DbSet<AutoKpisTargetBusinessModel> AutoKpisTargetBusinessModels { get; set; }
-        public virtual DbSet<AutoKpisTargetBusinessModelValue> AutoKpisTargetBusinessModelValues { get; set; }
-        public virtual DbSet<AutoKpisTargetContributionBySic> AutoKpisTargetContributionBySics { get; set; }
-        public virtual DbSet<AutoKpisTargetContributionBySicValue> AutoKpisTargetContributionBySicValues { get; set; }
-        public virtual DbSet<AutoKpisTargetDevelopment> AutoKpisTargetDevelopments { get; set; }
-        public virtual DbSet<AutoKpisTargetDevelopmentDetail> AutoKpisTargetDevelopmentDetails { get; set; }
-        public virtual DbSet<BlAuditLog> BlAuditLogs { get; set; }
-        public virtual DbSet<BlBlprocess> BlBlprocesses { get; set; }
-        public virtual DbSet<BlBlsettingEmail> BlBlsettingEmails { get; set; }
-        public virtual DbSet<BlBlsettingInformation> BlBlsettingInformations { get; set; }
-        public virtual DbSet<BlBlsettingProcess> BlBlsettingProcesses { get; set; }
-        public virtual DbSet<BlBlsettingProcessPending> BlBlsettingProcessPendings { get; set; }
-        public virtual DbSet<BlBlsettingTransactionStatus> BlBlsettingTransactionStatuses { get; set; }
-        public virtual DbSet<BlHistory> BlHistorys { get; set; }
-        public virtual DbSet<BlRawPo> BlRawPos { get; set; }
-        public virtual DbSet<BlRawSo> BlRawSos { get; set; }
-        public virtual DbSet<City> Citys { get; set; }
-        public virtual DbSet<CleanDataConfigure> CleanDataConfigures { get; set; }
-        public virtual DbSet<Competitor> Competitors { get; set; }
-        public virtual DbSet<ConditionstoExcludeSc> ConditionstoExcludeScs { get; set; }
-        public virtual DbSet<ContactType> ContactTypes { get; set; }
-        public virtual DbSet<Container> Containers { get; set; }
-        public virtual DbSet<ContractType> ContractTypes { get; set; }
-        public virtual DbSet<Country> Countrys { get; set; }
-        public virtual DbSet<CronJobSchedule> CronJobSchedules { get; set; }
-        public virtual DbSet<CustomerAdjustment> CustomerAdjustments { get; set; }
-        public virtual DbSet<CustomerAdjustmentDataType> CustomerAdjustmentDataTypes { get; set; }
-        public virtual DbSet<CustomerAdjustmentShipto> CustomerAdjustmentShiptos { get; set; }
-        public virtual DbSet<CustomerApplyToValue> CustomerApplyToValues { get; set; }
-        public virtual DbSet<CustomerAttribute> CustomerAttributes { get; set; }
-        public virtual DbSet<CustomerContact> CustomerContacts { get; set; }
-        public virtual DbSet<CustomerContactEmail> CustomerContactEmails { get; set; }
-        public virtual DbSet<CustomerContactPhone> CustomerContactPhones { get; set; }
-        public virtual DbSet<CustomerContract> CustomerContracts { get; set; }
-        public virtual DbSet<CustomerDmsAttribute> CustomerDmsAttributes { get; set; }
-        public virtual DbSet<CustomerHierarchy> CustomerHierarchies { get; set; }
-        public virtual DbSet<CustomerHierarchyMapping> CustomerHierarchyMappings { get; set; }
-        public virtual DbSet<CustomerInformation> CustomerInformations { get; set; }
-        public virtual DbSet<CustomerSetting> CustomerSettings { get; set; }
-        public virtual DbSet<CustomerSettingHierarchy> CustomerSettingHierarchies { get; set; }
-        public virtual DbSet<CustomerShipto> CustomerShiptos { get; set; }
-        public virtual DbSet<CustomerShiptoContact> CustomerShiptoContacts { get; set; }
-        public virtual DbSet<DataLog> DataLogs { get; set; }
-        public virtual DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
-        public virtual DbSet<DataTypeDefinition> DataTypeDefinitions { get; set; }
-        public virtual DbSet<DisApproveRegistrationCustomer> DisApproveRegistrationCustomers { get; set; }
-        public virtual DbSet<DisApproveRegistrationCustomerDetail> DisApproveRegistrationCustomerDetails { get; set; }
-        public virtual DbSet<DisBudget> DisBudgets { get; set; }
-        public virtual DbSet<DisBudgetForCusAttribute> DisBudgetForCusAttributes { get; set; }
-        public virtual DbSet<DisBudgetForScopeDsa> DisBudgetForScopeDsas { get; set; }
-        public virtual DbSet<DisBudgetForScopeTerritory> DisBudgetForScopeTerritorys { get; set; }
-        public virtual DbSet<DisBudgetUsed> DisBudgetUseds { get; set; }
-        public virtual DbSet<DisConfirmResult> DisConfirmResults { get; set; }
-        public virtual DbSet<DisConfirmResultDetail> DisConfirmResultDetails { get; set; }
-        public virtual DbSet<DisCriteriaEvaluatePictureDisplay> DisCriteriaEvaluatePictureDisplays { get; set; }
-        public virtual DbSet<DisCustomerAttributeLevel> DisCustomerAttributeLevels { get; set; }
-        public virtual DbSet<DisCustomerAttributeValue> DisCustomerAttributeValues { get; set; }
-        public virtual DbSet<DisCustomerShipto> DisCustomerShiptos { get; set; }
-        public virtual DbSet<DisCustomerShiptoDetail> DisCustomerShiptoDetails { get; set; }
-        public virtual DbSet<DisDefinitionCriteriaEvaluate> DisDefinitionCriteriaEvaluates { get; set; }
-        public virtual DbSet<DisDefinitionGuideImage> DisDefinitionGuideImages { get; set; }
-        public virtual DbSet<DisDefinitionProductTypeDetail> DisDefinitionProductTypeDetails { get; set; }
-        public virtual DbSet<DisDefinitionStructure> DisDefinitionStructures { get; set; }
-        public virtual DbSet<DisDisplay> DisDisplays { get; set; }
-        public virtual DbSet<DisPayReward> DisPayRewards { get; set; }
-        public virtual DbSet<DisPayRewardDetail> DisPayRewardDetails { get; set; }
-        public virtual DbSet<DisScopeDsa> DisScopeDsas { get; set; }
-        public virtual DbSet<DisScopeTerritory> DisScopeTerritorys { get; set; }
-        public virtual DbSet<DisSettlement> DisSettlements { get; set; }
-        public virtual DbSet<DisSettlementDetail> DisSettlementDetails { get; set; }
-        public virtual DbSet<DisWeightGetExtraRewardsDetail> DisWeightGetExtraRewardsDetails { get; set; }
-        public virtual DbSet<DistCache> DistCaches { get; set; }
-        public virtual DbSet<Distributor> Distributors { get; set; }
-        public virtual DbSet<DistributorContact> DistributorContacts { get; set; }
-        public virtual DbSet<DistributorContract> DistributorContracts { get; set; }
-        public virtual DbSet<DistributorHierarchy> DistributorHierarchies { get; set; }
-        public virtual DbSet<DistributorHierarchyMapping> DistributorHierarchyMappings { get; set; }
-        public virtual DbSet<DistributorHistorical> DistributorHistoricals { get; set; }
-        public virtual DbSet<DistributorPriceApplyToOutletAttribute> DistributorPriceApplyToOutletAttributes { get; set; }
-        public virtual DbSet<DistributorPriceItemGroup> DistributorPriceItemGroups { get; set; }
-        public virtual DbSet<DistributorPriceVolume> DistributorPriceVolumes { get; set; }
-        public virtual DbSet<DistributorPriceVolumeLevel> DistributorPriceVolumeLevels { get; set; }
-        public virtual DbSet<DistributorSellingArea> DistributorSellingAreas { get; set; }
-        public virtual DbSet<DistributorShipto> DistributorShiptos { get; set; }
-        public virtual DbSet<District> Districts { get; set; }
-        public virtual DbSet<DropSizeRefResult> DropSizeRefResults { get; set; }
-        public virtual DbSet<DsaDelivery> DsaDeliveries { get; set; }
-        public virtual DbSet<DsaDistributorSellingArea> DsaDistributorSellingAreas { get; set; }
-        public virtual DbSet<DsaGeographicalMapping> DsaGeographicalMappings { get; set; }
-        public virtual DbSet<DsaSalesTeamAssignment> DsaSalesTeamAssignments { get; set; }
-        public virtual DbSet<DsadistributorShipTo> DsadistributorShipTos { get; set; }
-        public virtual DbSet<Dsageographical> Dsageographicals { get; set; }
-        public virtual DbSet<DynamicFieldConfigure> DynamicFieldConfigures { get; set; }
-        public virtual DbSet<EcoLocalization> EcoLocalizations { get; set; }
-        public virtual DbSet<EmailType> EmailTypes { get; set; }
-        public virtual DbSet<Feature> Features { get; set; }
-        public virtual DbSet<GeographicalMapping> GeographicalMappings { get; set; }
-        public virtual DbSet<GeographicalMaster> GeographicalMasters { get; set; }
-        public virtual DbSet<GeographicalStructure> GeographicalStructures { get; set; }
-        public virtual DbSet<InvAdjustmentDetail> InvAdjustmentDetails { get; set; }
-        public virtual DbSet<InvAdjustmentHeader> InvAdjustmentHeaders { get; set; }
-        public virtual DbSet<InvAllocationDetail> InvAllocationDetails { get; set; }
-        public virtual DbSet<InvInventoryTransaction> InvInventoryTransactions { get; set; }
-        public virtual DbSet<InvLotAvailable> InvLotAvailables { get; set; }
-        public virtual DbSet<InvReason> InvReasons { get; set; }
-        public virtual DbSet<InvSellInLotByDate> InvSellInLotByDates { get; set; }
-        public virtual DbSet<InvSellOutLotByDate> InvSellOutLotByDates { get; set; }
-        public virtual DbSet<InvWhTransferDetail> InvWhTransferDetails { get; set; }
-        public virtual DbSet<InvWhTransferHeader> InvWhTransferHeaders { get; set; }
-        public virtual DbSet<InvWhTransferToEmployeeHeader> InvWhTransferToEmployeeHeaders { get; set; }
-        public virtual DbSet<InventoryItem> InventoryItems { get; set; }
-        public virtual DbSet<InventoryKit> InventoryKits { get; set; }
-        public virtual DbSet<InventoryResult> InventoryResults { get; set; }
-        public virtual DbSet<ItemAttribute> ItemAttributes { get; set; }
-        public virtual DbSet<ItemGroup> ItemGroups { get; set; }
-        public virtual DbSet<ItemHierarchyMapping> ItemHierarchyMappings { get; set; }
-        public virtual DbSet<ItemHierarchyMappingCompetitor> ItemHierarchyMappingCompetitors { get; set; }
-        public virtual DbSet<ItemManufacture> ItemManufactures { get; set; }
-        public virtual DbSet<ItemSetting> ItemSettings { get; set; }
-        public virtual DbSet<ItemsCompetitor> ItemsCompetitors { get; set; }
-        public virtual DbSet<ItemsFile> ItemsFiles { get; set; }
-        public virtual DbSet<ItemsUomconversion> ItemsUomconversions { get; set; }
-        public virtual DbSet<JobTitle> JobTitles { get; set; }
-        public virtual DbSet<JobTitleRole> JobTitleRoles { get; set; }
-        public virtual DbSet<Kit> Kits { get; set; }
-        public virtual DbSet<KitInventoryItemConversion> KitInventoryItemConversions { get; set; }
-        public virtual DbSet<KitUomConversion> KitUomConversions { get; set; }
-        public virtual DbSet<Kpi> Kpis { get; set; }
-        public virtual DbSet<KpiResult> KpiResults { get; set; }
-        public virtual DbSet<KpiTargetComplete> KpiTargetCompletes { get; set; }
-        public virtual DbSet<KpisForObjectRef> KpisForObjectRefs { get; set; }
-        public virtual DbSet<KpisObject> KpisObjects { get; set; }
-        public virtual DbSet<KpisSiref> KpisSirefs { get; set; }
-        public virtual DbSet<KpisTarget> KpisTargets { get; set; }
-        public virtual DbSet<KpisTargetForObject> KpisTargetForObjects { get; set; }
-        public virtual DbSet<KpisTargetFrequency> KpisTargetFrequencies { get; set; }
-        public virtual DbSet<KpisTargetGroupByKpisRepeat> KpisTargetGroupByKpisRepeats { get; set; }
-        public virtual DbSet<KpisTargetProductList> KpisTargetProductLists { get; set; }
-        public virtual DbSet<KpisTargetProductListItemCode> KpisTargetProductListItemCodes { get; set; }
-        public virtual DbSet<KpisTargetProductListKpi> KpisTargetProductListKpis { get; set; }
-        public virtual DbSet<KpiseasonCoefficient> KpiseasonCoefficients { get; set; }
-        public virtual DbSet<Kpisetting> Kpisettings { get; set; }
-        public virtual DbSet<KpivisitFrequency> KpivisitFrequencies { get; set; }
-        public virtual DbSet<KsApplicapleAssignment> KsApplicapleAssignments { get; set; }
-        public virtual DbSet<KsCampaign> KsCampaigns { get; set; }
-        public virtual DbSet<KsResource> KsResources { get; set; }
-        public virtual DbSet<KsRespondentInfor> KsRespondentInfors { get; set; }
-        public virtual DbSet<KsScopeAssignment> KsScopeAssignments { get; set; }
-        public virtual DbSet<KsSurvey> KsSurveys { get; set; }
-        public virtual DbSet<KsSurveyAnswer> KsSurveyAnswers { get; set; }
-        public virtual DbSet<KsSurveyQuestion> KsSurveyQuestions { get; set; }
-        public virtual DbSet<KsSurveyResult> KsSurveyResults { get; set; }
-        public virtual DbSet<KsSurveyorResource> KsSurveyorResources { get; set; }
-        public virtual DbSet<Localization> Localizations { get; set; }
-        public virtual DbSet<LocalizationsBackup> LocalizationsBackups { get; set; }
-        public virtual DbSet<LppcRefResult> LppcRefResults { get; set; }
-        public virtual DbSet<Manufacture> Manufactures { get; set; }
-        public virtual DbSet<Menu> Menus { get; set; }
-        public virtual DbSet<MobileFeaturesPermission> MobileFeaturesPermissions { get; set; }
-        public virtual DbSet<MobileUser> MobileUsers { get; set; }
-        public virtual DbSet<MobileUserApplication> MobileUserApplications { get; set; }
-        public virtual DbSet<MobileUserDevice> MobileUserDevices { get; set; }
-        public virtual DbSet<MobileUserEmployee> MobileUserEmployees { get; set; }
-        public virtual DbSet<MobileUserInfo> MobileUserInfos { get; set; }
-        public virtual DbSet<MobileUserPrinciple> MobileUserPrinciples { get; set; }
-        public virtual DbSet<MobileUserPrinciplesHistory> MobileUserPrinciplesHistories { get; set; }
-        public virtual DbSet<MobileUserSetting> MobileUserSettings { get; set; }
-        public virtual DbSet<MobileUsersLocked> MobileUsersLockeds { get; set; }
-        public virtual DbSet<MobileVisitStep> MobileVisitSteps { get; set; }
-        public virtual DbSet<NotificationTemplate> NotificationTemplates { get; set; }
-        public virtual DbSet<Package> Packages { get; set; }
-        public virtual DbSet<PaginationConfig> PaginationConfigs { get; set; }
-        public virtual DbSet<ParameterWithSiref> ParameterWithSirefs { get; set; }
-        public virtual DbSet<ParameterWithSitype> ParameterWithSitypes { get; set; }
-        public virtual DbSet<PcrefResult> PcrefResults { get; set; }
-        public virtual DbSet<PhoneType> PhoneTypes { get; set; }
-        public virtual DbSet<PoAllocationSetting> PoAllocationSettings { get; set; }
-        public virtual DbSet<PoAllocationSettingItemGroup> PoAllocationSettingItemGroups { get; set; }
-        public virtual DbSet<PoAverageDailySale> PoAverageDailySales { get; set; }
-        public virtual DbSet<PoDeliveryLeadTime> PoDeliveryLeadTimes { get; set; }
-        public virtual DbSet<PoGrpodetailItem> PoGrpodetailItems { get; set; }
-        public virtual DbSet<PoGrpoheader> PoGrpoheaders { get; set; }
-        public virtual DbSet<PoOrderDetail> PoOrderDetails { get; set; }
-        public virtual DbSet<PoOrderHeader> PoOrderHeaders { get; set; }
-        public virtual DbSet<PoPoconfirmDetailItem> PoPoconfirmDetailItems { get; set; }
-        public virtual DbSet<PoPoconfirmHeader> PoPoconfirmHeaders { get; set; }
-        public virtual DbSet<PoPurchaseScheduleDetail> PoPurchaseScheduleDetails { get; set; }
-        public virtual DbSet<PoReturnDetailItem> PoReturnDetailItems { get; set; }
-        public virtual DbSet<PoReturnHeader> PoReturnHeaders { get; set; }
-        public virtual DbSet<PoRpoparameter> PoRpoparameters { get; set; }
-        public virtual DbSet<PoStockKeepingDay> PoStockKeepingDays { get; set; }
-        public virtual DbSet<PoStockKeepingDayItemHierarchy> PoStockKeepingDayItemHierarchies { get; set; }
-        public virtual DbSet<Policy> Policies { get; set; }
-        public virtual DbSet<PolicyAccessReport> PolicyAccessReports { get; set; }
-        public virtual DbSet<PolicyApplyFor> PolicyApplyFors { get; set; }
-        public virtual DbSet<PolicyGeneralInformation> PolicyGeneralInformations { get; set; }
-        public virtual DbSet<PolicyResource> PolicyResources { get; set; }
-        public virtual DbSet<PolicyTerritoryLevel> PolicyTerritoryLevels { get; set; }
-        public virtual DbSet<PriceDefinitionDistributor> PriceDefinitionDistributors { get; set; }
-        public virtual DbSet<PriceList> PriceLists { get; set; }
-        public virtual DbSet<PriceListDistributeSellingArea> PriceListDistributeSellingAreas { get; set; }
-        public virtual DbSet<PriceListItemGroup> PriceListItemGroups { get; set; }
-        public virtual DbSet<PriceListOutletAttributeValue> PriceListOutletAttributeValues { get; set; }
-        public virtual DbSet<PriceListSalesTerritoryLevel> PriceListSalesTerritoryLevels { get; set; }
-        public virtual DbSet<PriceListType> PriceListTypes { get; set; }
-        public virtual DbSet<PriceListTypeAttributeList> PriceListTypeAttributeLists { get; set; }
-        public virtual DbSet<PriceSetting> PriceSettings { get; set; }
-        public virtual DbSet<PriceSettingAuditLog> PriceSettingAuditLogs { get; set; }
-        public virtual DbSet<PrimarySic> PrimarySics { get; set; }
-        public virtual DbSet<PrimarySicExcludeHierarchyDetail> PrimarySicExcludeHierarchyDetails { get; set; }
-        public virtual DbSet<PrimarySicExcludeItemGroupDetail> PrimarySicExcludeItemGroupDetails { get; set; }
-        public virtual DbSet<PrimarySicIncludeDetail> PrimarySicIncludeDetails { get; set; }
-        public virtual DbSet<Principal> Principals { get; set; }
-        public virtual DbSet<PrincipalEmpContract> PrincipalEmpContracts { get; set; }
-        public virtual DbSet<PrincipalProfile> PrincipalProfiles { get; set; }
-        public virtual DbSet<PrincipalPullDataQueue> PrincipalPullDataQueues { get; set; }
-        public virtual DbSet<PrincipalSetting> PrincipalSettings { get; set; }
-        public virtual DbSet<PrincipalWarehouse> PrincipalWarehouses { get; set; }
-        public virtual DbSet<PrincipalWarehouseLocation> PrincipalWarehouseLocations { get; set; }
-        public virtual DbSet<PrincipalWinzardSetup> PrincipalWinzardSetups { get; set; }
-        public virtual DbSet<PrincipleEmployee> PrincipleEmployees { get; set; }
-        public virtual DbSet<PriorityPriceListType> PriorityPriceListTypes { get; set; }
-        public virtual DbSet<ProductList> ProductLists { get; set; }
-        public virtual DbSet<ProductListItemCode> ProductListItemCodes { get; set; }
-        public virtual DbSet<Province> Provinces { get; set; }
-        public virtual DbSet<PurchaseBasePrice> PurchaseBasePrices { get; set; }
-        public virtual DbSet<PurchasePriceItemGroup> PurchasePriceItemGroups { get; set; }
-        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
-        public virtual DbSet<RefreshTokenModel> RefreshTokenModels { get; set; }
-        public virtual DbSet<Region> Regions { get; set; }
-        public virtual DbSet<RegistrationQueue> RegistrationQueues { get; set; }
-        public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<RoleClaim> RoleClaims { get; set; }
-        public virtual DbSet<RzBeatPlan> RzBeatPlans { get; set; }
-        public virtual DbSet<RzBeatPlanEmployee> RzBeatPlanEmployees { get; set; }
-        public virtual DbSet<RzBeatPlanShipto> RzBeatPlanShiptos { get; set; }
-        public virtual DbSet<RzLocation> RzLocations { get; set; }
-        public virtual DbSet<RzParameterLevelApply> RzParameterLevelApplies { get; set; }
-        public virtual DbSet<RzParameterSetting> RzParameterSettings { get; set; }
-        public virtual DbSet<RzParameterType> RzParameterTypes { get; set; }
-        public virtual DbSet<RzParameterValue> RzParameterValues { get; set; }
-        public virtual DbSet<RzRouteZoneInfomation> RzRouteZoneInfomations { get; set; }
-        public virtual DbSet<RzRouteZoneParameter> RzRouteZoneParameters { get; set; }
-        public virtual DbSet<RzRouteZoneShipto> RzRouteZoneShiptos { get; set; }
-        public virtual DbSet<RzRouteZoneType> RzRouteZoneTypes { get; set; }
-        public virtual DbSet<RzVisitFrequency> RzVisitFrequencies { get; set; }
-        public virtual DbSet<SaUserWithDistributorShipto> SaUserWithDistributorShiptos { get; set; }
-        public virtual DbSet<SaleCalendar> SaleCalendars { get; set; }
-        public virtual DbSet<SaleCalendarActionHistory> SaleCalendarActionHistories { get; set; }
-        public virtual DbSet<SaleCalendarGenerate> SaleCalendarGenerates { get; set; }
-        public virtual DbSet<SaleCalendarHoliday> SaleCalendarHolidays { get; set; }
-        public virtual DbSet<SaleGroup> SaleGroups { get; set; }
-        public virtual DbSet<SaleProcessDetail> SaleProcessDetails { get; set; }
-        public virtual DbSet<SaleProcessSetting> SaleProcessSettings { get; set; }
-        public virtual DbSet<SalesBasePrice> SalesBasePrices { get; set; }
-        public virtual DbSet<SalesIndicatorRef> SalesIndicatorRefs { get; set; }
-        public virtual DbSet<SalesIndicatorType> SalesIndicatorTypes { get; set; }
-        public virtual DbSet<SalesOganization> SalesOganizations { get; set; }
-        public virtual DbSet<SalesPriceItemGroup> SalesPriceItemGroups { get; set; }
-        public virtual DbSet<SalesPriceItemGroupReference> SalesPriceItemGroupReferences { get; set; }
-        public virtual DbSet<ScAuditlogReconcile> ScAuditlogReconciles { get; set; }
-        public virtual DbSet<ScSalesOrganizationStructure> ScSalesOrganizationStructures { get; set; }
-        public virtual DbSet<ScSalesTeamAssignment> ScSalesTeamAssignments { get; set; }
-        public virtual DbSet<ScTerritoryLevel> ScTerritoryLevels { get; set; }
-        public virtual DbSet<ScTerritoryMapping> ScTerritoryMappings { get; set; }
-        public virtual DbSet<ScTerritoryStructure> ScTerritoryStructures { get; set; }
-        public virtual DbSet<ScTerritoryStructureDetail> ScTerritoryStructureDetails { get; set; }
-        public virtual DbSet<ScTerritoryStructureGeographicalMapping> ScTerritoryStructureGeographicalMappings { get; set; }
-        public virtual DbSet<ScTerritoryValue> ScTerritoryValues { get; set; }
-        public virtual DbSet<ScrefResult> ScrefResults { get; set; }
-        public virtual DbSet<SdoResult> SdoResults { get; set; }
-        public virtual DbSet<Sdoconfig> Sdoconfigs { get; set; }
-        public virtual DbSet<SdoconfigSalesOrder> SdoconfigSalesOrders { get; set; }
-        public virtual DbSet<Service> Services { get; set; }
-        public virtual DbSet<ServiceDetail> ServiceDetails { get; set; }
-        public virtual DbSet<ShiptoContact> ShiptoContacts { get; set; }
-        public virtual DbSet<ShiptoHistorical> ShiptoHistoricals { get; set; }
-        public virtual DbSet<SivRefResult> SivRefResults { get; set; }
-        public virtual DbSet<SkurefResult> SkurefResults { get; set; }
-        public virtual DbSet<SoFirstTimeCustomer> SoFirstTimeCustomers { get; set; }
-        public virtual DbSet<SoOrderInformation> SoOrderInformations { get; set; }
-        public virtual DbSet<SoOrderItem> SoOrderItems { get; set; }
-        public virtual DbSet<SoReason> SoReasons { get; set; }
-        public virtual DbSet<SoSumPickingListDetail> SoSumPickingListDetails { get; set; }
-        public virtual DbSet<SoSumPickingListHeader> SoSumPickingListHeaders { get; set; }
-        public virtual DbSet<SovRefResult> SovRefResults { get; set; }
-        public virtual DbSet<StagingAccessReport> StagingAccessReports { get; set; }
-        public virtual DbSet<StagingSyncDataHistory> StagingSyncDataHistories { get; set; }
-        public virtual DbSet<StagingSyncDataType> StagingSyncDataTypes { get; set; }
-        public virtual DbSet<StagingSyncRefDataType> StagingSyncRefDataTypes { get; set; }
-        public virtual DbSet<Standard> Standards { get; set; }
-        public virtual DbSet<StandardItem> StandardItems { get; set; }
-        public virtual DbSet<State> States { get; set; }
-        public virtual DbSet<SystemLog> SystemLogs { get; set; }
-        public virtual DbSet<SystemSetting> SystemSettings { get; set; }
-        public virtual DbSet<TargetKpi> TargetKpis { get; set; }
-        public virtual DbSet<TargetSaleCalendar> TargetSaleCalendars { get; set; }
-        public virtual DbSet<TempBaselineDataBusinessModel> TempBaselineDataBusinessModels { get; set; }
-        public virtual DbSet<TempBaselineDataConditionExclude> TempBaselineDataConditionExcludes { get; set; }
-        public virtual DbSet<TempBaselineDataOrder> TempBaselineDataOrders { get; set; }
-        public virtual DbSet<TempBaselineDataOrderDetail> TempBaselineDataOrderDetails { get; set; }
-        public virtual DbSet<TempBaselineDataPurchaseOrder> TempBaselineDataPurchaseOrders { get; set; }
-        public virtual DbSet<TempBaselineDataPurchaseOrderDetail> TempBaselineDataPurchaseOrderDetails { get; set; }
-        public virtual DbSet<TempBaselineDataVisit> TempBaselineDataVisits { get; set; }
-        public virtual DbSet<TempBaselineDataVisitStepResult> TempBaselineDataVisitStepResults { get; set; }
-        public virtual DbSet<TempBaselineDetailRequestPo> TempBaselineDetailRequestPos { get; set; }
-        public virtual DbSet<TempBaselineHeaderRequestPo> TempBaselineHeaderRequestPos { get; set; }
-        public virtual DbSet<TempBeatPlan> TempBeatPlans { get; set; }
-        public virtual DbSet<TempBeatPlanDetail> TempBeatPlanDetails { get; set; }
-        public virtual DbSet<TempCheckInventoryVisit> TempCheckInventoryVisits { get; set; }
-        public virtual DbSet<TempDisApproveRegistrationCustomer> TempDisApproveRegistrationCustomers { get; set; }
-        public virtual DbSet<TempDisConfirmResultDetail> TempDisConfirmResultDetails { get; set; }
-        public virtual DbSet<TempDisCustomerShiptoNotHafe> TempDisCustomerShiptoNotHaves { get; set; }
-        public virtual DbSet<TempDisCustomerShiptoSaleOrQuantity> TempDisCustomerShiptoSaleOrQuantitys { get; set; }
-        public virtual DbSet<TempDisDisplaySupportTool> TempDisDisplaySupportTools { get; set; }
-        public virtual DbSet<TempDisOrderDetail> TempDisOrderDetails { get; set; }
-        public virtual DbSet<TempDisOrderHeader> TempDisOrderHeaders { get; set; }
-        public virtual DbSet<TempDisPosmForCustomerShipto> TempDisPosmForCustomerShiptos { get; set; }
-        public virtual DbSet<TempEvaluationPhotoVisit> TempEvaluationPhotoVisits { get; set; }
-        public virtual DbSet<TempInventoryItemInfor> TempInventoryItemInfors { get; set; }
-        public virtual DbSet<TempInvreport> TempInvreports { get; set; }
-        public virtual DbSet<TempInvreportLot> TempInvreportLots { get; set; }
-        public virtual DbSet<TempKpidistributor> TempKpidistributors { get; set; }
-        public virtual DbSet<TempKpiemployee> TempKpiemployees { get; set; }
-        public virtual DbSet<TempKpisellIn> TempKpisellIns { get; set; }
-        public virtual DbSet<TempParameterWithSitype> TempParameterWithSitypes { get; set; }
-        public virtual DbSet<TempPoKpi> TempPoKpis { get; set; }
-        public virtual DbSet<TempProgram> TempPrograms { get; set; }
-        public virtual DbSet<TempProgramCustomer> TempProgramCustomers { get; set; }
-        public virtual DbSet<TempProgramCustomerDetailsItem> TempProgramCustomerDetailsItems { get; set; }
-        public virtual DbSet<TempProgramCustomerItemsGroup> TempProgramCustomerItemsGroups { get; set; }
-        public virtual DbSet<TempProgramCustomersDetail> TempProgramCustomersDetails { get; set; }
-        public virtual DbSet<TempProgramDetailReward> TempProgramDetailRewards { get; set; }
-        public virtual DbSet<TempProgramDetailsItemsGroup> TempProgramDetailsItemsGroups { get; set; }
-        public virtual DbSet<TempProgramsDetail> TempProgramsDetails { get; set; }
-        public virtual DbSet<TempPromotionOrderRefNumber> TempPromotionOrderRefNumbers { get; set; }
-        public virtual DbSet<TempRoundingRule> TempRoundingRules { get; set; }
-        public virtual DbSet<TempRouteZone> TempRouteZones { get; set; }
-        public virtual DbSet<TempSalesIndicatorType> TempSalesIndicatorTypes { get; set; }
-        public virtual DbSet<TempTpOrderDetail> TempTpOrderDetails { get; set; }
-        public virtual DbSet<TempTpOrderHeader> TempTpOrderHeaders { get; set; }
-        public virtual DbSet<TempVisitStep> TempVisitSteps { get; set; }
-        public virtual DbSet<TempVisitStepsDefaultResult> TempVisitStepsDefaultResults { get; set; }
-        public virtual DbSet<TempVisitStepsReasonResult> TempVisitStepsReasonResults { get; set; }
-        public virtual DbSet<TemporarySic> TemporarySics { get; set; }
-        public virtual DbSet<TemporarySicItemGroupDetail> TemporarySicItemGroupDetails { get; set; }
-        public virtual DbSet<TemporarySicKitDetail> TemporarySicKitDetails { get; set; }
-        public virtual DbSet<TerritoryMapping> TerritoryMappings { get; set; }
-        public virtual DbSet<TerritoryStructure> TerritoryStructures { get; set; }
-        public virtual DbSet<TerritoryStructureDetail> TerritoryStructureDetails { get; set; }
-        public virtual DbSet<TerritoryValue> TerritoryValues { get; set; }
-        public virtual DbSet<TpBudget> TpBudgets { get; set; }
-        public virtual DbSet<TpBudgetAdjustment> TpBudgetAdjustments { get; set; }
-        public virtual DbSet<TpBudgetAllotment> TpBudgetAllotments { get; set; }
-        public virtual DbSet<TpBudgetAllotmentAdjustment> TpBudgetAllotmentAdjustments { get; set; }
-        public virtual DbSet<TpBudgetDefine> TpBudgetDefines { get; set; }
-        public virtual DbSet<TpBudgetUsed> TpBudgetUseds { get; set; }
-        public virtual DbSet<TpDiscount> TpDiscounts { get; set; }
-        public virtual DbSet<TpDiscountObjectCustomerAttributeLevel> TpDiscountObjectCustomerAttributeLevels { get; set; }
-        public virtual DbSet<TpDiscountObjectCustomerAttributeValue> TpDiscountObjectCustomerAttributeValues { get; set; }
-        public virtual DbSet<TpDiscountObjectCustomerShipto> TpDiscountObjectCustomerShiptos { get; set; }
-        public virtual DbSet<TpDiscountScopeDsa> TpDiscountScopeDsas { get; set; }
-        public virtual DbSet<TpDiscountScopeTerritory> TpDiscountScopeTerritorys { get; set; }
-        public virtual DbSet<TpDiscountStructureDetail> TpDiscountStructureDetails { get; set; }
-        public virtual DbSet<TpPromotion> TpPromotions { get; set; }
-        public virtual DbSet<TpPromotionDefinitionProductForGift> TpPromotionDefinitionProductForGifts { get; set; }
-        public virtual DbSet<TpPromotionDefinitionProductForSale> TpPromotionDefinitionProductForSales { get; set; }
-        public virtual DbSet<TpPromotionDefinitionStructure> TpPromotionDefinitionStructures { get; set; }
-        public virtual DbSet<TpPromotionObjectCustomerAttributeLevel> TpPromotionObjectCustomerAttributeLevels { get; set; }
-        public virtual DbSet<TpPromotionObjectCustomerAttributeValue> TpPromotionObjectCustomerAttributeValues { get; set; }
-        public virtual DbSet<TpPromotionObjectCustomerShipto> TpPromotionObjectCustomerShiptos { get; set; }
-        public virtual DbSet<TpPromotionScopeDsa> TpPromotionScopeDsas { get; set; }
-        public virtual DbSet<TpPromotionScopeTerritory> TpPromotionScopeTerritorys { get; set; }
-        public virtual DbSet<TpSettlement> TpSettlements { get; set; }
-        public virtual DbSet<TpSettlementDetail> TpSettlementDetails { get; set; }
-        public virtual DbSet<TpSettlementObject> TpSettlementObjects { get; set; }
-        public virtual DbSet<TradePromotion> TradePromotions { get; set; }
-        public virtual DbSet<Uom> Uoms { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserClaim> UserClaims { get; set; }
-        public virtual DbSet<UserLogin> UserLogins { get; set; }
-        public virtual DbSet<UserLoginLog> UserLoginLogs { get; set; }
-        public virtual DbSet<UserPolicy> UserPolicies { get; set; }
-        public virtual DbSet<UserToken> UserTokens { get; set; }
-        public virtual DbSet<UserType> UserTypes { get; set; }
-        public virtual DbSet<Vat> Vats { get; set; }
-        public virtual DbSet<Version> Versions { get; set; }
-        public virtual DbSet<VisitProcessDetail> VisitProcessDetails { get; set; }
-        public virtual DbSet<VisitProcessSetting> VisitProcessSettings { get; set; }
-        public virtual DbSet<VisitStep> VisitSteps { get; set; }
-        public virtual DbSet<VpoRefResult> VpoRefResults { get; set; }
-        public virtual DbSet<VvrefResult> VvrefResults { get; set; }
-        public virtual DbSet<Ward> Wards { get; set; }
-        public virtual DbSet<Warehouse> Warehouses { get; set; }
-        public virtual DbSet<WebNotiMessagese> WebNotiMessageses { get; set; }
-        public virtual DbSet<WinzardFeature> WinzardFeatures { get; set; }
-        public virtual DbSet<WinzardSetting> WinzardSettings { get; set; }
-        public virtual DbSet<WorkingCalendar> WorkingCalendars { get; set; }
-        public virtual DbSet<WorkingCalendarApproval> WorkingCalendarApprovals { get; set; }
-        public virtual DbSet<WorkingCalendarApproveSetting> WorkingCalendarApproveSettings { get; set; }
-        public virtual DbSet<WorkingCalendarCustomer> WorkingCalendarCustomers { get; set; }
-        public virtual DbSet<WorkingCalendarFreeSetupSetting> WorkingCalendarFreeSetupSettings { get; set; }
-        public virtual DbSet<WorkingCalendarJobtitleSetting> WorkingCalendarJobtitleSettings { get; set; }
-        public virtual DbSet<WorkingCalendarOpenWork> WorkingCalendarOpenWorks { get; set; }
-        public virtual DbSet<WorkingCalendarOpenWorkDetail> WorkingCalendarOpenWorkDetails { get; set; }
-        public virtual DbSet<WorkingCalendarRulesSetting> WorkingCalendarRulesSettings { get; set; }
-        public virtual DbSet<WorkingCalendarSessionSetting> WorkingCalendarSessionSettings { get; set; }
-        public virtual DbSet<WorkingCalendarShiftSetting> WorkingCalendarShiftSettings { get; set; }
-        public virtual DbSet<WorkingCalendarTask> WorkingCalendarTasks { get; set; }
-        public virtual DbSet<WorkingCalendarTaskApplySetting> WorkingCalendarTaskApplySettings { get; set; }
-        public virtual DbSet<WorkingCalendarTaskSetting> WorkingCalendarTaskSettings { get; set; }
-        public virtual DbSet<WorkingCalendarTypeSetting> WorkingCalendarTypeSettings { get; set; }
+        public virtual DbSet<Action> Actions { get; set; } = null!;
+        public virtual DbSet<AdjustItemGroupPrice> AdjustItemGroupPrices { get; set; } = null!;
+        public virtual DbSet<AdjustPriceListUoMitemGroup> AdjustPriceListUoMitemGroups { get; set; } = null!;
+        public virtual DbSet<ApiMapping> ApiMappings { get; set; } = null!;
+        public virtual DbSet<Application> Applications { get; set; } = null!;
+        public virtual DbSet<ApplicationAudit> ApplicationAudits { get; set; } = null!;
+        public virtual DbSet<ApplicationInviteCode> ApplicationInviteCodes { get; set; } = null!;
+        public virtual DbSet<ApplicationLanguagePack> ApplicationLanguagePacks { get; set; } = null!;
+        public virtual DbSet<ApplicationLocalization> ApplicationLocalizations { get; set; } = null!;
+        public virtual DbSet<ApplicationLocalizationHistory> ApplicationLocalizationHistories { get; set; } = null!;
+        public virtual DbSet<ApplicationNotiDeviceToken> ApplicationNotiDeviceTokens { get; set; } = null!;
+        public virtual DbSet<ApplicationNotiMessage> ApplicationNotiMessages { get; set; } = null!;
+        public virtual DbSet<ApplicationNotiUrgent> ApplicationNotiUrgents { get; set; } = null!;
+        public virtual DbSet<ApplicationOtpcode> ApplicationOtpcodes { get; set; } = null!;
+        public virtual DbSet<ApplicationService> ApplicationServices { get; set; } = null!;
+        public virtual DbSet<ApplicationThemesConfigure> ApplicationThemesConfigures { get; set; } = null!;
+        public virtual DbSet<ApplicationThemesElement> ApplicationThemesElements { get; set; } = null!;
+        public virtual DbSet<ApplicationThemesSetting> ApplicationThemesSettings { get; set; } = null!;
+        public virtual DbSet<ApplicationThemesSuggestion> ApplicationThemesSuggestions { get; set; } = null!;
+        public virtual DbSet<ApplicationUserMapping> ApplicationUserMappings { get; set; } = null!;
+        public virtual DbSet<ApplicationVersion> ApplicationVersions { get; set; } = null!;
+        public virtual DbSet<ApplicationVersionPrinciple> ApplicationVersionPrinciples { get; set; } = null!;
+        public virtual DbSet<AsoRefResult> AsoRefResults { get; set; } = null!;
+        public virtual DbSet<AuditLog> AuditLogs { get; set; } = null!;
+        public virtual DbSet<AutoKpisTarget> AutoKpisTargets { get; set; } = null!;
+        public virtual DbSet<AutoKpisTargetAchievementsCurrentYear> AutoKpisTargetAchievementsCurrentYears { get; set; } = null!;
+        public virtual DbSet<AutoKpisTargetAchievementsCurrentYearValue> AutoKpisTargetAchievementsCurrentYearValues { get; set; } = null!;
+        public virtual DbSet<AutoKpisTargetBusinessModel> AutoKpisTargetBusinessModels { get; set; } = null!;
+        public virtual DbSet<AutoKpisTargetBusinessModelValue> AutoKpisTargetBusinessModelValues { get; set; } = null!;
+        public virtual DbSet<AutoKpisTargetContributionBySic> AutoKpisTargetContributionBySics { get; set; } = null!;
+        public virtual DbSet<AutoKpisTargetContributionBySicValue> AutoKpisTargetContributionBySicValues { get; set; } = null!;
+        public virtual DbSet<AutoKpisTargetDevelopment> AutoKpisTargetDevelopments { get; set; } = null!;
+        public virtual DbSet<AutoKpisTargetDevelopmentDetail> AutoKpisTargetDevelopmentDetails { get; set; } = null!;
+        public virtual DbSet<BlAuditLog> BlAuditLogs { get; set; } = null!;
+        public virtual DbSet<BlBlprocess> BlBlprocesses { get; set; } = null!;
+        public virtual DbSet<BlBlsettingEmail> BlBlsettingEmails { get; set; } = null!;
+        public virtual DbSet<BlBlsettingInformation> BlBlsettingInformations { get; set; } = null!;
+        public virtual DbSet<BlBlsettingProcess> BlBlsettingProcesses { get; set; } = null!;
+        public virtual DbSet<BlBlsettingProcessPending> BlBlsettingProcessPendings { get; set; } = null!;
+        public virtual DbSet<BlBlsettingTransactionStatus> BlBlsettingTransactionStatuses { get; set; } = null!;
+        public virtual DbSet<BlHistory> BlHistorys { get; set; } = null!;
+        public virtual DbSet<BlRawPo> BlRawPos { get; set; } = null!;
+        public virtual DbSet<BlRawSo> BlRawSos { get; set; } = null!;
+        public virtual DbSet<City> Citys { get; set; } = null!;
+        public virtual DbSet<CleanDataConfigure> CleanDataConfigures { get; set; } = null!;
+        public virtual DbSet<Competitor> Competitors { get; set; } = null!;
+        public virtual DbSet<ConditionstoExcludeSc> ConditionstoExcludeScs { get; set; } = null!;
+        public virtual DbSet<ContactType> ContactTypes { get; set; } = null!;
+        public virtual DbSet<Container> Containers { get; set; } = null!;
+        public virtual DbSet<ContractType> ContractTypes { get; set; } = null!;
+        public virtual DbSet<Country> Countrys { get; set; } = null!;
+        public virtual DbSet<CronJobSchedule> CronJobSchedules { get; set; } = null!;
+        public virtual DbSet<CustomerAdjustment> CustomerAdjustments { get; set; } = null!;
+        public virtual DbSet<CustomerAdjustmentDataType> CustomerAdjustmentDataTypes { get; set; } = null!;
+        public virtual DbSet<CustomerAdjustmentShipto> CustomerAdjustmentShiptos { get; set; } = null!;
+        public virtual DbSet<CustomerApplyToValue> CustomerApplyToValues { get; set; } = null!;
+        public virtual DbSet<CustomerAttribute> CustomerAttributes { get; set; } = null!;
+        public virtual DbSet<CustomerContact> CustomerContacts { get; set; } = null!;
+        public virtual DbSet<CustomerContactEmail> CustomerContactEmails { get; set; } = null!;
+        public virtual DbSet<CustomerContactPhone> CustomerContactPhones { get; set; } = null!;
+        public virtual DbSet<CustomerContract> CustomerContracts { get; set; } = null!;
+        public virtual DbSet<CustomerDmsAttribute> CustomerDmsAttributes { get; set; } = null!;
+        public virtual DbSet<CustomerHierarchy> CustomerHierarchies { get; set; } = null!;
+        public virtual DbSet<CustomerHierarchyMapping> CustomerHierarchyMappings { get; set; } = null!;
+        public virtual DbSet<CustomerInformation> CustomerInformations { get; set; } = null!;
+        public virtual DbSet<CustomerSetting> CustomerSettings { get; set; } = null!;
+        public virtual DbSet<CustomerSettingHierarchy> CustomerSettingHierarchies { get; set; } = null!;
+        public virtual DbSet<CustomerShipto> CustomerShiptos { get; set; } = null!;
+        public virtual DbSet<CustomerShiptoContact> CustomerShiptoContacts { get; set; } = null!;
+        public virtual DbSet<DataLog> DataLogs { get; set; } = null!;
+        public virtual DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
+        public virtual DbSet<DataTypeDefinition> DataTypeDefinitions { get; set; } = null!;
+        public virtual DbSet<DisApproveRegistrationCustomer> DisApproveRegistrationCustomers { get; set; } = null!;
+        public virtual DbSet<DisApproveRegistrationCustomerDetail> DisApproveRegistrationCustomerDetails { get; set; } = null!;
+        public virtual DbSet<DisBudget> DisBudgets { get; set; } = null!;
+        public virtual DbSet<DisBudgetForCusAttribute> DisBudgetForCusAttributes { get; set; } = null!;
+        public virtual DbSet<DisBudgetForScopeDsa> DisBudgetForScopeDsas { get; set; } = null!;
+        public virtual DbSet<DisBudgetForScopeTerritory> DisBudgetForScopeTerritorys { get; set; } = null!;
+        public virtual DbSet<DisBudgetUsed> DisBudgetUseds { get; set; } = null!;
+        public virtual DbSet<DisConfirmResult> DisConfirmResults { get; set; } = null!;
+        public virtual DbSet<DisConfirmResultDetail> DisConfirmResultDetails { get; set; } = null!;
+        public virtual DbSet<DisCriteriaEvaluatePictureDisplay> DisCriteriaEvaluatePictureDisplays { get; set; } = null!;
+        public virtual DbSet<DisCustomerAttributeLevel> DisCustomerAttributeLevels { get; set; } = null!;
+        public virtual DbSet<DisCustomerAttributeValue> DisCustomerAttributeValues { get; set; } = null!;
+        public virtual DbSet<DisCustomerShipto> DisCustomerShiptos { get; set; } = null!;
+        public virtual DbSet<DisCustomerShiptoDetail> DisCustomerShiptoDetails { get; set; } = null!;
+        public virtual DbSet<DisDefinitionCriteriaEvaluate> DisDefinitionCriteriaEvaluates { get; set; } = null!;
+        public virtual DbSet<DisDefinitionGuideImage> DisDefinitionGuideImages { get; set; } = null!;
+        public virtual DbSet<DisDefinitionProductTypeDetail> DisDefinitionProductTypeDetails { get; set; } = null!;
+        public virtual DbSet<DisDefinitionStructure> DisDefinitionStructures { get; set; } = null!;
+        public virtual DbSet<DisDisplay> DisDisplays { get; set; } = null!;
+        public virtual DbSet<DisPayReward> DisPayRewards { get; set; } = null!;
+        public virtual DbSet<DisPayRewardDetail> DisPayRewardDetails { get; set; } = null!;
+        public virtual DbSet<DisScopeDsa> DisScopeDsas { get; set; } = null!;
+        public virtual DbSet<DisScopeTerritory> DisScopeTerritorys { get; set; } = null!;
+        public virtual DbSet<DisSettlement> DisSettlements { get; set; } = null!;
+        public virtual DbSet<DisSettlementDetail> DisSettlementDetails { get; set; } = null!;
+        public virtual DbSet<DisWeightGetExtraRewardsDetail> DisWeightGetExtraRewardsDetails { get; set; } = null!;
+        public virtual DbSet<DistCache> DistCaches { get; set; } = null!;
+        public virtual DbSet<Distributor> Distributors { get; set; } = null!;
+        public virtual DbSet<DistributorContact> DistributorContacts { get; set; } = null!;
+        public virtual DbSet<DistributorContract> DistributorContracts { get; set; } = null!;
+        public virtual DbSet<DistributorHierarchy> DistributorHierarchies { get; set; } = null!;
+        public virtual DbSet<DistributorHierarchyMapping> DistributorHierarchyMappings { get; set; } = null!;
+        public virtual DbSet<DistributorHistorical> DistributorHistoricals { get; set; } = null!;
+        public virtual DbSet<DistributorPriceApplyToOutletAttribute> DistributorPriceApplyToOutletAttributes { get; set; } = null!;
+        public virtual DbSet<DistributorPriceItemGroup> DistributorPriceItemGroups { get; set; } = null!;
+        public virtual DbSet<DistributorPriceVolume> DistributorPriceVolumes { get; set; } = null!;
+        public virtual DbSet<DistributorPriceVolumeLevel> DistributorPriceVolumeLevels { get; set; } = null!;
+        public virtual DbSet<DistributorSellingArea> DistributorSellingAreas { get; set; } = null!;
+        public virtual DbSet<DistributorShipto> DistributorShiptos { get; set; } = null!;
+        public virtual DbSet<District> Districts { get; set; } = null!;
+        public virtual DbSet<DropSizeRefResult> DropSizeRefResults { get; set; } = null!;
+        public virtual DbSet<DsaDelivery> DsaDeliveries { get; set; } = null!;
+        public virtual DbSet<DsaDistributorSellingArea> DsaDistributorSellingAreas { get; set; } = null!;
+        public virtual DbSet<DsaGeographicalMapping> DsaGeographicalMappings { get; set; } = null!;
+        public virtual DbSet<DsaSalesTeamAssignment> DsaSalesTeamAssignments { get; set; } = null!;
+        public virtual DbSet<DsadistributorShipTo> DsadistributorShipTos { get; set; } = null!;
+        public virtual DbSet<Dsageographical> Dsageographicals { get; set; } = null!;
+        public virtual DbSet<DynamicFieldConfigure> DynamicFieldConfigures { get; set; } = null!;
+        public virtual DbSet<EcoLocalization> EcoLocalizations { get; set; } = null!;
+        public virtual DbSet<EmailType> EmailTypes { get; set; } = null!;
+        public virtual DbSet<Feature> Features { get; set; } = null!;
+        public virtual DbSet<GeographicalMapping> GeographicalMappings { get; set; } = null!;
+        public virtual DbSet<GeographicalMaster> GeographicalMasters { get; set; } = null!;
+        public virtual DbSet<GeographicalStructure> GeographicalStructures { get; set; } = null!;
+        public virtual DbSet<InvAdjustmentDetail> InvAdjustmentDetails { get; set; } = null!;
+        public virtual DbSet<InvAdjustmentHeader> InvAdjustmentHeaders { get; set; } = null!;
+        public virtual DbSet<InvAllocationDetail> InvAllocationDetails { get; set; } = null!;
+        public virtual DbSet<InvInventoryTransaction> InvInventoryTransactions { get; set; } = null!;
+        public virtual DbSet<InvLotAvailable> InvLotAvailables { get; set; } = null!;
+        public virtual DbSet<InvReason> InvReasons { get; set; } = null!;
+        public virtual DbSet<InvSellInLotByDate> InvSellInLotByDates { get; set; } = null!;
+        public virtual DbSet<InvSellOutLotByDate> InvSellOutLotByDates { get; set; } = null!;
+        public virtual DbSet<InvWhTransferDetail> InvWhTransferDetails { get; set; } = null!;
+        public virtual DbSet<InvWhTransferHeader> InvWhTransferHeaders { get; set; } = null!;
+        public virtual DbSet<InvWhTransferToEmployeeHeader> InvWhTransferToEmployeeHeaders { get; set; } = null!;
+        public virtual DbSet<InventoryItem> InventoryItems { get; set; } = null!;
+        public virtual DbSet<InventoryKit> InventoryKits { get; set; } = null!;
+        public virtual DbSet<InventoryResult> InventoryResults { get; set; } = null!;
+        public virtual DbSet<ItemAttribute> ItemAttributes { get; set; } = null!;
+        public virtual DbSet<ItemGroup> ItemGroups { get; set; } = null!;
+        public virtual DbSet<ItemHierarchyMapping> ItemHierarchyMappings { get; set; } = null!;
+        public virtual DbSet<ItemHierarchyMappingCompetitor> ItemHierarchyMappingCompetitors { get; set; } = null!;
+        public virtual DbSet<ItemManufacture> ItemManufactures { get; set; } = null!;
+        public virtual DbSet<ItemSetting> ItemSettings { get; set; } = null!;
+        public virtual DbSet<ItemsCompetitor> ItemsCompetitors { get; set; } = null!;
+        public virtual DbSet<ItemsFile> ItemsFiles { get; set; } = null!;
+        public virtual DbSet<ItemsUomconversion> ItemsUomconversions { get; set; } = null!;
+        public virtual DbSet<JobTitle> JobTitles { get; set; } = null!;
+        public virtual DbSet<JobTitleRole> JobTitleRoles { get; set; } = null!;
+        public virtual DbSet<Kit> Kits { get; set; } = null!;
+        public virtual DbSet<KitInventoryItemConversion> KitInventoryItemConversions { get; set; } = null!;
+        public virtual DbSet<KitUomConversion> KitUomConversions { get; set; } = null!;
+        public virtual DbSet<Kpi> Kpis { get; set; } = null!;
+        public virtual DbSet<KpiResult> KpiResults { get; set; } = null!;
+        public virtual DbSet<KpiTargetComplete> KpiTargetCompletes { get; set; } = null!;
+        public virtual DbSet<KpisForObjectRef> KpisForObjectRefs { get; set; } = null!;
+        public virtual DbSet<KpisObject> KpisObjects { get; set; } = null!;
+        public virtual DbSet<KpisSiref> KpisSirefs { get; set; } = null!;
+        public virtual DbSet<KpisTarget> KpisTargets { get; set; } = null!;
+        public virtual DbSet<KpisTargetForObject> KpisTargetForObjects { get; set; } = null!;
+        public virtual DbSet<KpisTargetFrequency> KpisTargetFrequencies { get; set; } = null!;
+        public virtual DbSet<KpisTargetGroupByKpisRepeat> KpisTargetGroupByKpisRepeats { get; set; } = null!;
+        public virtual DbSet<KpisTargetProductList> KpisTargetProductLists { get; set; } = null!;
+        public virtual DbSet<KpisTargetProductListItemCode> KpisTargetProductListItemCodes { get; set; } = null!;
+        public virtual DbSet<KpisTargetProductListKpi> KpisTargetProductListKpis { get; set; } = null!;
+        public virtual DbSet<KpiseasonCoefficient> KpiseasonCoefficients { get; set; } = null!;
+        public virtual DbSet<Kpisetting> Kpisettings { get; set; } = null!;
+        public virtual DbSet<KpivisitFrequency> KpivisitFrequencies { get; set; } = null!;
+        public virtual DbSet<KsApplicapleAssignment> KsApplicapleAssignments { get; set; } = null!;
+        public virtual DbSet<KsCampaign> KsCampaigns { get; set; } = null!;
+        public virtual DbSet<KsResource> KsResources { get; set; } = null!;
+        public virtual DbSet<KsRespondentInfor> KsRespondentInfors { get; set; } = null!;
+        public virtual DbSet<KsScopeAssignment> KsScopeAssignments { get; set; } = null!;
+        public virtual DbSet<KsSurvey> KsSurveys { get; set; } = null!;
+        public virtual DbSet<KsSurveyAnswer> KsSurveyAnswers { get; set; } = null!;
+        public virtual DbSet<KsSurveyQuestion> KsSurveyQuestions { get; set; } = null!;
+        public virtual DbSet<KsSurveyResult> KsSurveyResults { get; set; } = null!;
+        public virtual DbSet<KsSurveyorResource> KsSurveyorResources { get; set; } = null!;
+        public virtual DbSet<Localization> Localizations { get; set; } = null!;
+        public virtual DbSet<LocalizationsBackup> LocalizationsBackups { get; set; } = null!;
+        public virtual DbSet<LppcRefResult> LppcRefResults { get; set; } = null!;
+        public virtual DbSet<Manufacture> Manufactures { get; set; } = null!;
+        public virtual DbSet<Menu> Menus { get; set; } = null!;
+        public virtual DbSet<MobileFeaturesPermission> MobileFeaturesPermissions { get; set; } = null!;
+        public virtual DbSet<MobileUser> MobileUsers { get; set; } = null!;
+        public virtual DbSet<MobileUserApplication> MobileUserApplications { get; set; } = null!;
+        public virtual DbSet<MobileUserDevice> MobileUserDevices { get; set; } = null!;
+        public virtual DbSet<MobileUserEmployee> MobileUserEmployees { get; set; } = null!;
+        public virtual DbSet<MobileUserInfo> MobileUserInfos { get; set; } = null!;
+        public virtual DbSet<MobileUserPrinciple> MobileUserPrinciples { get; set; } = null!;
+        public virtual DbSet<MobileUserPrinciplesHistory> MobileUserPrinciplesHistories { get; set; } = null!;
+        public virtual DbSet<MobileUserSetting> MobileUserSettings { get; set; } = null!;
+        public virtual DbSet<MobileUsersLocked> MobileUsersLockeds { get; set; } = null!;
+        public virtual DbSet<MobileVisitStep> MobileVisitSteps { get; set; } = null!;
+        public virtual DbSet<NotificationTemplate> NotificationTemplates { get; set; } = null!;
+        public virtual DbSet<Package> Packages { get; set; } = null!;
+        public virtual DbSet<PaginationConfig> PaginationConfigs { get; set; } = null!;
+        public virtual DbSet<ParameterWithSiref> ParameterWithSirefs { get; set; } = null!;
+        public virtual DbSet<ParameterWithSitype> ParameterWithSitypes { get; set; } = null!;
+        public virtual DbSet<PcrefResult> PcrefResults { get; set; } = null!;
+        public virtual DbSet<PhoneType> PhoneTypes { get; set; } = null!;
+        public virtual DbSet<PoAllocationSetting> PoAllocationSettings { get; set; } = null!;
+        public virtual DbSet<PoAllocationSettingItemGroup> PoAllocationSettingItemGroups { get; set; } = null!;
+        public virtual DbSet<PoAverageDailySale> PoAverageDailySales { get; set; } = null!;
+        public virtual DbSet<PoDeliveryLeadTime> PoDeliveryLeadTimes { get; set; } = null!;
+        public virtual DbSet<PoGrpodetailItem> PoGrpodetailItems { get; set; } = null!;
+        public virtual DbSet<PoGrpoheader> PoGrpoheaders { get; set; } = null!;
+        public virtual DbSet<PoOrderDetail> PoOrderDetails { get; set; } = null!;
+        public virtual DbSet<PoOrderHeader> PoOrderHeaders { get; set; } = null!;
+        public virtual DbSet<PoPoconfirmDetailItem> PoPoconfirmDetailItems { get; set; } = null!;
+        public virtual DbSet<PoPoconfirmHeader> PoPoconfirmHeaders { get; set; } = null!;
+        public virtual DbSet<PoPurchaseScheduleDetail> PoPurchaseScheduleDetails { get; set; } = null!;
+        public virtual DbSet<PoReturnDetailItem> PoReturnDetailItems { get; set; } = null!;
+        public virtual DbSet<PoReturnHeader> PoReturnHeaders { get; set; } = null!;
+        public virtual DbSet<PoRpoparameter> PoRpoparameters { get; set; } = null!;
+        public virtual DbSet<PoStockKeepingDay> PoStockKeepingDays { get; set; } = null!;
+        public virtual DbSet<PoStockKeepingDayItemHierarchy> PoStockKeepingDayItemHierarchies { get; set; } = null!;
+        public virtual DbSet<Policy> Policies { get; set; } = null!;
+        public virtual DbSet<PolicyAccessReport> PolicyAccessReports { get; set; } = null!;
+        public virtual DbSet<PolicyApplyFor> PolicyApplyFors { get; set; } = null!;
+        public virtual DbSet<PolicyGeneralInformation> PolicyGeneralInformations { get; set; } = null!;
+        public virtual DbSet<PolicyResource> PolicyResources { get; set; } = null!;
+        public virtual DbSet<PolicyTerritoryLevel> PolicyTerritoryLevels { get; set; } = null!;
+        public virtual DbSet<PriceDefinitionDistributor> PriceDefinitionDistributors { get; set; } = null!;
+        public virtual DbSet<PriceList> PriceLists { get; set; } = null!;
+        public virtual DbSet<PriceListDistributeSellingArea> PriceListDistributeSellingAreas { get; set; } = null!;
+        public virtual DbSet<PriceListItemGroup> PriceListItemGroups { get; set; } = null!;
+        public virtual DbSet<PriceListOutletAttributeValue> PriceListOutletAttributeValues { get; set; } = null!;
+        public virtual DbSet<PriceListSalesTerritoryLevel> PriceListSalesTerritoryLevels { get; set; } = null!;
+        public virtual DbSet<PriceListType> PriceListTypes { get; set; } = null!;
+        public virtual DbSet<PriceListTypeAttributeList> PriceListTypeAttributeLists { get; set; } = null!;
+        public virtual DbSet<PriceSetting> PriceSettings { get; set; } = null!;
+        public virtual DbSet<PriceSettingAuditLog> PriceSettingAuditLogs { get; set; } = null!;
+        public virtual DbSet<PrimarySic> PrimarySics { get; set; } = null!;
+        public virtual DbSet<PrimarySicExcludeHierarchyDetail> PrimarySicExcludeHierarchyDetails { get; set; } = null!;
+        public virtual DbSet<PrimarySicExcludeItemGroupDetail> PrimarySicExcludeItemGroupDetails { get; set; } = null!;
+        public virtual DbSet<PrimarySicIncludeDetail> PrimarySicIncludeDetails { get; set; } = null!;
+        public virtual DbSet<Principal> Principals { get; set; } = null!;
+        public virtual DbSet<PrincipalEmpContract> PrincipalEmpContracts { get; set; } = null!;
+        public virtual DbSet<PrincipalProfile> PrincipalProfiles { get; set; } = null!;
+        public virtual DbSet<PrincipalPullDataQueue> PrincipalPullDataQueues { get; set; } = null!;
+        public virtual DbSet<PrincipalSetting> PrincipalSettings { get; set; } = null!;
+        public virtual DbSet<PrincipalWarehouse> PrincipalWarehouses { get; set; } = null!;
+        public virtual DbSet<PrincipalWarehouseLocation> PrincipalWarehouseLocations { get; set; } = null!;
+        public virtual DbSet<PrincipalWinzardSetup> PrincipalWinzardSetups { get; set; } = null!;
+        public virtual DbSet<PrincipleEmployee> PrincipleEmployees { get; set; } = null!;
+        public virtual DbSet<PriorityPriceListType> PriorityPriceListTypes { get; set; } = null!;
+        public virtual DbSet<ProductList> ProductLists { get; set; } = null!;
+        public virtual DbSet<ProductListItemCode> ProductListItemCodes { get; set; } = null!;
+        public virtual DbSet<Province> Provinces { get; set; } = null!;
+        public virtual DbSet<PurchaseBasePrice> PurchaseBasePrices { get; set; } = null!;
+        public virtual DbSet<PurchasePriceItemGroup> PurchasePriceItemGroups { get; set; } = null!;
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+        public virtual DbSet<RefreshTokenModel> RefreshTokenModels { get; set; } = null!;
+        public virtual DbSet<Region> Regions { get; set; } = null!;
+        public virtual DbSet<RegistrationQueue> RegistrationQueues { get; set; } = null!;
+        public virtual DbSet<Role> Roles { get; set; } = null!;
+        public virtual DbSet<RoleClaim> RoleClaims { get; set; } = null!;
+        public virtual DbSet<RzBeatPlan> RzBeatPlans { get; set; } = null!;
+        public virtual DbSet<RzBeatPlanEmployee> RzBeatPlanEmployees { get; set; } = null!;
+        public virtual DbSet<RzBeatPlanShipto> RzBeatPlanShiptos { get; set; } = null!;
+        public virtual DbSet<RzLocation> RzLocations { get; set; } = null!;
+        public virtual DbSet<RzParameterLevelApply> RzParameterLevelApplies { get; set; } = null!;
+        public virtual DbSet<RzParameterSetting> RzParameterSettings { get; set; } = null!;
+        public virtual DbSet<RzParameterType> RzParameterTypes { get; set; } = null!;
+        public virtual DbSet<RzParameterValue> RzParameterValues { get; set; } = null!;
+        public virtual DbSet<RzRouteZoneInfomation> RzRouteZoneInfomations { get; set; } = null!;
+        public virtual DbSet<RzRouteZoneParameter> RzRouteZoneParameters { get; set; } = null!;
+        public virtual DbSet<RzRouteZoneShipto> RzRouteZoneShiptos { get; set; } = null!;
+        public virtual DbSet<RzRouteZoneType> RzRouteZoneTypes { get; set; } = null!;
+        public virtual DbSet<RzVisitFrequency> RzVisitFrequencies { get; set; } = null!;
+        public virtual DbSet<SaUserWithDistributorShipto> SaUserWithDistributorShiptos { get; set; } = null!;
+        public virtual DbSet<SaleCalendar> SaleCalendars { get; set; } = null!;
+        public virtual DbSet<SaleCalendarActionHistory> SaleCalendarActionHistories { get; set; } = null!;
+        public virtual DbSet<SaleCalendarGenerate> SaleCalendarGenerates { get; set; } = null!;
+        public virtual DbSet<SaleCalendarHoliday> SaleCalendarHolidays { get; set; } = null!;
+        public virtual DbSet<SaleGroup> SaleGroups { get; set; } = null!;
+        public virtual DbSet<SaleProcessDetail> SaleProcessDetails { get; set; } = null!;
+        public virtual DbSet<SaleProcessSetting> SaleProcessSettings { get; set; } = null!;
+        public virtual DbSet<SalesBasePrice> SalesBasePrices { get; set; } = null!;
+        public virtual DbSet<SalesIndicatorRef> SalesIndicatorRefs { get; set; } = null!;
+        public virtual DbSet<SalesIndicatorType> SalesIndicatorTypes { get; set; } = null!;
+        public virtual DbSet<SalesOganization> SalesOganizations { get; set; } = null!;
+        public virtual DbSet<SalesPriceItemGroup> SalesPriceItemGroups { get; set; } = null!;
+        public virtual DbSet<SalesPriceItemGroupReference> SalesPriceItemGroupReferences { get; set; } = null!;
+        public virtual DbSet<ScAuditlogReconcile> ScAuditlogReconciles { get; set; } = null!;
+        public virtual DbSet<ScSalesOrganizationStructure> ScSalesOrganizationStructures { get; set; } = null!;
+        public virtual DbSet<ScSalesTeamAssignment> ScSalesTeamAssignments { get; set; } = null!;
+        public virtual DbSet<ScTerritoryLevel> ScTerritoryLevels { get; set; } = null!;
+        public virtual DbSet<ScTerritoryMapping> ScTerritoryMappings { get; set; } = null!;
+        public virtual DbSet<ScTerritoryStructure> ScTerritoryStructures { get; set; } = null!;
+        public virtual DbSet<ScTerritoryStructureDetail> ScTerritoryStructureDetails { get; set; } = null!;
+        public virtual DbSet<ScTerritoryStructureGeographicalMapping> ScTerritoryStructureGeographicalMappings { get; set; } = null!;
+        public virtual DbSet<ScTerritoryValue> ScTerritoryValues { get; set; } = null!;
+        public virtual DbSet<ScrefResult> ScrefResults { get; set; } = null!;
+        public virtual DbSet<SdoResult> SdoResults { get; set; } = null!;
+        public virtual DbSet<Sdoconfig> Sdoconfigs { get; set; } = null!;
+        public virtual DbSet<SdoconfigSalesOrder> SdoconfigSalesOrders { get; set; } = null!;
+        public virtual DbSet<Service> Services { get; set; } = null!;
+        public virtual DbSet<ServiceDetail> ServiceDetails { get; set; } = null!;
+        public virtual DbSet<ShiptoContact> ShiptoContacts { get; set; } = null!;
+        public virtual DbSet<ShiptoHistorical> ShiptoHistoricals { get; set; } = null!;
+        public virtual DbSet<SivRefResult> SivRefResults { get; set; } = null!;
+        public virtual DbSet<SkurefResult> SkurefResults { get; set; } = null!;
+        public virtual DbSet<SoFirstTimeCustomer> SoFirstTimeCustomers { get; set; } = null!;
+        public virtual DbSet<SoOrderInformation> SoOrderInformations { get; set; } = null!;
+        public virtual DbSet<SoOrderItem> SoOrderItems { get; set; } = null!;
+        public virtual DbSet<SoReason> SoReasons { get; set; } = null!;
+        public virtual DbSet<SoSumPickingListDetail> SoSumPickingListDetails { get; set; } = null!;
+        public virtual DbSet<SoSumPickingListHeader> SoSumPickingListHeaders { get; set; } = null!;
+        public virtual DbSet<SovRefResult> SovRefResults { get; set; } = null!;
+        public virtual DbSet<StagingAccessReport> StagingAccessReports { get; set; } = null!;
+        public virtual DbSet<StagingSyncDataHistory> StagingSyncDataHistories { get; set; } = null!;
+        public virtual DbSet<StagingSyncDataType> StagingSyncDataTypes { get; set; } = null!;
+        public virtual DbSet<StagingSyncRefDataType> StagingSyncRefDataTypes { get; set; } = null!;
+        public virtual DbSet<Standard> Standards { get; set; } = null!;
+        public virtual DbSet<StandardItem> StandardItems { get; set; } = null!;
+        public virtual DbSet<State> States { get; set; } = null!;
+        public virtual DbSet<SystemLog> SystemLogs { get; set; } = null!;
+        public virtual DbSet<SystemSetting> SystemSettings { get; set; } = null!;
+        public virtual DbSet<TargetKpi> TargetKpis { get; set; } = null!;
+        public virtual DbSet<TargetSaleCalendar> TargetSaleCalendars { get; set; } = null!;
+        public virtual DbSet<TempBaselineDataBusinessModel> TempBaselineDataBusinessModels { get; set; } = null!;
+        public virtual DbSet<TempBaselineDataConditionExclude> TempBaselineDataConditionExcludes { get; set; } = null!;
+        public virtual DbSet<TempBaselineDataOrder> TempBaselineDataOrders { get; set; } = null!;
+        public virtual DbSet<TempBaselineDataOrderDetail> TempBaselineDataOrderDetails { get; set; } = null!;
+        public virtual DbSet<TempBaselineDataPurchaseOrder> TempBaselineDataPurchaseOrders { get; set; } = null!;
+        public virtual DbSet<TempBaselineDataPurchaseOrderDetail> TempBaselineDataPurchaseOrderDetails { get; set; } = null!;
+        public virtual DbSet<TempBaselineDataVisit> TempBaselineDataVisits { get; set; } = null!;
+        public virtual DbSet<TempBaselineDataVisitStepResult> TempBaselineDataVisitStepResults { get; set; } = null!;
+        public virtual DbSet<TempBaselineDetailRequestPo> TempBaselineDetailRequestPos { get; set; } = null!;
+        public virtual DbSet<TempBaselineHeaderRequestPo> TempBaselineHeaderRequestPos { get; set; } = null!;
+        public virtual DbSet<TempBeatPlan> TempBeatPlans { get; set; } = null!;
+        public virtual DbSet<TempBeatPlanDetail> TempBeatPlanDetails { get; set; } = null!;
+        public virtual DbSet<TempCheckInventoryVisit> TempCheckInventoryVisits { get; set; } = null!;
+        public virtual DbSet<TempDisApproveRegistrationCustomer> TempDisApproveRegistrationCustomers { get; set; } = null!;
+        public virtual DbSet<TempDisConfirmResultDetail> TempDisConfirmResultDetails { get; set; } = null!;
+        public virtual DbSet<TempDisCustomerShiptoNotHafe> TempDisCustomerShiptoNotHaves { get; set; } = null!;
+        public virtual DbSet<TempDisCustomerShiptoSaleOrQuantity> TempDisCustomerShiptoSaleOrQuantitys { get; set; } = null!;
+        public virtual DbSet<TempDisDisplaySupportTool> TempDisDisplaySupportTools { get; set; } = null!;
+        public virtual DbSet<TempDisOrderDetail> TempDisOrderDetails { get; set; } = null!;
+        public virtual DbSet<TempDisOrderHeader> TempDisOrderHeaders { get; set; } = null!;
+        public virtual DbSet<TempDisPosmForCustomerShipto> TempDisPosmForCustomerShiptos { get; set; } = null!;
+        public virtual DbSet<TempEvaluationPhotoVisit> TempEvaluationPhotoVisits { get; set; } = null!;
+        public virtual DbSet<TempInventoryItemInfor> TempInventoryItemInfors { get; set; } = null!;
+        public virtual DbSet<TempInvreport> TempInvreports { get; set; } = null!;
+        public virtual DbSet<TempInvreportLot> TempInvreportLots { get; set; } = null!;
+        public virtual DbSet<TempKpidistributor> TempKpidistributors { get; set; } = null!;
+        public virtual DbSet<TempKpiemployee> TempKpiemployees { get; set; } = null!;
+        public virtual DbSet<TempKpisellIn> TempKpisellIns { get; set; } = null!;
+        public virtual DbSet<TempParameterWithSitype> TempParameterWithSitypes { get; set; } = null!;
+        public virtual DbSet<TempPoKpi> TempPoKpis { get; set; } = null!;
+        public virtual DbSet<TempProgram> TempPrograms { get; set; } = null!;
+        public virtual DbSet<TempProgramCustomer> TempProgramCustomers { get; set; } = null!;
+        public virtual DbSet<TempProgramCustomerDetailsItem> TempProgramCustomerDetailsItems { get; set; } = null!;
+        public virtual DbSet<TempProgramCustomerItemsGroup> TempProgramCustomerItemsGroups { get; set; } = null!;
+        public virtual DbSet<TempProgramCustomersDetail> TempProgramCustomersDetails { get; set; } = null!;
+        public virtual DbSet<TempProgramDetailReward> TempProgramDetailRewards { get; set; } = null!;
+        public virtual DbSet<TempProgramDetailsItemsGroup> TempProgramDetailsItemsGroups { get; set; } = null!;
+        public virtual DbSet<TempProgramsDetail> TempProgramsDetails { get; set; } = null!;
+        public virtual DbSet<TempPromotionOrderRefNumber> TempPromotionOrderRefNumbers { get; set; } = null!;
+        public virtual DbSet<TempRoundingRule> TempRoundingRules { get; set; } = null!;
+        public virtual DbSet<TempRouteZone> TempRouteZones { get; set; } = null!;
+        public virtual DbSet<TempSalesIndicatorType> TempSalesIndicatorTypes { get; set; } = null!;
+        public virtual DbSet<TempTpOrderDetail> TempTpOrderDetails { get; set; } = null!;
+        public virtual DbSet<TempTpOrderHeader> TempTpOrderHeaders { get; set; } = null!;
+        public virtual DbSet<TempVisitStep> TempVisitSteps { get; set; } = null!;
+        public virtual DbSet<TempVisitStepsDefaultResult> TempVisitStepsDefaultResults { get; set; } = null!;
+        public virtual DbSet<TempVisitStepsReasonResult> TempVisitStepsReasonResults { get; set; } = null!;
+        public virtual DbSet<TemporarySic> TemporarySics { get; set; } = null!;
+        public virtual DbSet<TemporarySicItemGroupDetail> TemporarySicItemGroupDetails { get; set; } = null!;
+        public virtual DbSet<TemporarySicKitDetail> TemporarySicKitDetails { get; set; } = null!;
+        public virtual DbSet<TerritoryMapping> TerritoryMappings { get; set; } = null!;
+        public virtual DbSet<TerritoryStructure> TerritoryStructures { get; set; } = null!;
+        public virtual DbSet<TerritoryStructureDetail> TerritoryStructureDetails { get; set; } = null!;
+        public virtual DbSet<TerritoryValue> TerritoryValues { get; set; } = null!;
+        public virtual DbSet<TpBudget> TpBudgets { get; set; } = null!;
+        public virtual DbSet<TpBudgetAdjustment> TpBudgetAdjustments { get; set; } = null!;
+        public virtual DbSet<TpBudgetAllotment> TpBudgetAllotments { get; set; } = null!;
+        public virtual DbSet<TpBudgetAllotmentAdjustment> TpBudgetAllotmentAdjustments { get; set; } = null!;
+        public virtual DbSet<TpBudgetDefine> TpBudgetDefines { get; set; } = null!;
+        public virtual DbSet<TpBudgetUsed> TpBudgetUseds { get; set; } = null!;
+        public virtual DbSet<TpDiscount> TpDiscounts { get; set; } = null!;
+        public virtual DbSet<TpDiscountObjectCustomerAttributeLevel> TpDiscountObjectCustomerAttributeLevels { get; set; } = null!;
+        public virtual DbSet<TpDiscountObjectCustomerAttributeValue> TpDiscountObjectCustomerAttributeValues { get; set; } = null!;
+        public virtual DbSet<TpDiscountObjectCustomerShipto> TpDiscountObjectCustomerShiptos { get; set; } = null!;
+        public virtual DbSet<TpDiscountScopeDsa> TpDiscountScopeDsas { get; set; } = null!;
+        public virtual DbSet<TpDiscountScopeTerritory> TpDiscountScopeTerritorys { get; set; } = null!;
+        public virtual DbSet<TpDiscountStructureDetail> TpDiscountStructureDetails { get; set; } = null!;
+        public virtual DbSet<TpPromotion> TpPromotions { get; set; } = null!;
+        public virtual DbSet<TpPromotionDefinitionProductForGift> TpPromotionDefinitionProductForGifts { get; set; } = null!;
+        public virtual DbSet<TpPromotionDefinitionProductForSale> TpPromotionDefinitionProductForSales { get; set; } = null!;
+        public virtual DbSet<TpPromotionDefinitionStructure> TpPromotionDefinitionStructures { get; set; } = null!;
+        public virtual DbSet<TpPromotionObjectCustomerAttributeLevel> TpPromotionObjectCustomerAttributeLevels { get; set; } = null!;
+        public virtual DbSet<TpPromotionObjectCustomerAttributeValue> TpPromotionObjectCustomerAttributeValues { get; set; } = null!;
+        public virtual DbSet<TpPromotionObjectCustomerShipto> TpPromotionObjectCustomerShiptos { get; set; } = null!;
+        public virtual DbSet<TpPromotionScopeDsa> TpPromotionScopeDsas { get; set; } = null!;
+        public virtual DbSet<TpPromotionScopeTerritory> TpPromotionScopeTerritorys { get; set; } = null!;
+        public virtual DbSet<TpSettlement> TpSettlements { get; set; } = null!;
+        public virtual DbSet<TpSettlementDetail> TpSettlementDetails { get; set; } = null!;
+        public virtual DbSet<TpSettlementObject> TpSettlementObjects { get; set; } = null!;
+        public virtual DbSet<TradePromotion> TradePromotions { get; set; } = null!;
+        public virtual DbSet<Uom> Uoms { get; set; } = null!;
+        public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserClaim> UserClaims { get; set; } = null!;
+        public virtual DbSet<UserLogin> UserLogins { get; set; } = null!;
+        public virtual DbSet<UserLoginLog> UserLoginLogs { get; set; } = null!;
+        public virtual DbSet<UserPolicy> UserPolicies { get; set; } = null!;
+        public virtual DbSet<UserToken> UserTokens { get; set; } = null!;
+        public virtual DbSet<UserType> UserTypes { get; set; } = null!;
+        public virtual DbSet<Vat> Vats { get; set; } = null!;
+        public virtual DbSet<Version> Versions { get; set; } = null!;
+        public virtual DbSet<VisitProcessDetail> VisitProcessDetails { get; set; } = null!;
+        public virtual DbSet<VisitProcessSetting> VisitProcessSettings { get; set; } = null!;
+        public virtual DbSet<VisitStep> VisitSteps { get; set; } = null!;
+        public virtual DbSet<VpoRefResult> VpoRefResults { get; set; } = null!;
+        public virtual DbSet<VvrefResult> VvrefResults { get; set; } = null!;
+        public virtual DbSet<Ward> Wards { get; set; } = null!;
+        public virtual DbSet<Warehouse> Warehouses { get; set; } = null!;
+        public virtual DbSet<WebNotiMessagese> WebNotiMessageses { get; set; } = null!;
+        public virtual DbSet<WinzardFeature> WinzardFeatures { get; set; } = null!;
+        public virtual DbSet<WinzardSetting> WinzardSettings { get; set; } = null!;
+        public virtual DbSet<WorkingCalendar> WorkingCalendars { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarApproval> WorkingCalendarApprovals { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarApproveSetting> WorkingCalendarApproveSettings { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarCustomer> WorkingCalendarCustomers { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarFreeSetupSetting> WorkingCalendarFreeSetupSettings { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarJobtitleSetting> WorkingCalendarJobtitleSettings { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarOpenWork> WorkingCalendarOpenWorks { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarOpenWorkDetail> WorkingCalendarOpenWorkDetails { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarRulesSetting> WorkingCalendarRulesSettings { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarSessionSetting> WorkingCalendarSessionSettings { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarShiftSetting> WorkingCalendarShiftSettings { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarTask> WorkingCalendarTasks { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarTaskApplySetting> WorkingCalendarTaskApplySettings { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarTaskSetting> WorkingCalendarTaskSettings { get; set; } = null!;
+        public virtual DbSet<WorkingCalendarTypeSetting> WorkingCalendarTypeSettings { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1161,9 +1161,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
@@ -1173,9 +1171,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.FinishTime).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.ProcessCode)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.ProcessCode).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             });
@@ -1193,13 +1189,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.Description).HasMaxLength(255);
 
                 entity.Property(e => e.LinkApi)
-                    .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnName("LinkAPI");
 
-                entity.Property(e => e.ProcessCode)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.ProcessCode).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(250);
 
@@ -1212,9 +1205,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
 
                 entity.Property(e => e.Cc).HasMaxLength(255);
 
@@ -1249,9 +1240,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.ProcessTime).HasMaxLength(50);
 
-                entity.Property(e => e.SettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.SettingRef).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(250);
 
@@ -1264,17 +1253,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(250);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.ProcessCode)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.ProcessCode).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(250);
 
@@ -1287,9 +1272,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(250);
 
@@ -1312,9 +1295,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(25);
+                entity.Property(e => e.Code).HasMaxLength(25);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(250);
 
@@ -1335,9 +1316,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(250);
 
@@ -1366,9 +1345,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
 
                 entity.Property(e => e.Channels).HasMaxLength(255);
 
@@ -1438,10 +1415,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.DistributorShipToFullName).HasMaxLength(255);
 
-                entity.Property(e => e.DistributorShipToLattitue).HasMaxLength(255);
-
-                entity.Property(e => e.DistributorShipToLongtiue).HasMaxLength(255);
-
                 entity.Property(e => e.DistributorShipToProvincesDesc).HasMaxLength(255);
 
                 entity.Property(e => e.DistributorShipToProvincesId).HasMaxLength(100);
@@ -1493,7 +1466,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasColumnName("GRPODate");
 
                 entity.Property(e => e.Grponumber)
-                    .IsRequired()
                     .HasMaxLength(50)
                     .HasColumnName("GRPONumber");
 
@@ -1626,7 +1598,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasColumnName("POConfirmDescription");
 
                 entity.Property(e => e.PoconfirmNumber)
-                    .IsRequired()
                     .HasMaxLength(50)
                     .HasColumnName("POConfirmNumber");
 
@@ -1648,9 +1619,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.PromotionShortName).HasMaxLength(255);
 
-                entity.Property(e => e.PurchaseOrderNumber)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.PurchaseOrderNumber).HasMaxLength(50);
 
                 entity.Property(e => e.ReceiptBaseUom)
                     .HasMaxLength(50)
@@ -1703,9 +1672,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.BaselineSettingRef)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
 
                 entity.Property(e => e.BranchId).HasMaxLength(100);
 
@@ -2300,17 +2267,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CompetitorCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CompetitorCode).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(80);
+                entity.Property(e => e.Description).HasMaxLength(80);
 
                 entity.Property(e => e.EffectiveDateFrom).HasColumnType("timestamp without time zone");
 
@@ -2351,11 +2314,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.DeletedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.IpAddress)
-                    .IsRequired()
-                    .HasMaxLength(36);
-
-                entity.Property(e => e.Key).IsRequired();
+                entity.Property(e => e.IpAddress).HasMaxLength(36);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -2537,27 +2496,19 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.AttributeMaster)
-                    .IsRequired()
-                    .HasMaxLength(30);
+                entity.Property(e => e.AttributeMaster).HasMaxLength(30);
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(2);
+                entity.Property(e => e.Code).HasMaxLength(2);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(80);
+                entity.Property(e => e.Description).HasMaxLength(80);
 
                 entity.Property(e => e.EffectiveDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.ShortName)
-                    .IsRequired()
-                    .HasMaxLength(40);
+                entity.Property(e => e.ShortName).HasMaxLength(40);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -2807,21 +2758,16 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.AttributeId)
-                    .IsRequired()
                     .HasMaxLength(5)
                     .HasColumnName("AttributeID");
 
-                entity.Property(e => e.AttributeName)
-                    .IsRequired()
-                    .HasMaxLength(30);
+                entity.Property(e => e.AttributeName).HasMaxLength(30);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(40);
+                entity.Property(e => e.Description).HasMaxLength(40);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -2918,10 +2864,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.HasIndex(e => e.FriendlyName, "DataProtectionKeys_FriendlyName_key")
                     .IsUnique();
-
-                entity.Property(e => e.FriendlyName).IsRequired();
-
-                entity.Property(e => e.Xml).IsRequired();
             });
 
             modelBuilder.Entity<DataTypeDefinition>(entity =>
@@ -2945,34 +2887,22 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.AdditionalRegistrationDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
             });
 
             modelBuilder.Entity<DisApproveRegistrationCustomerDetail>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CustomerCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerCode).HasMaxLength(10);
 
-                entity.Property(e => e.CustomerName)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.CustomerName).HasMaxLength(255);
 
-                entity.Property(e => e.CustomerShipToCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerShipToCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayLevel)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayLevel).HasMaxLength(10);
 
                 entity.Property(e => e.RejectDate).HasColumnType("timestamp without time zone");
 
@@ -2984,9 +2914,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.RejectFolderType).HasMaxLength(50);
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
             });
 
             modelBuilder.Entity<DisBudget>(entity =>
@@ -3011,13 +2939,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayLevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayLevelCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3034,21 +2958,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CustomerLevel)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerLevel).HasMaxLength(10);
 
-                entity.Property(e => e.CustomerValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerValue).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayLevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayLevelCode).HasMaxLength(10);
 
                 entity.Property(e => e.ScopeValue).HasMaxLength(10);
 
@@ -3067,17 +2983,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayLevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayLevelCode).HasMaxLength(10);
 
-                entity.Property(e => e.ScopeValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ScopeValue).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3094,17 +3004,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayLevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayLevelCode).HasMaxLength(10);
 
-                entity.Property(e => e.ScopeValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ScopeValue).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3122,29 +3026,19 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.Description).HasMaxLength(255);
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.SalesCalendarCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SalesCalendarCode).HasMaxLength(10);
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3159,21 +3053,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CustomerCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerCode).HasMaxLength(10);
 
-                entity.Property(e => e.CustomerShiptoCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerShiptoCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisConfirmResultCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisConfirmResultCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayLevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayLevelCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3184,25 +3070,17 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CriteriaDescription)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.CriteriaDescription).HasMaxLength(255);
 
-                entity.Property(e => e.Result)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Result).HasMaxLength(10);
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3217,13 +3095,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CustomerAttributerLevel)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerAttributerLevel).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3238,17 +3112,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CustomerAttributerLevel)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerAttributerLevel).HasMaxLength(10);
 
-                entity.Property(e => e.CustomerAttributerValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerAttributerValue).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3263,21 +3131,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayLevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayLevelCode).HasMaxLength(10);
 
                 entity.Property(e => e.TotalSalePointWithPosm).HasColumnName("TotalSalePointWithPOSM");
 
                 entity.Property(e => e.TotalSalePointWithoutPosm).HasColumnName("TotalSalePointWithoutPOSM");
 
-                entity.Property(e => e.TypeSalePoint)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.TypeSalePoint).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3298,25 +3160,17 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CustomerCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerCode).HasMaxLength(10);
 
                 entity.Property(e => e.CustomerName).HasMaxLength(200);
 
-                entity.Property(e => e.CustomerShiptoCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerShiptoCode).HasMaxLength(10);
 
                 entity.Property(e => e.CustomerShiptoName).HasMaxLength(200);
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayLevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayLevelCode).HasMaxLength(10);
 
                 entity.Property(e => e.DsaCode).HasMaxLength(10);
 
@@ -3345,17 +3199,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CriteriaCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CriteriaCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.LevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.LevelCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3366,9 +3214,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
@@ -3376,9 +3222,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Description).HasMaxLength(1000);
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
                 entity.Property(e => e.ImageFileExt).HasMaxLength(50);
 
@@ -3388,17 +3232,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.ImagePath).HasMaxLength(1000);
 
-                entity.Property(e => e.LevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.LevelCode).HasMaxLength(10);
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(200);
+                entity.Property(e => e.Name).HasMaxLength(200);
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3413,25 +3251,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.LevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.LevelCode).HasMaxLength(10);
 
-                entity.Property(e => e.Packing)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Packing).HasMaxLength(10);
 
-                entity.Property(e => e.ProductCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ProductCode).HasMaxLength(10);
 
-                entity.Property(e => e.ProductType)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ProductType).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3450,11 +3278,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
-
-                entity.Property(e => e.DisplaySupportToolCode).IsRequired();
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
                 entity.Property(e => e.ImagesRegisterFileExt).HasMaxLength(50);
 
@@ -3466,19 +3290,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.IsImagesOk).HasColumnName("IsImagesOK");
 
-                entity.Property(e => e.LevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.LevelCode).HasMaxLength(10);
 
-                entity.Property(e => e.LevelName)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.LevelName).HasMaxLength(255);
 
                 entity.Property(e => e.PercentImagesOk).HasColumnName("PercentImagesOK");
 
-                entity.Property(e => e.ProductTypeForDisplay)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ProductTypeForDisplay).HasMaxLength(10);
 
                 entity.Property(e => e.RewardProductType).HasMaxLength(10);
 
@@ -3497,9 +3315,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.ApplicableObjectType).HasMaxLength(200);
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
@@ -3513,13 +3329,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.FolderTypeReasonCloseProgram).HasMaxLength(50);
 
-                entity.Property(e => e.FrequencyDisplay)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.FrequencyDisplay).HasMaxLength(10);
 
-                entity.Property(e => e.FullName)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.FullName).HasMaxLength(255);
 
                 entity.Property(e => e.Image1FileExt).HasMaxLength(50);
 
@@ -3565,29 +3377,19 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.RegistrationStartDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.SaleOrg)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SaleOrg).HasMaxLength(10);
 
                 entity.Property(e => e.ScopeSaleTerritoryLevel).HasMaxLength(200);
 
                 entity.Property(e => e.ScopeType).HasMaxLength(200);
 
-                entity.Property(e => e.ShortName)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.ShortName).HasMaxLength(100);
 
-                entity.Property(e => e.SicCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SicCode).HasMaxLength(10);
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
-                entity.Property(e => e.TerritoryStructureCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.TerritoryStructureCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3598,12 +3400,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.ConfirmResultDisplayCode)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
@@ -3611,23 +3410,17 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
                 entity.Property(e => e.EndDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.Name).HasMaxLength(255);
 
                 entity.Property(e => e.StartDate)
                     .HasColumnType("timestamp without time zone")
                     .HasDefaultValueSql("'0001-01-01 00:00:00'::timestamp without time zone");
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3643,22 +3436,18 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.CustomerCode)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
                 entity.Property(e => e.CustomerShiptoCode)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
                 entity.Property(e => e.DisPayRewardCode)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
                 entity.Property(e => e.DisplayLevelCode)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
@@ -3668,9 +3457,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.ProductType).HasMaxLength(10);
 
-                entity.Property(e => e.RewardType)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.RewardType).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3685,18 +3472,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
                 entity.Property(e => e.SaleOrg)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
-                entity.Property(e => e.ScopeDsaValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ScopeDsaValue).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3711,27 +3493,19 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
                 entity.Property(e => e.SaleOrg)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
                 entity.Property(e => e.SaleTerritoryLevel)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
-                entity.Property(e => e.SalesTerritoryValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SalesTerritoryValue).HasMaxLength(10);
 
-                entity.Property(e => e.TerritoryStructureCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.TerritoryStructureCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3742,37 +3516,27 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
                 entity.Property(e => e.EndDate)
                     .HasColumnType("timestamp without time zone")
                     .HasDefaultValueSql("'0001-01-01 00:00:00'::timestamp without time zone");
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.Name).HasMaxLength(255);
 
-                entity.Property(e => e.RewardPeriodCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.RewardPeriodCode).HasMaxLength(10);
 
                 entity.Property(e => e.StartDate)
                     .HasColumnType("timestamp without time zone")
                     .HasDefaultValueSql("'0001-01-01 00:00:00'::timestamp without time zone");
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -3789,13 +3553,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CustomerId).HasMaxLength(10);
 
-                entity.Property(e => e.DisSettlementCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisSettlementCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
                 entity.Property(e => e.DisplayLevel).HasMaxLength(10);
 
@@ -3805,9 +3565,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasColumnType("timestamp without time zone")
                     .HasDefaultValueSql("'0001-01-01 00:00:00'::timestamp without time zone");
 
-                entity.Property(e => e.OrdNbr)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.OrdNbr).HasMaxLength(10);
 
                 entity.Property(e => e.PackageCode).HasMaxLength(10);
 
@@ -3830,33 +3588,25 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.LevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.LevelCode).HasMaxLength(10);
 
                 entity.Property(e => e.Packing).HasMaxLength(10);
 
                 entity.Property(e => e.ProductCode).HasMaxLength(10);
 
                 entity.Property(e => e.ProductType)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.WeightCode)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
             });
@@ -4404,7 +4154,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.DeletedDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.FieldType)
-                    .IsRequired()
                     .HasMaxLength(100)
                     .HasDefaultValueSql("''::text");
 
@@ -4940,9 +4689,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(80);
+                entity.Property(e => e.Description).HasMaxLength(80);
 
                 entity.Property(e => e.DistribiutorCode).HasMaxLength(10);
 
@@ -4952,27 +4699,17 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.GroupId).HasMaxLength(20);
 
-                entity.Property(e => e.InventoryItemId)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.InventoryItemId).HasMaxLength(10);
 
-                entity.Property(e => e.ItemType)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ItemType).HasMaxLength(10);
 
                 entity.Property(e => e.Lsnumber).HasColumnName("LSNumber");
 
                 entity.Property(e => e.Note).HasMaxLength(1000);
 
-                entity.Property(e => e.ReportName)
-                    .IsRequired()
-                    .HasMaxLength(40);
+                entity.Property(e => e.ReportName).HasMaxLength(40);
 
-                entity.Property(e => e.ShortName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.Status).IsRequired();
+                entity.Property(e => e.ShortName).HasMaxLength(30);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -4983,33 +4720,19 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.InventoryItemId)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.InventoryItemId).HasMaxLength(10);
 
-                entity.Property(e => e.KitDescription)
-                    .IsRequired()
-                    .HasMaxLength(80);
+                entity.Property(e => e.KitDescription).HasMaxLength(80);
 
-                entity.Property(e => e.NonStockItem)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.NonStockItem).HasMaxLength(100);
 
-                entity.Property(e => e.ShortName)
-                    .IsRequired()
-                    .HasMaxLength(30);
+                entity.Property(e => e.ShortName).HasMaxLength(30);
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
-                entity.Property(e => e.StockItem)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.StockItem).HasMaxLength(100);
 
-                entity.Property(e => e.Uom)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.Uom).HasMaxLength(100);
             });
 
             modelBuilder.Entity<InventoryResult>(entity =>
@@ -5035,23 +4758,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(80);
+                entity.Property(e => e.Description).HasMaxLength(80);
 
                 entity.Property(e => e.EffectiveDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.ItemAttributeCode)
-                    .IsRequired()
-                    .HasMaxLength(2);
+                entity.Property(e => e.ItemAttributeCode).HasMaxLength(2);
 
-                entity.Property(e => e.ItemAttributeMaster)
-                    .IsRequired()
-                    .HasMaxLength(4);
+                entity.Property(e => e.ItemAttributeMaster).HasMaxLength(4);
 
-                entity.Property(e => e.ShortName)
-                    .IsRequired()
-                    .HasMaxLength(40);
+                entity.Property(e => e.ShortName).HasMaxLength(40);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -5072,17 +4787,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.AvatarName).HasMaxLength(200);
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(16);
+                entity.Property(e => e.Code).HasMaxLength(16);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(80);
+                entity.Property(e => e.Description).HasMaxLength(80);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -5097,19 +4808,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.HierarchyAttribute1)
-                    .IsRequired()
-                    .HasMaxLength(4);
+                entity.Property(e => e.HierarchyAttribute1).HasMaxLength(4);
 
                 entity.Property(e => e.HierarchyAttribute10).HasMaxLength(4);
 
-                entity.Property(e => e.HierarchyAttribute2)
-                    .IsRequired()
-                    .HasMaxLength(4);
+                entity.Property(e => e.HierarchyAttribute2).HasMaxLength(4);
 
-                entity.Property(e => e.HierarchyAttribute3)
-                    .IsRequired()
-                    .HasMaxLength(4);
+                entity.Property(e => e.HierarchyAttribute3).HasMaxLength(4);
 
                 entity.Property(e => e.HierarchyAttribute4).HasMaxLength(4);
 
@@ -5164,21 +4869,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.AttributeId)
-                    .IsRequired()
-                    .HasMaxLength(4);
+                entity.Property(e => e.AttributeId).HasMaxLength(4);
 
-                entity.Property(e => e.AttributeName)
-                    .IsRequired()
-                    .HasMaxLength(30);
+                entity.Property(e => e.AttributeName).HasMaxLength(30);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(40);
+                entity.Property(e => e.Description).HasMaxLength(40);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -5210,27 +4909,21 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.FileCreatedDateStr)
-                    .IsRequired()
-                    .HasDefaultValueSql("''::text");
+                entity.Property(e => e.FileCreatedDateStr).HasDefaultValueSql("''::text");
 
                 entity.Property(e => e.FileExt)
-                    .IsRequired()
                     .HasMaxLength(50)
                     .HasDefaultValueSql("''::character varying");
 
                 entity.Property(e => e.FileName)
-                    .IsRequired()
                     .HasMaxLength(200)
                     .HasDefaultValueSql("''::character varying");
 
                 entity.Property(e => e.FilePath)
-                    .IsRequired()
                     .HasMaxLength(1000)
                     .HasDefaultValueSql("''::character varying");
 
                 entity.Property(e => e.FolderType)
-                    .IsRequired()
                     .HasMaxLength(50)
                     .HasDefaultValueSql("''::character varying");
 
@@ -5580,9 +5273,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
 
-                entity.Property(e => e.BusinessModel)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.BusinessModel).HasMaxLength(100);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
@@ -5868,7 +5559,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasColumnName("localeid");
 
                 entity.Property(e => e.Resourceid)
-                    .IsRequired()
                     .HasMaxLength(1024)
                     .HasColumnName("resourceid");
 
@@ -5916,7 +5606,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasColumnName("pk");
 
                 entity.Property(e => e.Resourceid)
-                    .IsRequired()
                     .HasMaxLength(1024)
                     .HasColumnName("resourceid");
 
@@ -6094,14 +5783,12 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasColumnName("PhoneCountryISO");
 
                 entity.Property(e => e.PhoneNumber)
-                    .IsRequired()
                     .HasMaxLength(20)
                     .HasDefaultValueSql("''::character varying");
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.Username)
-                    .IsRequired()
                     .HasMaxLength(100)
                     .HasDefaultValueSql("''::character varying");
             });
@@ -6247,7 +5934,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.DeletedDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.DeviceId)
-                    .IsRequired()
                     .HasMaxLength(255)
                     .HasDefaultValueSql("''::character varying");
 
@@ -6296,7 +5982,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.Purpose).HasMaxLength(50);
 
                 entity.Property(e => e.Title)
-                    .IsRequired()
                     .HasMaxLength(100)
                     .HasDefaultValueSql("''::character varying");
 
@@ -7251,23 +6936,17 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.Description).HasMaxLength(50);
 
                 entity.Property(e => e.EffectiveDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -8597,8 +8276,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Description).HasMaxLength(80);
 
-                entity.Property(e => e.TerritoryStructureCode).IsRequired();
-
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
@@ -9774,37 +9451,21 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CustomerAddress)
-                    .IsRequired()
-                    .HasMaxLength(1000);
+                entity.Property(e => e.CustomerAddress).HasMaxLength(1000);
 
-                entity.Property(e => e.CustomerCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerCode).HasMaxLength(10);
 
-                entity.Property(e => e.CustomerName)
-                    .IsRequired()
-                    .HasMaxLength(200);
+                entity.Property(e => e.CustomerName).HasMaxLength(200);
 
-                entity.Property(e => e.CustomerShiptoCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerShiptoCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayLevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DisplayLevelCode).HasMaxLength(10);
 
-                entity.Property(e => e.DisplayLevelName)
-                    .IsRequired()
-                    .HasMaxLength(200);
+                entity.Property(e => e.DisplayLevelName).HasMaxLength(200);
 
-                entity.Property(e => e.DisplayName)
-                    .IsRequired()
-                    .HasMaxLength(200);
+                entity.Property(e => e.DisplayName).HasMaxLength(200);
 
                 entity.Property(e => e.IsCheckSalesOutput).HasComment("Trường này không cần");
 
@@ -9829,7 +9490,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasDefaultValueSql("'0001-01-01 00:00:00'::timestamp without time zone");
 
                 entity.Property(e => e.VisitId)
-                    .IsRequired()
                     .HasColumnName("VisitID")
                     .HasDefaultValueSql("''::text");
             });
@@ -9916,13 +9576,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.Name).HasMaxLength(255);
             });
 
             modelBuilder.Entity<TempDisOrderDetail>(entity =>
@@ -9945,9 +9601,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.InventoryName).HasMaxLength(200);
 
-                entity.Property(e => e.OrdNbr)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.OrdNbr).HasMaxLength(10);
 
                 entity.Property(e => e.PromotionLevel).HasMaxLength(10);
 
@@ -10018,9 +9672,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.OrdDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.OrdNbr)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.OrdNbr).HasMaxLength(10);
 
                 entity.Property(e => e.PeriodCode).HasMaxLength(10);
 
@@ -10326,9 +9978,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.ProgramsType).HasMaxLength(250);
 
-                entity.Property(e => e.PromotionRefNumber)
-                    .IsRequired()
-                    .HasMaxLength(250);
+                entity.Property(e => e.PromotionRefNumber).HasMaxLength(250);
 
                 entity.Property(e => e.ShiptoAttribute1).HasColumnName("Shipto_Attribute1");
 
@@ -10402,7 +10052,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Description).HasMaxLength(250);
 
+                entity.Property(e => e.InventoryItemCode).HasMaxLength(250);
+
                 entity.Property(e => e.ItemGroupCode).HasMaxLength(250);
+
+                entity.Property(e => e.ItemHierarchyValueForSale).HasMaxLength(250);
+
+                entity.Property(e => e.ProductTypeForSale)
+                    .HasMaxLength(2)
+                    .HasDefaultValueSql("'02'::character varying");
 
                 entity.Property(e => e.ProgramCustomerItemsGroupCode).HasMaxLength(250);
 
@@ -10428,6 +10086,14 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.DetailType).HasMaxLength(250);
 
                 entity.Property(e => e.EffectiveDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.ItemHierarchyLevelForGift).HasMaxLength(50);
+
+                entity.Property(e => e.ItemHierarchyLevelForSale).HasMaxLength(50);
+
+                entity.Property(e => e.ProductTypeForGift).HasColumnType("character varying");
+
+                entity.Property(e => e.ProductTypeForSale).HasMaxLength(2);
 
                 entity.Property(e => e.ProgramCustomersDetailCode).HasMaxLength(250);
 
@@ -10583,9 +10249,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasMaxLength(10)
                     .HasColumnName("InventoryID");
 
-                entity.Property(e => e.OrdNbr)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.OrdNbr).HasMaxLength(10);
 
                 entity.Property(e => e.PromotionLevel).HasMaxLength(10);
 
@@ -10670,9 +10334,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.OrdDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.OrdNbr)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.OrdNbr).HasMaxLength(10);
 
                 entity.Property(e => e.PeriodCode).HasMaxLength(10);
 
@@ -10764,19 +10426,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Status).IsRequired();
+                entity.Property(e => e.Description).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -10921,39 +10577,25 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BudgetAllocationForm)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.BudgetAllocationForm).HasMaxLength(100);
 
                 entity.Property(e => e.BudgetAllocationLevel).HasMaxLength(10);
 
-                entity.Property(e => e.BudgetType)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.BudgetType).HasMaxLength(10);
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Io)
-                    .IsRequired()
-                    .HasColumnName("IO");
+                entity.Property(e => e.Io).HasColumnName("IO");
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.Name).HasMaxLength(255);
 
-                entity.Property(e => e.SaleOrg)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SaleOrg).HasMaxLength(10);
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -10968,9 +10610,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.AdjustmentDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.BudgetCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.BudgetCode).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
@@ -10987,9 +10627,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BudgetCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.BudgetCode).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
@@ -11006,9 +10644,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BudgetCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.BudgetCode).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
@@ -11023,9 +10659,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BudgetCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.BudgetCode).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
@@ -11050,9 +10684,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BudgetCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.BudgetCode).HasMaxLength(10);
 
                 entity.Property(e => e.BudgetType).HasMaxLength(10);
 
@@ -11063,52 +10695,37 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.DiscountFrequency)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DiscountFrequency).HasMaxLength(10);
 
                 entity.Property(e => e.EffectiveDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.FullName)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.FullName).HasMaxLength(255);
 
                 entity.Property(e => e.ObjectType)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
-                entity.Property(e => e.SaleOrg)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SaleOrg).HasMaxLength(10);
 
                 entity.Property(e => e.Scheme).HasMaxLength(255);
 
                 entity.Property(e => e.ScopeType)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
-                entity.Property(e => e.ShortName)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.ShortName).HasMaxLength(100);
 
                 entity.Property(e => e.SicCode)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11121,85 +10738,55 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CustomerAttributerLevel)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerAttributerLevel).HasMaxLength(10);
 
-                entity.Property(e => e.DiscountCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DiscountCode).HasMaxLength(10);
             });
 
             modelBuilder.Entity<TpDiscountObjectCustomerAttributeValue>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CustomerAttributerLevel)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerAttributerLevel).HasMaxLength(10);
 
-                entity.Property(e => e.CustomerAttributerValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerAttributerValue).HasMaxLength(10);
 
-                entity.Property(e => e.DiscountCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DiscountCode).HasMaxLength(10);
             });
 
             modelBuilder.Entity<TpDiscountObjectCustomerShipto>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CustomerCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerCode).HasMaxLength(10);
 
-                entity.Property(e => e.CustomerShiptoCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerShiptoCode).HasMaxLength(10);
 
-                entity.Property(e => e.DiscountCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DiscountCode).HasMaxLength(10);
             });
 
             modelBuilder.Entity<TpDiscountScopeDsa>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.DiscountCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DiscountCode).HasMaxLength(10);
 
-                entity.Property(e => e.SaleOrg)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SaleOrg).HasMaxLength(10);
 
-                entity.Property(e => e.ScopeDsaValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ScopeDsaValue).HasMaxLength(10);
             });
 
             modelBuilder.Entity<TpDiscountScopeTerritory>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.DiscountCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DiscountCode).HasMaxLength(10);
 
-                entity.Property(e => e.SaleOrg)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SaleOrg).HasMaxLength(10);
 
-                entity.Property(e => e.SalesTerritoryValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SalesTerritoryValue).HasMaxLength(10);
 
-                entity.Property(e => e.ScopeSaleTerritoryLevel)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ScopeSaleTerritoryLevel).HasMaxLength(10);
             });
 
             modelBuilder.Entity<TpDiscountStructureDetail>(entity =>
@@ -11212,9 +10799,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.DiscountCode).HasMaxLength(10);
 
-                entity.Property(e => e.NameDiscountLevel)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.NameDiscountLevel).HasMaxLength(100);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11225,13 +10810,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.ApplicableObjectType)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ApplicableObjectType).HasMaxLength(10);
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
@@ -11241,37 +10822,21 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.FrequencyPromotion).HasMaxLength(10);
 
-                entity.Property(e => e.FullName)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.FullName).HasMaxLength(255);
 
-                entity.Property(e => e.PromotionType)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.PromotionType).HasMaxLength(10);
 
-                entity.Property(e => e.SaleOrg)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SaleOrg).HasMaxLength(10);
 
-                entity.Property(e => e.Scheme)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.Scheme).HasMaxLength(255);
 
-                entity.Property(e => e.ScopeType)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ScopeType).HasMaxLength(10);
 
-                entity.Property(e => e.ShortName)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                entity.Property(e => e.ShortName).HasMaxLength(100);
 
-                entity.Property(e => e.SicCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SicCode).HasMaxLength(10);
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11288,21 +10853,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.LevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.LevelCode).HasMaxLength(10);
 
-                entity.Property(e => e.Packing)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Packing).HasMaxLength(10);
 
-                entity.Property(e => e.ProductCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ProductCode).HasMaxLength(10);
 
-                entity.Property(e => e.PromotionCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.PromotionCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11317,19 +10874,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.LevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.LevelCode).HasMaxLength(10);
 
                 entity.Property(e => e.Packing).HasMaxLength(10);
 
-                entity.Property(e => e.ProductCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ProductCode).HasMaxLength(10);
 
-                entity.Property(e => e.PromotionCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.PromotionCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11346,23 +10897,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.LevelCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.LevelCode).HasMaxLength(10);
 
-                entity.Property(e => e.LevelName)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.LevelName).HasMaxLength(255);
 
                 entity.Property(e => e.ProductTypeForGift).HasMaxLength(10);
 
-                entity.Property(e => e.ProductTypeForSale)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ProductTypeForSale).HasMaxLength(10);
 
-                entity.Property(e => e.PromotionCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.PromotionCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11377,13 +10920,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CustomerAttributerLevel)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerAttributerLevel).HasMaxLength(10);
 
-                entity.Property(e => e.PromotionCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.PromotionCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11398,17 +10937,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CustomerAttributerLevel)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerAttributerLevel).HasMaxLength(10);
 
-                entity.Property(e => e.CustomerAttributerValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerAttributerValue).HasMaxLength(10);
 
-                entity.Property(e => e.PromotionCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.PromotionCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11423,17 +10956,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CustomerCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerCode).HasMaxLength(10);
 
-                entity.Property(e => e.CustomerShiptoCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.CustomerShiptoCode).HasMaxLength(10);
 
-                entity.Property(e => e.PromotionCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.PromotionCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11448,18 +10975,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.PromotionCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.PromotionCode).HasMaxLength(10);
 
                 entity.Property(e => e.SaleOrg)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
-                entity.Property(e => e.ScopeDsaValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.ScopeDsaValue).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11474,21 +10996,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.PromotionCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.PromotionCode).HasMaxLength(10);
 
                 entity.Property(e => e.SaleOrg)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
-                entity.Property(e => e.SalesTerritoryValue)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SalesTerritoryValue).HasMaxLength(10);
 
                 entity.Property(e => e.ScopeSaleTerritoryLevel)
-                    .IsRequired()
                     .HasMaxLength(10)
                     .HasDefaultValueSql("''::character varying");
 
@@ -11501,27 +11017,19 @@ namespace RDOS.BaseLine.RDOSInfratructure
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Code).HasMaxLength(10);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(256);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255);
+                entity.Property(e => e.Name).HasMaxLength(255);
 
-                entity.Property(e => e.ProgramType)
-                    .IsRequired()
-                    .HasDefaultValueSql("''::text");
+                entity.Property(e => e.ProgramType).HasDefaultValueSql("''::text");
 
                 entity.Property(e => e.SettlementDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.Status).HasMaxLength(10);
 
                 entity.Property(e => e.TotalAmount).HasDefaultValueSql("0.0");
 
@@ -11540,23 +11048,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
 
-                entity.Property(e => e.DistributorCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.DistributorCode).HasMaxLength(10);
 
                 entity.Property(e => e.OrdDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.OrdNbr).HasMaxLength(10);
 
-                entity.Property(e => e.ProgramType).IsRequired();
+                entity.Property(e => e.PromotionDiscountCode).HasMaxLength(10);
 
-                entity.Property(e => e.PromotionDiscountCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
-
-                entity.Property(e => e.SettlementCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SettlementCode).HasMaxLength(10);
 
                 entity.Property(e => e.ShiptoId).HasColumnName("ShiptoID");
 
@@ -11575,15 +11075,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.ProgramType).IsRequired();
+                entity.Property(e => e.PromotionDiscountCode).HasMaxLength(10);
 
-                entity.Property(e => e.PromotionDiscountCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
-
-                entity.Property(e => e.SettlementCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
+                entity.Property(e => e.SettlementCode).HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(256);
 
@@ -11930,8 +11424,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.DeletedDate).HasColumnType("timestamp without time zone");
-
-                entity.Property(e => e.Title).IsRequired();
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
             });

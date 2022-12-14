@@ -14,6 +14,7 @@ builder.Services.AddControllers();
 CoreDependency.InjectDependencies(builder.Services, builder);
 builder.Services.AddTransient<DbContext, RDOSContext>();
 builder.Services.AddScoped<IBaselineSettingService, BaselineSettingService>();
+builder.Services.AddScoped<IBaselineProcessService, BaselineProcessService>();
 var connectStrings = Environment.GetEnvironmentVariable("CONNECTION");
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -9,13 +9,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid KpisettingId { get; set; }
         public int Month { get; set; }
         public float Value { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string DeletedBy { get; set; }
+        public string? DeletedBy { get; set; }
         public DateTime? DeletedDate { get; set; }
-        public string PeriodCode { get; set; }
+        public string? PeriodCode { get; set; }
         public Guid SaleCanlendarId { get; set; }
     }
 }

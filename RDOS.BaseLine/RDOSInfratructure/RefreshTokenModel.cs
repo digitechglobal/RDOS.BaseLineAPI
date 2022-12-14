@@ -7,12 +7,12 @@ namespace RDOS.BaseLine.RDOSInfratructure
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public string RefreshToken { get; set; }
+        public string? RefreshToken { get; set; }
         public DateTime? ExpiredDate { get; set; }
-        public string Os { get; set; }
-        public string AppVersion { get; set; }
+        public string? Os { get; set; }
+        public string? AppVersion { get; set; }
         public Guid? AppId { get; set; }
-        public string AppName { get; set; }
+        public string? AppName { get; set; }
         public Guid? PrincipleId { get; set; }
         public Guid? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }

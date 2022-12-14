@@ -6,11 +6,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
     public partial class AutoKpisTargetBusinessModelValue
     {
         public Guid Id { get; set; }
-        public string AutoKpisTargetCode { get; set; }
-        public string TerritoryStructureCode { get; set; }
-        public string Source { get; set; }
-        public string TerritoryValueBySource { get; set; }
-        public string BusinessModel { get; set; }
+        public string? AutoKpisTargetCode { get; set; }
+        public string? TerritoryStructureCode { get; set; }
+        public string? Source { get; set; }
+        public string? TerritoryValueBySource { get; set; }
+        public string? BusinessModel { get; set; }
         public decimal? Jan { get; set; }
         public decimal? Feb { get; set; }
         public decimal? Mar { get; set; }
@@ -46,7 +46,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public int? Level { get; set; }
         public Guid? ParentId { get; set; }
         public DateTime? CommitedTime { get; set; }
-        public string SalesPeriod { get; set; }
+        public string? SalesPeriod { get; set; }
         public decimal? CommitedTarget { get; set; }
         public int? IsComplete { get; set; }
     }

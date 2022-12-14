@@ -11,11 +11,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid EcoVersionId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
-        public virtual Application Application { get; set; }
-        public virtual Service EcoService { get; set; }
-        public virtual Version EcoVersion { get; set; }
+        public virtual Application Application { get; set; } = null!;
+        public virtual Service EcoService { get; set; } = null!;
+        public virtual Version EcoVersion { get; set; } = null!;
     }
 }

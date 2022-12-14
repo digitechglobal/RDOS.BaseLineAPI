@@ -12,12 +12,12 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public bool IncludedPotransit { get; set; }
         public bool IncludedPoshipping { get; set; }
         public int? SellOutRunningRate { get; set; }
-        public string RoundingRule { get; set; }
+        public string? RoundingRule { get; set; }
         public int StockKeepingDefaultValue { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

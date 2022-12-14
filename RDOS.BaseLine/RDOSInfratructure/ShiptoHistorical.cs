@@ -9,6 +9,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid ShiptoId { get; set; }
         public DateTime? EffectiveDate { get; set; }
         public DateTime? ValidDate { get; set; }
-        public string ShiptoCodeonErp { get; set; }
+        public string? ShiptoCodeonErp { get; set; }
     }
 }

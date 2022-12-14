@@ -10,10 +10,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public Guid CustomerAdjustmentId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
-        public virtual CustomerAdjustment CustomerAdjustment { get; set; }
-        public virtual DataTypeDefinition DataTypeDefinition { get; set; }
+        public virtual CustomerAdjustment CustomerAdjustment { get; set; } = null!;
+        public virtual DataTypeDefinition DataTypeDefinition { get; set; } = null!;
     }
 }
