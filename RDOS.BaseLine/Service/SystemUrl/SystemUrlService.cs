@@ -1,0 +1,53 @@
+﻿using Microsoft.Extensions.Logging;
+using RestSharp;
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using RestSharp.Authenticators;
+using SysAdmin.Models.StaticValue;
+using Newtonsoft.Json;
+using SysAdmin.Models.SystemUrl;
+using static SysAdmin.Models.StaticValue.CommonData;
+
+namespace SysAdmin.Web.Services.SystemUrl
+{
+    public class SystemUrlService : ISystemUrlService
+    {
+        private readonly IRestClient _client;
+
+        public SystemUrlService()
+        {
+            _client = new RestClient(Environment.GetEnvironmentVariable("ECOGATEWAY"));
+        }
+
+        public async Task<SystemUrlListModel> GetAllSystemUrl()
+        {
+            try
+            {
+                var request = new RestRequest($"systemurl/getallsystemurl", Method.GET, DataFormat.Json);
+                var result1 = _client.Execute(request);
+                if (result1 == null || result1.Content == string.Empty) return new SystemUrlListModel();
+                var returnObject = JsonConvert.DeserializeObject<SystemUrlListModel>(JsonConvert.DeserializeObject(result1.Content).ToString());
+
+                if (Environment.GetEnvironmentVariable("ECOGATEWAY") != "prod" || Environment.GetEnvironmentVariable("ECOGATEWAY") != "production")
+                {
+                    foreach (var item in returnObject.Items)
+                    {
+                        if(item.Code == SystemUrlCode.InventoryMngCode){
+                            
+                        }
+                    }
+                }
+
+
+                return returnObject;
+            }
+            catch (System.Exception ex)
+            {
+#pragma warning disable S112 // General exceptions should never be thrown
+                throw new Exception(ex.Message);
+#pragma warning restore S112 // General exceptions should never be thrown
+            }
+        }
+    }
+}
