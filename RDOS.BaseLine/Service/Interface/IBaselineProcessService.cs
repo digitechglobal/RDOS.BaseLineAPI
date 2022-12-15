@@ -4,6 +4,8 @@ namespace RDOS.BaseLine.Service.Interface
 {
     public interface IBaselineProcessService
     {
-        Task<BaseResultModel> ProcesPO(string baselineDate, string settingRef, string userName);
+        Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef, string userName);
+        Task<BaseResultModel> ProcessInvIssue(string baselineDate, string settingRef, string userName, string typeData);
+        Task<BaseResultModel> ProcessInvReceipt(string baselineDate, string settingRef, string userName, string typeData);
     }
 }

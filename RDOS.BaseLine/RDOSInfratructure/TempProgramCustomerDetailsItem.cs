@@ -36,5 +36,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? Description { get; set; }
         public int OriginalQty { get; set; }
         public decimal OriginalAmt { get; set; }
+        public string? ProgramDetailDesc { get; set; }
     }
 }

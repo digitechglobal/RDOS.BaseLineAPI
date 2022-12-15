@@ -29,5 +29,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? ProductTypeForGift { get; set; }
         public string? ItemHierarchyLevelForGift { get; set; }
         public string? ItemHierarchyLevelForSale { get; set; }
+        public int QuantityPurchased { get; set; }
+        public int OnEachQuantity { get; set; }
+        public int ValuePurchased { get; set; }
+        public int OnEachValue { get; set; }
     }
 }

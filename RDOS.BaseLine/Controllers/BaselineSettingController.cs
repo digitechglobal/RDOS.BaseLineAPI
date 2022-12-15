@@ -69,10 +69,26 @@ namespace RDOS.BaseLine.Controllers
 
         [HttpPost]
         [Route("ProcessPO")]
-        public async Task<IActionResult> ProcessPO(ProcessPORequest input)
+        public async Task<IActionResult> ProcessPO(ProcessRequest input)
         {
             var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok(await _blProcessService.ProcesPO(input.BaselineDate, input.SettingRef, username));
+            return Ok(await _blProcessService.ProcessPO(input.BaselineDate, input.SettingRef, username));
+        }
+
+        [HttpPost]
+        [Route("ProcessInvIssue")]
+        public async Task<IActionResult> ProcessInvIssue(ProcessRequest input)
+        {
+            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
+            return Ok(await _blProcessService.ProcessInvIssue(input.BaselineDate, input.SettingRef, username, BaselineType.DAILY));
+        }
+
+        [HttpPost]
+        [Route("ProcessInvReceipt")]
+        public async Task<IActionResult> ProcessInvReceipt(ProcessRequest input)
+        {
+            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
+            return Ok(await _blProcessService.ProcessInvReceipt(input.BaselineDate, input.SettingRef, username, BaselineType.DAILY));
         }
     }
 }

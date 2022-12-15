@@ -82,5 +82,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? PurchaseUnitCode { get; set; }
         public string? RewardDescription { get; set; }
         public string? SalesUnitCode { get; set; }
+        public string? ProgramCustomersDetailDesc { get; set; }
     }
 }

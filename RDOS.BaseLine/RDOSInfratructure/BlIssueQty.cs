@@ -1,116 +1,27 @@
-﻿using RDOS.BaseLine.RDOSInfratructure;
-using static RDOS.BaseLine.Models.Results;
+﻿using System;
+using System.Collections.Generic;
 
-namespace RDOS.BaseLine.Models.Request
+namespace RDOS.BaseLine.RDOSInfratructure
 {
-    public class BaselineSettingModel
-    {
-        public string Description { get; set; }
-        public int LeadDate { get; set; } = 0;
-        public int MonthlyBaselineDate { get; set; } = 0;
-        public bool IsProcessPendingData { get; set; } = false;
-        public string ProcessPendingTime { get; set; }
-        public string ProcessTime { get; set; }
-        public virtual List<ProcessPendingModel> ProcessPendings { get; set; }
-        public virtual List<BaseLineProcessModel> BaseLineProcesses { get; set; }
-        public BaselineSettingEmailModel? BaselineSettingEmail { get; set; }
-    }
-
-    public class ProcessPendingModel
-    {
-        public string Description { get; set; }
-        public string FromStatus { get; set; }
-        public string ToStatus { get; set; }
-    }
-
-    public class BaseLineProcessModel
-    {
-        public string ProcessCode { get; set; }
-        public int? Priority { get; set; } = 0;
-        public bool? IsSequentialProcessing { get; set; } = false;
-    }
-
-    public class BaselineSettingEmailModel
-    {
-        public string From { get; set; }
-        public string To { get; set; }
-        public string Cc { get; set; }
-        public string Subject { get; set; }
-        public string Description { get; set; }
-    }
-
-    // Model detail
-    public class BlBlsettingProcessDetail : BlBlsettingProcess
-    {
-        public BlBlprocess Process { get; set; }
-    }
-    public class BaselineSettingDetailModel
-    {
-        public BlBlsettingInformation BlBlsettingInformation { get; set; }
-        public virtual List<BlBlsettingProcessPending> ProcessPendings { get; set; }
-        public virtual List<BlBlsettingProcessDetail> BaseLineProcesses { get; set; }
-        public BlBlsettingEmail? BaselineSettingEmail { get; set; }
-    }
-
-    public class ListBaselineSetting
-    {
-        public List<BlBlsettingInformation> Items { get; set; }
-        public MetaData MetaData { get; set; }
-    }
-
-    public class BaselineSearch : EcoParameters
-    {
-
-    }
-
-    public class ProcessRequest
-    {
-        public string BaselineDate { get; set; }
-        public string SettingRef { get; set; }
-    }
-    public class POCollection
+    public partial class BlIssueQty
     {
         public Guid Id { get; set; }
-        public string PurchaseOrderNumber { get; set; } = null!;
-        public string? Podescription { get; set; }
-        public DateTime? TransactionDate { get; set; }
-        public DateTime? ExpectReDate { get; set; }
-        public string PoconfirmNumber { get; set; } = null!;
-        public string? PoPrincipalNumber { get; set; }
-        public DateTime? PoconfirmDate { get; set; }
-        public string? PoconfirmDescription { get; set; }
-        public string Grponumber { get; set; } = null!;
-        public DateTime? Grpodate { get; set; }
-        public string? Status { get; set; }
-        public string? Type { get; set; }
-        public string? PrincipalRefNumber { get; set; }
+        public DateTime BaselineDate { get; set; }
+        public string BaselineSettingRef { get; set; } = null!;
+        public DateTime? Month { get; set; }
+        public string? SalesPeriod { get; set; }
+        public string? BaseLineType { get; set; }
         public string? ItemId { get; set; }
         public string? InventoryShortName { get; set; }
         public string? InventoryReportName { get; set; }
         public string? InventoryDescription { get; set; }
-        public string? Erpid { get; set; }
-        public string? ItemGroupId { get; set; }
-        public int? OrderQuantity { get; set; }
-        public string? OrderUom { get; set; }
-        public decimal? UnitPrice { get; set; }
-        public int? OrderBaseQuantity { get; set; }
-        public string? OrderBaseUom { get; set; }
-        public int? ConfirmedQuantity { get; set; }
-        public string? ConfirmedUom { get; set; }
-        public int? ConfirmedBaseQuantity { get; set; }
-        public string? ConfirmedBaseUom { get; set; }
-        public int? ReceiptQuantity { get; set; }
-        public string? ReceiptUom { get; set; }
-        public int? ReceiptBaseQuantity { get; set; }
-        public string? ReceiptBaseUom { get; set; }
-        public decimal? Vat { get; set; }
-        public string? VatId { get; set; }
-        public bool? IsFree { get; set; }
-        public string? DiscountSchemeId { get; set; }
-        public string? PromotionId { get; set; }
-        public string? PromotionShortName { get; set; }
-        public string? PromotionFullName { get; set; }
-        public string? PromotionScheme { get; set; }
+        public string? OutQuantityType { get; set; }
+        public string? OutQuantityTypeValue { get; set; }
+        public string? OutQuantityTypeDesc { get; set; }
+        public int? OutQuantity { get; set; }
+        public string? OutBaseUom { get; set; }
+        public string? WareHouseId { get; set; }
+        public string? WareHouseName { get; set; }
         public string? DistributorId { get; set; }
         public string? DistributorName { get; set; }
         public string? Dmscode { get; set; }
@@ -137,7 +48,7 @@ namespace RDOS.BaseLine.Models.Request
         public string? DistributorDeptNo { get; set; }
         public string? DistributorLongtiue { get; set; }
         public string? DistributorLattitue { get; set; }
-        public string? DistributorShiptoId { get; set; }
+        public string? DistributorShipToId { get; set; }
         public string? ShiptoName { get; set; }
         public string? ShiptoCodeOnErp { get; set; }
         public string? DistributorShipToFullName { get; set; }
@@ -163,10 +74,8 @@ namespace RDOS.BaseLine.Models.Request
         public string? DistributorShipToDeptNo { get; set; }
         public string? DistributorShipToLongtiue { get; set; }
         public string? DistributorShipToLattitue { get; set; }
-        public string? Channels { get; set; }
-        public string? SubChanels { get; set; }
-        public string? SicId { get; set; }
-        public string? PrincipalWareHouseId { get; set; }
+        public string? ItemGroupId { get; set; }
+        public string? ItemGroupDesc { get; set; }
         public string? InventoryAttributeId1 { get; set; }
         public string? InventoryAttributeName1 { get; set; }
         public string? InventoryAttributeDesc1 { get; set; }

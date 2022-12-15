@@ -2,6 +2,6 @@
 {
     public class PrefixRefBaselinesSetting
     {
-        public const string PrefixRef = "BLS";
+        public const string PREFIX_REF = "BLS";
     }
 }

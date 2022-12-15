@@ -20,6 +20,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "ECOGATEWAY": "https://principal-api.rdos.vn/v1/",
         //"CONNECTION": "Server=db.rdos.online;Port=5494;Database=onesuat_system;User Id=postgresrdos;Password=RDOSGolive2022"
         "CONNECTION": "Server=103.98.160.114;Port=9092;Database=onesuat_system;User Id=postgresrdos;Password=RDOSGolive2022"
         //"CONNECTION": "Server=127.0.0.1;Port=9777;Database=onesuat_system;User Id=postgresrdos;Password=RDOSGolive2022"

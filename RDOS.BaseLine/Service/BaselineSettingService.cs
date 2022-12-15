@@ -166,7 +166,7 @@ namespace RDOS.BaseLine.Service
             return GenRefNumber(listData.Count, listData);
             string GenRefNumber(int number, List<BlBlsettingInformation> listData)
             {
-                var refNew = PrefixRefBaselinesSetting.PrefixRef + number;
+                var refNew = PrefixRefBaselinesSetting.PREFIX_REF + number;
                 var checkExist = listData.FirstOrDefault(x => x.SettingRef == refNew);
                 if (checkExist != null)
                 {
