@@ -20,14 +20,14 @@
             }
             public int? Skip { get; set; }
             public int? Top { get; set; }
-            public string OrderBy { get; set; }
-            public string Filter { get; set; }
+            public string? OrderBy { get; set; }
+            public string? Filter { get; set; }
             public bool IsDropdown { get; set; }
             public DateTime? FromDate { get; set; }
             public DateTime? ToDate { get; set; }
-            public string SearchValue { get; set; }
-            public string SearchText { get; set; }
-            public string PrincipleCode { get; set; }
+            public string? SearchValue { get; set; }
+            public string? SearchText { get; set; }
+            public string? PrincipleCode { get; set; }
             public int? LogLevel { get; set; }
         }
         public class MetaData
