@@ -25,6 +25,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlRawPo> _blRawPo;
         private readonly IBaseRepository<BlIssueQty> _blIssueQty;
         private readonly IBaseRepository<BlReceiptQty> _blReceiptyQty;
+        private readonly IBaseRepository<BlCloseStock> _blCloseQty;
         private readonly IMapper _mapper;
         private readonly IDapperRepositories _dapper;
 
@@ -39,6 +40,7 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<BlRawPo> blRawPo,
             IBaseRepository<BlIssueQty> blIssuseQty,
             IBaseRepository<BlReceiptQty> blReceiptyQty,
+            IBaseRepository<BlCloseStock> blCloseQty,
             IMapper mapper,
             IDapperRepositories dapper)
         {
@@ -54,6 +56,7 @@ namespace RDOS.BaseLine.Service
             _blRawPo = blRawPo;
             _blIssueQty = blIssuseQty;
             _blReceiptyQty = blReceiptyQty;
+            _blCloseQty = blCloseQty;
         }
 
         public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef, string userName)
@@ -124,7 +127,7 @@ namespace RDOS.BaseLine.Service
                 var listData = ((List<BlIssueQty>)_dapper.QueryWithParams<BlIssueQty>(query, parameters));
                 listDataFinal.AddRange(listData);
 
-                // Function query
+                // Function query 2
                 var query2 = @"SELECT * FROM collectissueinv(@baselinedate, @username, @settingref, @typedata)";
 
                 // Handle parameter
@@ -138,6 +141,21 @@ namespace RDOS.BaseLine.Service
                 var listData2 = ((List<BlIssueQty>)_dapper.QueryWithParams<BlIssueQty>(query2, parameters2));
 
                 listDataFinal.AddRange(listData2);
+
+                // Function query 3
+                var query3 = @"SELECT * FROM collectissuetransfer(@baselinedate, @username, @settingref, @typedata)";
+
+                // Handle parameter
+                DynamicParameters parameters3 = new DynamicParameters();
+                parameters3.Add("@baselinedate", baselineDate);
+                parameters3.Add("@username", userName);
+                parameters3.Add("@settingref", settingRef);
+                parameters3.Add("@typedata", typeData);
+
+                // Excute query
+                var listData3 = ((List<BlIssueQty>)_dapper.QueryWithParams<BlIssueQty>(query3, parameters3));
+
+                listDataFinal.AddRange(listData3);
 
                 // List record po by baseline date
                 var listRawIssuse = _blIssueQty.Find(x => x.BaselineDate.Date == baselineDateNew.Date).ToList();
@@ -190,7 +208,7 @@ namespace RDOS.BaseLine.Service
                 var listData = ((List<BlReceiptQty>)_dapper.QueryWithParams<BlReceiptQty>(query, parameters));
                 listDataFinal.AddRange(listData);
 
-                // Function query
+                // Function query 2
                 var query2 = @"SELECT * FROM collectreceiptinv(@baselinedate, @username, @settingref, @typedata)";
 
                 // Handle parameter
@@ -205,6 +223,21 @@ namespace RDOS.BaseLine.Service
 
                 listDataFinal.AddRange(listData2);
 
+                // Function query 3
+                var query3 = @"SELECT * FROM collectreceipttransfer(@baselinedate, @username, @settingref, @typedata)";
+
+                // Handle parameter
+                DynamicParameters parameters3 = new DynamicParameters();
+                parameters3.Add("@baselinedate", baselineDate);
+                parameters3.Add("@username", userName);
+                parameters3.Add("@settingref", settingRef);
+                parameters3.Add("@typedata", typeData);
+
+                // Excute query
+                var listData3 = ((List<BlReceiptQty>)_dapper.QueryWithParams<BlReceiptQty>(query3, parameters3));
+
+                listDataFinal.AddRange(listData3);
+
                 // List record po by baseline date
                 var listRawIssuse = _blReceiptyQty.Find(x => x.BaselineDate.Date == baselineDateNew.Date).ToList();
 
@@ -216,6 +249,97 @@ namespace RDOS.BaseLine.Service
 
                 // Insert to database
                 _blReceiptyQty.InsertMany(listDataFinal);
+
+                return new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Code = 200,
+                    Message = "Successfully"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Code = 500,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
+
+        public async Task<BaseResultModel> ProcessInvCloseQty(string baselineDate, string settingRef, string userName)
+        {
+            try
+            {
+                DateTime baselineDateNew = DateTime.Parse(baselineDate);
+                List<BlCloseStock> listDataConcat = new List<BlCloseStock>();
+                // Function query
+                var query = @"SELECT * FROM collectcloseinv(@baselinedate, @username, @settingref)";
+
+                // Handle parameter
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@baselinedate", baselineDate);
+                parameters.Add("@username", userName);
+                parameters.Add("@settingref", settingRef);
+
+                // Excute query
+                var listData = ((List<BlCloseStock>)_dapper.QueryWithParams<BlCloseStock>(query, parameters));
+                listDataConcat.AddRange(listData);
+
+                // Function query 2
+                var query2 = @"SELECT * FROM collectcloseadjustment(@baselinedate, @username, @settingref)";
+
+                // Handle parameter
+                DynamicParameters parameters2 = new DynamicParameters();
+                parameters2.Add("@baselinedate", baselineDate);
+                parameters2.Add("@username", userName);
+                parameters2.Add("@settingref", settingRef);
+
+                // Excute query
+                var listData2 = ((List<BlCloseStock>)_dapper.QueryWithParams<BlCloseStock>(query2, parameters2));
+                listDataConcat.AddRange(listData2);
+
+                // Function query 3
+                var query3 = @"SELECT * FROM collectclosetransfer(@baselinedate, @username, @settingref)";
+
+                // Handle parameter
+                DynamicParameters parameters3 = new DynamicParameters();
+                parameters3.Add("@baselinedate", baselineDate);
+                parameters3.Add("@username", userName);
+                parameters3.Add("@settingref", settingRef);
+
+                // Excute query
+                var listData3 = ((List<BlCloseStock>)_dapper.QueryWithParams<BlCloseStock>(query3, parameters3));
+                listDataConcat.AddRange(listData3);
+
+                List<BlCloseStock> listDataFinal = new List<BlCloseStock>();
+
+                // Handle group item
+                var dataTransactionGroup = listDataConcat.GroupBy(x => new { x.ItemId, x.DistributorId, x.WareHouseId, x.LocationId }).Select(x => x.First()).ToList();
+                foreach (var itemInv in dataTransactionGroup)
+                {
+                    var listInvGroup = listDataConcat.Where(x => x.ItemId == itemInv.ItemId &&
+                                                      x.DistributorId == itemInv.DistributorId &&
+                                                      x.WareHouseId == itemInv.WareHouseId &&
+                                                      x.LocationId == itemInv.LocationId).OrderByDescending(x => x.UpdatedDate).ToList();
+
+                    listDataFinal.Add(listInvGroup.First());
+                }
+
+
+                // List record po by baseline date
+                var listRawCloseQty = _blCloseQty.Find(x => x.BaselineDate.Date == baselineDateNew.Date).ToList();
+
+                // Remove record by baseline date
+                if (listRawCloseQty != null && listRawCloseQty.Count > 0)
+                {
+                    _blCloseQty.DeleteMany(listRawCloseQty);
+                }
+
+                // Insert to database
+                _blCloseQty.InsertMany(listDataFinal);
 
                 return new BaseResultModel
                 {

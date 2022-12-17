@@ -20,6 +20,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? InQuantityTypeDesc { get; set; }
         public int? InQuantity { get; set; }
         public string? InBaseUom { get; set; }
+        public int? InSalesQuantity { get; set; }
+        public string? InSalesUom { get; set; }
+        public int? InPurchaseQuantity { get; set; }
+        public string? InPurchaseUom { get; set; }
+        public string? LocationId { get; set; }
         public string? WareHouseId { get; set; }
         public string? WareHouseName { get; set; }
         public string? DistributorId { get; set; }

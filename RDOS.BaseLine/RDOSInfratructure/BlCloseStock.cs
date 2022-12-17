@@ -3,27 +3,21 @@ using System.Collections.Generic;
 
 namespace RDOS.BaseLine.RDOSInfratructure
 {
-    public partial class BlIssueQty
+    public partial class BlCloseStock
     {
         public Guid Id { get; set; }
         public DateTime BaselineDate { get; set; }
         public string BaselineSettingRef { get; set; } = null!;
-        public DateTime? Month { get; set; }
-        public string? SalesPeriod { get; set; }
-        public string? BaseLineType { get; set; }
         public string? ItemId { get; set; }
         public string? InventoryShortName { get; set; }
         public string? InventoryReportName { get; set; }
         public string? InventoryDescription { get; set; }
-        public string? OutQuantityType { get; set; }
-        public string? OutQuantityTypeValue { get; set; }
-        public string? OutQuantityTypeDesc { get; set; }
-        public int? OutQuantity { get; set; }
-        public string? OutBaseUom { get; set; }
-        public int? OutSalesQuantity { get; set; }
-        public string? OutSalesUom { get; set; }
-        public int? OutPurchaseQuantity { get; set; }
-        public string? OutPurchaseUom { get; set; }
+        public int? CloseQuantity { get; set; }
+        public string? CloseQuantityBaseUom { get; set; }
+        public int? CloseSalesQuantity { get; set; }
+        public string? CloseSalesUom { get; set; }
+        public int? ClosePurchaseQuantity { get; set; }
+        public string? ColosePurchaseUom { get; set; }
         public string? LocationId { get; set; }
         public string? WareHouseId { get; set; }
         public string? WareHouseName { get; set; }

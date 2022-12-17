@@ -52,7 +52,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public DateTime? VisitDate { get; set; }
         public string? VisitId { get; set; }
         public string? ExternalOrdNbr { get; set; }
-        public string? CreatedBy { get; set; }
         public string? OwnerId { get; set; }
         public string? Source { get; set; }
         public int OrigOrdSkus { get; set; }
@@ -83,7 +82,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public bool IsDeleted { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public string? CreatedBy1 { get; set; }
+        public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
         public string? ShiptoAttribute1 { get; set; }
         public string? ShiptoAttribute10 { get; set; }

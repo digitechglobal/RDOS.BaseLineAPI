@@ -90,5 +90,13 @@ namespace RDOS.BaseLine.Controllers
             var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
             return Ok(await _blProcessService.ProcessInvReceipt(input.BaselineDate, input.SettingRef, username, BaselineType.DAILY));
         }
+
+        [HttpPost]
+        [Route("ProcessInvClose")]
+        public async Task<IActionResult> ProcessInvClose(ProcessRequest input)
+        {
+            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
+            return Ok(await _blProcessService.ProcessInvCloseQty(input.BaselineDate, input.SettingRef, username));
+        }
     }
 }
