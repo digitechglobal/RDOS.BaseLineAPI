@@ -108,7 +108,7 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = true,
                     Code = 201,
                     Message = "Create successfully",
-                    Data = (await GetBaselineSettingCurrent()).Data
+                    Data = (await GetCurrentBaselineSetting()).Data
                 };
             }
             catch (Exception ex)
@@ -281,14 +281,14 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<BaseResultModel> GetBaselineSettingCurrent()
+        public async Task<ResultModelWithObject<BaselineSettingDetailModel>> GetCurrentBaselineSetting()
         {
             try
             {
                 var settingInfo = _blSettingInfoRepo.Find(x => !x.IsDeleted).OrderByDescending(x => x.CreatedDate).FirstOrDefault();
                 if (settingInfo == null)
                 {
-                    return new BaseResultModel
+                    return new ResultModelWithObject<BaselineSettingDetailModel>
                     {
                         IsSuccess = false,
                         Code = 404,
@@ -312,7 +312,7 @@ namespace RDOS.BaseLine.Service
                 dataResponse.BaseLineProcesses = listProcessNew;
                 dataResponse.BaselineSettingEmail = settingEmail;
 
-                return new BaseResultModel
+                return new ResultModelWithObject<BaselineSettingDetailModel>
                 {
                     IsSuccess = true,
                     Code = 200,
@@ -323,7 +323,7 @@ namespace RDOS.BaseLine.Service
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-                return new BaseResultModel
+                return new ResultModelWithObject<BaselineSettingDetailModel>
                 {
                     IsSuccess = false,
                     Code = 500,

@@ -22,6 +22,8 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlBlprocess> _blProcessRepo;
         private readonly IMapper _mapper;
 
+        private readonly IBaselineSettingService _settingService;
+
         public PhattvBLProcessService(
             ILogger<PhattvBLProcessService> logger,
             IBaseRepository<BlBlsettingInformation> blSettingInfoRepo,
@@ -30,7 +32,8 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<BlBlsettingProcessPending> blSettingProcessPendingRepo,
             IBaseRepository<BlBlsettingEmail> blSettingEmailRepo,
             IBaseRepository<BlBlprocess> blProcessRepo,
-            IMapper mapper
+            IMapper mapper,
+            IBaselineSettingService settingService
             )
         {
             _logger = logger;
@@ -41,7 +44,31 @@ namespace RDOS.BaseLine.Service
             _blSettingEmailRepo = blSettingEmailRepo;
             _blProcessRepo = blProcessRepo;
             _mapper = mapper;
+            _settingService = settingService;
+        }
 
+        public async Task<BaseResultModel> HandleProcessPendingData()
+        {
+            try
+            {
+                var setting = await _settingService.GetCurrentBaselineSetting();
+                var processPendingSetting = setting.Data.ProcessPendings;
+
+
+                return new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Message = "OK"
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
         }
     }
 }

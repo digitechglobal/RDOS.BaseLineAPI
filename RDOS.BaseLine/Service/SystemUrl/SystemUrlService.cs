@@ -34,7 +34,7 @@ namespace SysAdmin.Web.Services.SystemUrl
                     foreach (var item in returnObject.Items)
                     {
                         if(item.Code == SystemUrlCode.InventoryMngCode){
-                            
+                            // add manual 
                         }
                     }
                 }

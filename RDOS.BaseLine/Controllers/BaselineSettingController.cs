@@ -57,7 +57,7 @@ namespace RDOS.BaseLine.Controllers
         [Route("GetCurrent")]
         public async Task<IActionResult> GetBaselineSettingCurrent()
         {
-            return Ok(await _baseLineSettingService.GetBaselineSettingCurrent());
+            return Ok(await _baseLineSettingService.GetCurrentBaselineSetting());
         }
 
         [HttpPost]

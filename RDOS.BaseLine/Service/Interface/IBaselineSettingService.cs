@@ -9,7 +9,7 @@ namespace RDOS.BaseLine.Service.Interface
         Task<BaseResultModel> ChangeSetting(BaselineSettingModel dataInput, string userLogin);
         Task<BaseResultModel> GetDetailBaselineSetting(string settingRef);
         Task<BaseResultModel> GetListProcess();
-        Task<BaseResultModel> GetBaselineSettingCurrent();
+        Task<ResultModelWithObject<BaselineSettingDetailModel>> GetCurrentBaselineSetting();
         Task<ResultModelWithObject<ListBaselineSetting>> SearchBaselineSetting(BaselineSearch parameters);
     }
 }
