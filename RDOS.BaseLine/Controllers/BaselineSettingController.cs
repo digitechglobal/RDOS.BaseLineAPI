@@ -25,6 +25,13 @@ namespace RDOS.BaseLine.Controllers
         }
 
         [HttpGet]
+        [Route("reschedule")]
+        public async Task<IActionResult> reschedule()
+        {
+            return Ok(await _baseLineSettingService.ReSchedular());
+        }
+
+        [HttpGet]
         [Route("GetTransactionStatus")]
         public async Task<IActionResult> GetListSettingTransactionStatus()
         {

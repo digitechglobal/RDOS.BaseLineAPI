@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.VariantTypes;
 using Microsoft.EntityFrameworkCore;
 using nProx.Helpers.Dapper;
 using nProx.Helpers.Services.Repository;
+using Quartz;
 using RDOS.BaseLine.Constants;
 using RDOS.BaseLine.Models.Request;
 using RDOS.BaseLine.RDOSInfratructure;
@@ -15,6 +16,7 @@ namespace RDOS.BaseLine.Service
 {
     public class BaselineSettingService : IBaselineSettingService
     {
+        public IScheduler Scheduler { get; set; }
         private readonly ILogger<BaselineSettingService> _logger;
         private readonly IBaseRepository<BlBlsettingInformation> _blSettingInfoRepo;
         private readonly IBaseRepository<BlBlsettingProcess> _blSettingProcessRepo;
@@ -25,18 +27,20 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlRawPo> _blRawPo;
         private readonly IMapper _mapper;
         private readonly IDapperRepositories _dapper;
+        private readonly ISchedulerFactory _schedulerFactory;
 
         public BaselineSettingService(
-            ILogger<BaselineSettingService> logger, 
-            IBaseRepository<BlBlsettingInformation> blSettingInfoRepo, 
-            IBaseRepository<BlBlsettingProcess> blSettingProcessRepo, 
-            IBaseRepository<BlBlsettingTransactionStatus> blSettingTransactionStatusRepo, 
-            IBaseRepository<BlBlsettingProcessPending> blSettingProcessPendingRepo, 
-            IBaseRepository<BlBlsettingEmail> blSettingEmailRepo, 
+            ILogger<BaselineSettingService> logger,
+            IBaseRepository<BlBlsettingInformation> blSettingInfoRepo,
+            IBaseRepository<BlBlsettingProcess> blSettingProcessRepo,
+            IBaseRepository<BlBlsettingTransactionStatus> blSettingTransactionStatusRepo,
+            IBaseRepository<BlBlsettingProcessPending> blSettingProcessPendingRepo,
+            IBaseRepository<BlBlsettingEmail> blSettingEmailRepo,
             IBaseRepository<BlBlprocess> blProcessRepo,
             IBaseRepository<BlRawPo> blRawPo,
             IMapper mapper,
-            IDapperRepositories dapper)
+            IDapperRepositories dapper,
+            ISchedulerFactory schedulerFactory)
         {
             _logger = logger;
             _blSettingInfoRepo = blSettingInfoRepo;
@@ -48,6 +52,40 @@ namespace RDOS.BaseLine.Service
             _mapper = mapper;
             _dapper = dapper;
             _blRawPo = blRawPo;
+            _schedulerFactory = schedulerFactory;
+        }
+
+        public ITrigger ReTriggered(ITrigger oldTrigger, string cronExpression)
+        {
+            var builder = oldTrigger.GetTriggerBuilder();
+            builder = builder.WithCronSchedule(cronExpression);
+
+            var newTrigger = builder.Build();
+            var simpleTrigger = newTrigger as ISimpleTrigger;
+            if (simpleTrigger != null)
+            {
+                var trigger = oldTrigger as ISimpleTrigger;
+                if (trigger != null)
+                    simpleTrigger.TimesTriggered = trigger.TimesTriggered;
+            }
+
+            return newTrigger;
+        }
+
+        public async Task<bool> ReSchedular()
+        {
+            try
+            {
+                Scheduler = await _schedulerFactory.GetScheduler();
+                var trigger = await Scheduler.GetTrigger(new TriggerKey("BaseLine", "DailyBaseLine"));
+                await Scheduler.RescheduleJob(trigger.Key, ReTriggered(trigger, "0/1 * * * * ?"));
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                return false;
+            }
+
         }
 
         public async Task<BaseResultModel> ChangeSetting(BaselineSettingModel dataInput, string userLogin)
