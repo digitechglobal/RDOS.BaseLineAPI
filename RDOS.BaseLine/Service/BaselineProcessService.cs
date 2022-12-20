@@ -9,7 +9,10 @@ using RDOS.BaseLine.Constants;
 using RDOS.BaseLine.Models.Request;
 using RDOS.BaseLine.RDOSInfratructure;
 using RDOS.BaseLine.Service.Interface;
+using RestSharp.Authenticators;
+using RestSharp;
 using static RDOS.BaseLine.Models.Results;
+using RDOS.BaseLine.Models.Result;
 
 namespace RDOS.BaseLine.Service
 {
@@ -23,9 +26,12 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlBlsettingEmail> _blSettingEmailRepo;
         private readonly IBaseRepository<BlBlprocess> _blProcessRepo;
         private readonly IBaseRepository<BlRawPo> _blRawPo;
+        private readonly IBaseRepository<BlRawSo> _blRawSo;
         private readonly IBaseRepository<BlIssueQty> _blIssueQty;
         private readonly IBaseRepository<BlReceiptQty> _blReceiptyQty;
         private readonly IBaseRepository<BlCloseStock> _blCloseQty;
+        private readonly IBaseRepository<SaleCalendar> _salesCalendarRepo;
+        private readonly IBaseRepository<SaleCalendarHoliday> _holidayRepo;
         private readonly IMapper _mapper;
         private readonly IDapperRepositories _dapper;
 
@@ -41,6 +47,9 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<BlIssueQty> blIssuseQty,
             IBaseRepository<BlReceiptQty> blReceiptyQty,
             IBaseRepository<BlCloseStock> blCloseQty,
+            IBaseRepository<BlRawSo> blRawSo,
+            IBaseRepository<SaleCalendar> salesCalendarRepo,
+            IBaseRepository<SaleCalendarHoliday> holidayRepo,
             IMapper mapper,
             IDapperRepositories dapper)
         {
@@ -57,6 +66,9 @@ namespace RDOS.BaseLine.Service
             _blIssueQty = blIssuseQty;
             _blReceiptyQty = blReceiptyQty;
             _blCloseQty = blCloseQty;
+            _blRawSo = blRawSo;
+            _salesCalendarRepo = salesCalendarRepo;
+            _holidayRepo = holidayRepo;
         }
 
         public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef, string userName)
@@ -340,6 +352,89 @@ namespace RDOS.BaseLine.Service
 
                 // Insert to database
                 _blCloseQty.InsertMany(listDataFinal);
+
+                return new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Code = 200,
+                    Message = "Successfully"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Code = 500,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
+
+        public async Task<BaseResultModel> ProcessSO(string baselineDate, string settingRef, string userName)
+        {
+            try
+            {
+                DateTime baselineDateNew = DateTime.Parse(baselineDate);
+                var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baselineDateNew.Year);
+                if (salesCalendar == null)
+                {
+                    return new BaseResultModel 
+                    { 
+                        IsSuccess = false,
+                        Code = 404,
+                        Message = "Cannot found sales calendar"
+                    };
+                }
+
+                // Handle holiday
+                var listHoliday = _holidayRepo.Find(x => x.SaleCalendarId == salesCalendar.Id).ToList();
+
+                var workingday = "true";
+
+                if (salesCalendar.IncludeWeekend == CalendarConstant.SAT && 
+                    baselineDateNew.DayOfWeek.ToString() == "Sunday")
+                {
+                    workingday = "false";
+                }
+
+                if (string.IsNullOrEmpty(salesCalendar.IncludeWeekend) && 
+                    (baselineDateNew.DayOfWeek.ToString() == "Saturday" || 
+                    baselineDateNew.DayOfWeek.ToString() == "Sunday"))
+                {
+                    workingday = "false";
+                }
+
+                if (listHoliday.Any(x => x.HolidayDate.Date == baselineDateNew.Date))
+                {
+                    workingday = "false";
+                }
+
+                // Function query
+                var query = @"SELECT * FROM collectrawso(@baselinedate, @username, @settingref, @workingday)";
+
+                // Handle parameter
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@baselinedate", baselineDate);
+                parameters.Add("@username", userName);
+                parameters.Add("@settingref", settingRef);
+                parameters.Add("@workingday", workingday);
+
+                // Excute query
+                var listData = ((List<BlRawSo>)_dapper.QueryWithParams<BlRawSo>(query, parameters));
+
+                // List record po by baseline date
+                var listRawSo = _blRawSo.Find(x => x.BaselineDate.Date == baselineDateNew.Date).ToList();
+
+                // Remove record by baseline date
+                if (listRawSo != null && listRawSo.Count > 0)
+                {
+                    _blRawSo.DeleteMany(listRawSo);
+                }
+
+                // Insert to database
+                _blRawSo.InsertMany(listData);
 
                 return new BaseResultModel
                 {

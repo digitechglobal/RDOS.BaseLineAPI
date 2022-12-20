@@ -11,7 +11,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public bool? RecordPerformance { get; set; }
         public DateTime? RecordPerformanceUpdateDateTime { get; set; }
         public string? RecordPerformanceUpdateBy { get; set; }
-        public int? WorkingDay { get; set; }
+        public bool? WorkingDay { get; set; }
         public string? SalesPeriodId { get; set; }
         public DateTime? VisitDate { get; set; }
         public string? VisitId { get; set; }
@@ -117,8 +117,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? CustomerWardsShortName { get; set; }
         public string? CustomerStreet { get; set; }
         public string? CustomerDeptNo { get; set; }
-        public string? CustomerLongtiue { get; set; }
-        public string? CustomerLattitue { get; set; }
+        public double? CustomerLongtiue { get; set; }
+        public double? CustomerLattitue { get; set; }
         public string? CustomerShiptoId { get; set; }
         public string? CustomerShiptoName { get; set; }
         public string? CustomerShiptoCountryId { get; set; }
@@ -221,18 +221,17 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? Kitdescription { get; set; }
         public bool? IsFree { get; set; }
         public decimal? UnitPrice { get; set; }
-        public Guid? BaseUnitId { get; set; }
+        public string? BaseUnitId { get; set; }
         public string? BaseUnitDesc { get; set; }
-        public Guid? SalesUnitId { get; set; }
+        public string? SalesUnitId { get; set; }
         public string? SalesUnitDesc { get; set; }
-        public Guid? PurchaseUnitId { get; set; }
+        public string? PurchaseUnitId { get; set; }
         public string? PurchaseUnitDesc { get; set; }
-        public string? BaseUomId { get; set; }
         public Guid? Hierarchy { get; set; }
         public string? KitKey { get; set; }
-        public Guid? Vatid { get; set; }
-        public string? Vatvalue { get; set; }
-        public string? Vat { get; set; }
+        public string? Vatid { get; set; }
+        public decimal? Vatvalue { get; set; }
+        public decimal? Vat { get; set; }
         public string? LocationId { get; set; }
         public string? LocationDesc { get; set; }
         public int? OriginalOrderQuantities { get; set; }

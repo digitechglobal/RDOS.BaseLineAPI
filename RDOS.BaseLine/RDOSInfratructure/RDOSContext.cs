@@ -2197,7 +2197,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.BaseUnitDesc).HasMaxLength(255);
 
-                entity.Property(e => e.BaseUomId).HasMaxLength(255);
+                entity.Property(e => e.BaseUnitId).HasMaxLength(100);
 
                 entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
 
@@ -2342,10 +2342,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.CustomerDistrictsShortName).HasMaxLength(255);
 
                 entity.Property(e => e.CustomerId).HasMaxLength(100);
-
-                entity.Property(e => e.CustomerLattitue).HasMaxLength(255);
-
-                entity.Property(e => e.CustomerLongtiue).HasMaxLength(255);
 
                 entity.Property(e => e.CustomerName).HasMaxLength(255);
 
@@ -2579,7 +2575,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.LocationDesc).HasMaxLength(255);
 
-                entity.Property(e => e.LocationId).HasMaxLength(255);
+                entity.Property(e => e.LocationId).HasMaxLength(100);
 
                 entity.Property(e => e.MenuType).HasMaxLength(100);
 
@@ -2622,6 +2618,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.PromotionShortName).HasMaxLength(255);
 
                 entity.Property(e => e.PurchaseUnitDesc).HasMaxLength(255);
+
+                entity.Property(e => e.PurchaseUnitId).HasMaxLength(100);
 
                 entity.Property(e => e.ReasonDesc).HasMaxLength(255);
 
@@ -2674,6 +2672,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.SalesRepId).HasMaxLength(100);
 
                 entity.Property(e => e.SalesUnitDesc).HasMaxLength(255);
+
+                entity.Property(e => e.SalesUnitId).HasMaxLength(100);
 
                 entity.Property(e => e.ShippedSkus).HasColumnName("Shipped_SKUs");
 
@@ -2729,15 +2729,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Vat)
-                    .HasMaxLength(255)
-                    .HasColumnName("VAT");
+                entity.Property(e => e.Vat).HasColumnName("VAT");
 
-                entity.Property(e => e.Vatid).HasColumnName("VATId");
+                entity.Property(e => e.Vatid)
+                    .HasMaxLength(100)
+                    .HasColumnName("VATId");
 
-                entity.Property(e => e.Vatvalue)
-                    .HasMaxLength(255)
-                    .HasColumnName("VATValue");
+                entity.Property(e => e.Vatvalue).HasColumnName("VATValue");
 
                 entity.Property(e => e.VisitDate).HasColumnType("timestamp without time zone");
 
