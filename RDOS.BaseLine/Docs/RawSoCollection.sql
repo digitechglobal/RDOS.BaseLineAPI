@@ -646,11 +646,11 @@ CREATE FUNCTION collectrawso(baselinedate VARCHAR, usename VARCHAR, settingref V
 		join "PrincipalProfile" as principalProfile on principalProfile."Code" = soOrderInfo."PrincipalID"
 		join "SC_SalesOrganizationStructures" as salesOrgInfo on salesOrgInfo."Code" = soOrderInfo."SalesOrgID"
 		-- left join "TpDiscounts" as discountInfo on discountInfo."Code" = soOrderInfo."PromotionRefNumber"
-		left join "SC_TerritoryValues" as branchValue on branchValue."Key" = CONCAT('TL01-',soOrderInfo."BranchId") and branchValue."IsDeleted" = false
-		left join "SC_TerritoryValues" as regionValue on regionValue."Key" = CONCAT('TL02-',soOrderInfo."RegionId") and regionValue."IsDeleted" = false
-		left join "SC_TerritoryValues" as subRegionValue on subRegionValue."Key" = CONCAT('TL03-',soOrderInfo."SubRegionId") and subRegionValue."IsDeleted" = false
-		left join "SC_TerritoryValues" as areaValue on areaValue."Key" = CONCAT('TL04-',soOrderInfo."AreaId") and areaValue."IsDeleted" = false
-		left join "SC_TerritoryValues" as subAreaValue on subAreaValue."Key" = CONCAT('TL05-',soOrderInfo."SubAreaId") and subAreaValue."IsDeleted" = false
+		left join "SC_TerritoryValues" as branchValue on branchValue."Key" = soOrderInfo."BranchId"
+		left join "SC_TerritoryValues" as regionValue on regionValue."Key" = soOrderInfo."RegionId"
+		left join "SC_TerritoryValues" as subRegionValue on subRegionValue."Key" = soOrderInfo."SubRegionId"
+		left join "SC_TerritoryValues" as areaValue on areaValue."Key" = soOrderInfo."AreaId"
+		left join "SC_TerritoryValues" as subAreaValue on subAreaValue."Key" = soOrderInfo."SubAreaId"
 		join "DSA_DistributorSellingAreas" as dsaInfo on dsaInfo."Code" = soOrderInfo."DSAID"
 		join "Distributors" as distributorInfo on distributorInfo."Code" = soOrderInfo."DistributorCode"
 		join "DistributorShiptos" as wareHouseInfo on wareHouseInfo."ShiptoCode" = soOrderInfo."WareHouseID"
@@ -745,5 +745,5 @@ END $func$;
 SELECT
     *
 FROM
-    collectrawso('2022-11-08', 'admin', 'BLS1', 'FALSE')
-LIMIT 10;
+    collectrawso('2022-11-14', 'admin', 'BLS1', 'true')
+LIMIT 100;

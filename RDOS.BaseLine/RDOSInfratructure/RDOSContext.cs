@@ -62,6 +62,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public virtual DbSet<BlRawPo> BlRawPos { get; set; } = null!;
         public virtual DbSet<BlRawSo> BlRawSos { get; set; } = null!;
         public virtual DbSet<BlReceiptQty> BlReceiptQtys { get; set; } = null!;
+        public virtual DbSet<BlRunningSale> BlRunningSales { get; set; } = null!;
         public virtual DbSet<City> Citys { get; set; } = null!;
         public virtual DbSet<CleanDataConfigure> CleanDataConfigures { get; set; } = null!;
         public virtual DbSet<Competitor> Competitors { get; set; } = null!;
@@ -3013,6 +3014,191 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.WareHouseId).HasMaxLength(100);
 
                 entity.Property(e => e.WareHouseName).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<BlRunningSale>(entity =>
+            {
+                entity.ToTable("BL_RunningSales");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.AreaId).HasMaxLength(100);
+
+                entity.Property(e => e.AreaName).HasMaxLength(255);
+
+                entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.BranchId).HasMaxLength(100);
+
+                entity.Property(e => e.BranchName).HasMaxLength(255);
+
+                entity.Property(e => e.Chanels).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.DistributorCitysDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorCitysId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorCitysShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorCountrysDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorCountrysId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorCountrysShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorDeptNo).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorDistrictsDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorDistrictsId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorDistrictsShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorProvincesDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorProvincesId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorProvincesShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToCitysDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToCitysId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorShipToCitysShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToCountrysDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToCountrysId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorShipToCountrysShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToDeptNo).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToDistrictsDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToDistrictsId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorShipToDistrictsShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToFullName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToProvincesDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToProvincesId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorShipToProvincesShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToStatesDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToStatesId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorShipToStatesShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToStreet).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToWardsDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShipToWardsId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorShipToWardsShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorShiptoId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorStatesDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorStatesId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorStatesShortName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorStreet).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorWardsDesc).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorWardsId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorWardsShortName).HasMaxLength(255);
+
+                entity.Property(e => e.Dmscode)
+                    .HasMaxLength(100)
+                    .HasColumnName("DMSCode");
+
+                entity.Property(e => e.Dsadesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("DSADesc");
+
+                entity.Property(e => e.Dsaid)
+                    .HasMaxLength(100)
+                    .HasColumnName("DSAId");
+
+                entity.Property(e => e.Erpid)
+                    .HasMaxLength(100)
+                    .HasColumnName("ERPId");
+
+                entity.Property(e => e.InventoryDescription).HasMaxLength(255);
+
+                entity.Property(e => e.InventoryReportName).HasMaxLength(255);
+
+                entity.Property(e => e.InventoryShortName).HasMaxLength(255);
+
+                entity.Property(e => e.ItemId).HasMaxLength(100);
+
+                entity.Property(e => e.PrincipalDesc).HasMaxLength(255);
+
+                entity.Property(e => e.PrincipalId).HasMaxLength(100);
+
+                entity.Property(e => e.PrincipalLinkedCode).HasMaxLength(100);
+
+                entity.Property(e => e.RegionId).HasMaxLength(100);
+
+                entity.Property(e => e.RegionName).HasMaxLength(255);
+
+                entity.Property(e => e.RunningSalesBaseUom)
+                    .HasMaxLength(255)
+                    .HasColumnName("RunningSalesBaseUOM");
+
+                entity.Property(e => e.RunningSalesPurchaseUom)
+                    .HasMaxLength(255)
+                    .HasColumnName("RunningSalesPurchaseUOM");
+
+                entity.Property(e => e.RunningSalesSalesUom)
+                    .HasMaxLength(255)
+                    .HasColumnName("RunningSalesSalesUOM");
+
+                entity.Property(e => e.SalesOrgDesc).HasMaxLength(255);
+
+                entity.Property(e => e.SalesOrgId).HasMaxLength(100);
+
+                entity.Property(e => e.ShiptoCodeOnErp)
+                    .HasMaxLength(100)
+                    .HasColumnName("ShiptoCodeOnERP");
+
+                entity.Property(e => e.ShiptoName).HasMaxLength(255);
+
+                entity.Property(e => e.SubAreaId).HasMaxLength(100);
+
+                entity.Property(e => e.SubAreaName).HasMaxLength(255);
+
+                entity.Property(e => e.SubChanels).HasMaxLength(255);
+
+                entity.Property(e => e.SubRegionId).HasMaxLength(100);
+
+                entity.Property(e => e.SubRegionName).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.WarehouseId).HasMaxLength(100);
+
+                entity.Property(e => e.WarehouseName).HasMaxLength(255);
             });
 
             modelBuilder.Entity<City>(entity =>

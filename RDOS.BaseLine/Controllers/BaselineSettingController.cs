@@ -113,5 +113,13 @@ namespace RDOS.BaseLine.Controllers
             var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
             return Ok(await _blProcessService.ProcessSO(input.BaselineDate, input.SettingRef, username));
         }
+
+        [HttpPost]
+        [Route("ProcessRunningSales")]
+        public async Task<IActionResult> ProcessRunningSales(ProcessRequest input)
+        {
+            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
+            return Ok(await _blProcessService.ProcessRunningSales(input.BaselineDate, username));
+        }
     }
 }

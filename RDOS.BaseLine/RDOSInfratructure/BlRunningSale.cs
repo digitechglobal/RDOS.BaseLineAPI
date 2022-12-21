@@ -1,0 +1,99 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace RDOS.BaseLine.RDOSInfratructure
+{
+    public partial class BlRunningSale
+    {
+        public Guid Id { get; set; }
+        public DateTime BaselineDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
+        public bool? IsDeleted { get; set; }
+        public string? ItemId { get; set; }
+        public string? InventoryShortName { get; set; }
+        public string? InventoryReportName { get; set; }
+        public string? InventoryDescription { get; set; }
+        public string? Erpid { get; set; }
+        public int? RunningSalesByBaseQty { get; set; }
+        public string? RunningSalesBaseUom { get; set; }
+        public int? RunningSalesBySalesQty { get; set; }
+        public string? RunningSalesSalesUom { get; set; }
+        public int? RunningSalesByPurchaseQty { get; set; }
+        public string? RunningSalesPurchaseUom { get; set; }
+        public string? WarehouseId { get; set; }
+        public string? WarehouseName { get; set; }
+        public string? DistributorId { get; set; }
+        public string? DistributorName { get; set; }
+        public string? Dmscode { get; set; }
+        public string? PrincipalLinkedCode { get; set; }
+        public string? DistributorCountrysId { get; set; }
+        public string? DistributorCountrysDesc { get; set; }
+        public string? DistributorCountrysShortName { get; set; }
+        public string? DistributorStatesId { get; set; }
+        public string? DistributorStatesDesc { get; set; }
+        public string? DistributorStatesShortName { get; set; }
+        public string? DistributorProvincesId { get; set; }
+        public string? DistributorProvincesDesc { get; set; }
+        public string? DistributorProvincesShortName { get; set; }
+        public string? DistributorCitysId { get; set; }
+        public string? DistributorCitysDesc { get; set; }
+        public string? DistributorCitysShortName { get; set; }
+        public string? DistributorDistrictsId { get; set; }
+        public string? DistributorDistrictsDesc { get; set; }
+        public string? DistributorDistrictsShortName { get; set; }
+        public string? DistributorWardsId { get; set; }
+        public string? DistributorWardsDesc { get; set; }
+        public string? DistributorWardsShortName { get; set; }
+        public string? DistributorStreet { get; set; }
+        public string? DistributorDeptNo { get; set; }
+        public string? DistributorLongtiue { get; set; }
+        public string? DistributorLattitue { get; set; }
+        public string? DistributorShiptoId { get; set; }
+        public string? ShiptoName { get; set; }
+        public string? ShiptoCodeOnErp { get; set; }
+        public string? DistributorShipToFullName { get; set; }
+        public string? DistributorShipToCountrysId { get; set; }
+        public string? DistributorShipToCountrysDesc { get; set; }
+        public string? DistributorShipToCountrysShortName { get; set; }
+        public string? DistributorShipToStatesId { get; set; }
+        public string? DistributorShipToStatesDesc { get; set; }
+        public string? DistributorShipToStatesShortName { get; set; }
+        public string? DistributorShipToProvincesId { get; set; }
+        public string? DistributorShipToProvincesDesc { get; set; }
+        public string? DistributorShipToProvincesShortName { get; set; }
+        public string? DistributorShipToCitysId { get; set; }
+        public string? DistributorShipToCitysDesc { get; set; }
+        public string? DistributorShipToCitysShortName { get; set; }
+        public string? DistributorShipToDistrictsId { get; set; }
+        public string? DistributorShipToDistrictsDesc { get; set; }
+        public string? DistributorShipToDistrictsShortName { get; set; }
+        public string? DistributorShipToWardsId { get; set; }
+        public string? DistributorShipToWardsDesc { get; set; }
+        public string? DistributorShipToWardsShortName { get; set; }
+        public string? DistributorShipToStreet { get; set; }
+        public string? DistributorShipToDeptNo { get; set; }
+        public string? DistributorShipToLongtiue { get; set; }
+        public string? DistributorShipToLattitue { get; set; }
+        public string? Chanels { get; set; }
+        public string? SubChanels { get; set; }
+        public string? PrincipalId { get; set; }
+        public string? PrincipalDesc { get; set; }
+        public string? SalesOrgId { get; set; }
+        public string? SalesOrgDesc { get; set; }
+        public string? BranchId { get; set; }
+        public string? BranchName { get; set; }
+        public string? RegionId { get; set; }
+        public string? RegionName { get; set; }
+        public string? SubRegionId { get; set; }
+        public string? SubRegionName { get; set; }
+        public string? AreaId { get; set; }
+        public string? AreaName { get; set; }
+        public string? SubAreaId { get; set; }
+        public string? SubAreaName { get; set; }
+        public string? Dsaid { get; set; }
+        public string? Dsadesc { get; set; }
+    }
+}

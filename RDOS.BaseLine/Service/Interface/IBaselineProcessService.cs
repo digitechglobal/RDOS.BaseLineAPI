@@ -9,5 +9,6 @@ namespace RDOS.BaseLine.Service.Interface
         Task<BaseResultModel> ProcessInvReceipt(string baselineDate, string settingRef, string userName, string typeData);
         Task<BaseResultModel> ProcessInvCloseQty(string baselineDate, string settingRef, string userName);
         Task<BaseResultModel> ProcessSO(string baselineDate, string settingRef, string userName);
+        Task<BaseResultModel> ProcessRunningSales(string baselineDate, string userName);
     }
 }
