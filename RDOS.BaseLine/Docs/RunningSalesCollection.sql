@@ -1,5 +1,5 @@
 DROP FUNCTION collectrunningsales(baselinedate VARCHAR, username VARCHAR);
-CREATE FUNCTION collectrunningsales(baselinedate VARCHAR, username VARCHAR) RETURNS TABLE (
+CREATE FUNCTION collectrunningsales(baselinedate VARCHAR) RETURNS TABLE (
     "Id" uuid,
     "BaselineDate" timestamp,
     "CreatedDate" timestamp,
@@ -97,7 +97,7 @@ CREATE FUNCTION collectrunningsales(baselinedate VARCHAR, username VARCHAR) RETU
         CAST(baselinedate AS timestamp) :: timestamp,
         now() :: timestamp, --as "CreatedDate",
         NULL :: timestamp, --as "UpdatedDate",
-        username :: varchar(255), --as "CreatedBy",
+        rawSOInfo."CreatedBy" :: varchar(255), --as "CreatedBy",
         NULL :: varchar(255), --as "UpdatedBy",
         false as "IsDeleted",
         rawSOInfo."ItemId" :: varchar(100), --as "ItemId",
@@ -221,5 +221,5 @@ END $func$;
 SELECT
     *
 FROM
-    collectrunningsales('2022-11-14', 'admin')
+    collectrunningsales('2022-11-14')
 LIMIT 100;

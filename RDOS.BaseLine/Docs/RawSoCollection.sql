@@ -1,5 +1,5 @@
-DROP FUNCTION collectrawso(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR, workingday VARCHAR);
-CREATE FUNCTION collectrawso(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR, workingday VARCHAR) RETURNS TABLE (
+DROP FUNCTION collectrawso(baselinedate VARCHAR, settingref VARCHAR, workingday VARCHAR);
+CREATE FUNCTION collectrawso(baselinedate VARCHAR, settingref VARCHAR, workingday VARCHAR) RETURNS TABLE (
 	"Id" uuid,
 	"BaselineDate" timestamp,
 	"BaselineSettingRef" varchar(50),
@@ -636,7 +636,7 @@ CREATE FUNCTION collectrawso(baselinedate VARCHAR, usename VARCHAR, settingref V
 		itemAttribute10."Description" :: varchar(255), --as "InventoryAttributeValueDesc10",
 		soOrderInfo."CreatedDate" :: timestamp, --as "CreatedDate",
 		soOrderInfo."UpdatedDate" :: timestamp, --as "UpdatedDate",
-		usename :: character varying(250), --as "CreatedBy",
+		soOrderInfo."CreatedBy" :: character varying(250), --as "CreatedBy",
 		soOrderInfo."UpdatedBy" :: character varying(250), --as "UpdatedBy",
 		soOrderInfo."IsDeleted" :: boolean --as "IsDeleted"
 	From 
@@ -645,7 +645,6 @@ CREATE FUNCTION collectrawso(baselinedate VARCHAR, usename VARCHAR, settingref V
 		left join "SO_Reasons" as soReasonInfo on soReasonInfo."ReasonCode" = soOrderInfo."ReasonCode"
 		join "PrincipalProfile" as principalProfile on principalProfile."Code" = soOrderInfo."PrincipalID"
 		join "SC_SalesOrganizationStructures" as salesOrgInfo on salesOrgInfo."Code" = soOrderInfo."SalesOrgID"
-		-- left join "TpDiscounts" as discountInfo on discountInfo."Code" = soOrderInfo."PromotionRefNumber"
 		left join "SC_TerritoryValues" as branchValue on branchValue."Key" = soOrderInfo."BranchId"
 		left join "SC_TerritoryValues" as regionValue on regionValue."Key" = soOrderInfo."RegionId"
 		left join "SC_TerritoryValues" as subRegionValue on subRegionValue."Key" = soOrderInfo."SubRegionId"
@@ -745,5 +744,5 @@ END $func$;
 SELECT
     *
 FROM
-    collectrawso('2022-11-14', 'admin', 'BLS1', 'true')
+    collectrawso('2022-11-14', 'BLS1', 'true')
 LIMIT 100;

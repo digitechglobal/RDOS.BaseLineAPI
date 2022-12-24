@@ -91,18 +91,17 @@ namespace RDOS.BaseLine.Service
             _blSafetyStockAssessmentRepo = blSafetyStockAssessmentRepo;
         }
 
-        public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef, string userName)
+        public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef)
         {
             try
             {
                 DateTime baselineDateNew = DateTime.Parse(baselineDate);
                 // Function query
-                var query = @"SELECT * FROM collectrawpo(@baselinedate, @username, @settingref)";
+                var query = @"SELECT * FROM collectrawpo(@baselinedate, @settingref)";
 
                 // Handle parameter
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@baselinedate", baselineDate);
-                parameters.Add("@username", userName);
                 parameters.Add("@settingref", settingRef);
 
                 // Excute query
@@ -139,19 +138,18 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<BaseResultModel> ProcessInvIssue(string baselineDate, string settingRef, string userName, string typeData)
+        public async Task<BaseResultModel> ProcessInvIssue(string baselineDate, string settingRef, string typeData)
         {
             try
             {
                 DateTime baselineDateNew = DateTime.Parse(baselineDate);
                 List<BlIssueQty> listDataFinal = new List<BlIssueQty>();
                 // Function query
-                var query = @"SELECT * FROM collectissueadjustment(@baselinedate, @username, @settingref, @typedata)";
+                var query = @"SELECT * FROM collectissueadjustment(@baselinedate, @settingref, @typedata)";
 
                 // Handle parameter
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@baselinedate", baselineDate);
-                parameters.Add("@username", userName);
                 parameters.Add("@settingref", settingRef);
                 parameters.Add("@typedata", typeData);
 
@@ -160,12 +158,11 @@ namespace RDOS.BaseLine.Service
                 listDataFinal.AddRange(listData);
 
                 // Function query 2
-                var query2 = @"SELECT * FROM collectissueinv(@baselinedate, @username, @settingref, @typedata)";
+                var query2 = @"SELECT * FROM collectissueinv(@baselinedate, @settingref, @typedata)";
 
                 // Handle parameter
                 DynamicParameters parameters2 = new DynamicParameters();
                 parameters2.Add("@baselinedate", baselineDate);
-                parameters2.Add("@username", userName);
                 parameters2.Add("@settingref", settingRef);
                 parameters2.Add("@typedata", typeData);
 
@@ -175,12 +172,11 @@ namespace RDOS.BaseLine.Service
                 listDataFinal.AddRange(listData2);
 
                 // Function query 3
-                var query3 = @"SELECT * FROM collectissuetransfer(@baselinedate, @username, @settingref, @typedata)";
+                var query3 = @"SELECT * FROM collectissuetransfer(@baselinedate, @settingref, @typedata)";
 
                 // Handle parameter
                 DynamicParameters parameters3 = new DynamicParameters();
                 parameters3.Add("@baselinedate", baselineDate);
-                parameters3.Add("@username", userName);
                 parameters3.Add("@settingref", settingRef);
                 parameters3.Add("@typedata", typeData);
 
@@ -220,19 +216,18 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<BaseResultModel> ProcessInvReceipt(string baselineDate, string settingRef, string userName, string typeData)
+        public async Task<BaseResultModel> ProcessInvReceipt(string baselineDate, string settingRef, string typeData)
         {
             try
             {
                 DateTime baselineDateNew = DateTime.Parse(baselineDate);
                 List<BlReceiptQty> listDataFinal = new List<BlReceiptQty>();
                 // Function query
-                var query = @"SELECT * FROM collectreceiptadjustment(@baselinedate, @username, @settingref, @typedata)";
+                var query = @"SELECT * FROM collectreceiptadjustment(@baselinedate, @settingref, @typedata)";
 
                 // Handle parameter
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@baselinedate", baselineDate);
-                parameters.Add("@username", userName);
                 parameters.Add("@settingref", settingRef);
                 parameters.Add("@typedata", typeData);
 
@@ -241,12 +236,11 @@ namespace RDOS.BaseLine.Service
                 listDataFinal.AddRange(listData);
 
                 // Function query 2
-                var query2 = @"SELECT * FROM collectreceiptinv(@baselinedate, @username, @settingref, @typedata)";
+                var query2 = @"SELECT * FROM collectreceiptinv(@baselinedate, @settingref, @typedata)";
 
                 // Handle parameter
                 DynamicParameters parameters2 = new DynamicParameters();
                 parameters2.Add("@baselinedate", baselineDate);
-                parameters2.Add("@username", userName);
                 parameters2.Add("@settingref", settingRef);
                 parameters2.Add("@typedata", typeData);
 
@@ -256,12 +250,11 @@ namespace RDOS.BaseLine.Service
                 listDataFinal.AddRange(listData2);
 
                 // Function query 3
-                var query3 = @"SELECT * FROM collectreceipttransfer(@baselinedate, @username, @settingref, @typedata)";
+                var query3 = @"SELECT * FROM collectreceipttransfer(@baselinedate, @settingref, @typedata)";
 
                 // Handle parameter
                 DynamicParameters parameters3 = new DynamicParameters();
                 parameters3.Add("@baselinedate", baselineDate);
-                parameters3.Add("@username", userName);
                 parameters3.Add("@settingref", settingRef);
                 parameters3.Add("@typedata", typeData);
 
@@ -301,19 +294,18 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<BaseResultModel> ProcessInvCloseQty(string baselineDate, string settingRef, string userName)
+        public async Task<BaseResultModel> ProcessInvCloseQty(string baselineDate, string settingRef)
         {
             try
             {
                 DateTime baselineDateNew = DateTime.Parse(baselineDate);
                 List<BlCloseStock> listDataConcat = new List<BlCloseStock>();
                 // Function query
-                var query = @"SELECT * FROM collectcloseinv(@baselinedate, @username, @settingref)";
+                var query = @"SELECT * FROM collectcloseinv(@baselinedate, @settingref)";
 
                 // Handle parameter
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@baselinedate", baselineDate);
-                parameters.Add("@username", userName);
                 parameters.Add("@settingref", settingRef);
 
                 // Excute query
@@ -321,12 +313,11 @@ namespace RDOS.BaseLine.Service
                 listDataConcat.AddRange(listData);
 
                 // Function query 2
-                var query2 = @"SELECT * FROM collectcloseadjustment(@baselinedate, @username, @settingref)";
+                var query2 = @"SELECT * FROM collectcloseadjustment(@baselinedate, @settingref)";
 
                 // Handle parameter
                 DynamicParameters parameters2 = new DynamicParameters();
                 parameters2.Add("@baselinedate", baselineDate);
-                parameters2.Add("@username", userName);
                 parameters2.Add("@settingref", settingRef);
 
                 // Excute query
@@ -334,12 +325,11 @@ namespace RDOS.BaseLine.Service
                 listDataConcat.AddRange(listData2);
 
                 // Function query 3
-                var query3 = @"SELECT * FROM collectclosetransfer(@baselinedate, @username, @settingref)";
+                var query3 = @"SELECT * FROM collectclosetransfer(@baselinedate, @settingref)";
 
                 // Handle parameter
                 DynamicParameters parameters3 = new DynamicParameters();
                 parameters3.Add("@baselinedate", baselineDate);
-                parameters3.Add("@username", userName);
                 parameters3.Add("@settingref", settingRef);
 
                 // Excute query
@@ -392,7 +382,7 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<BaseResultModel> ProcessSO(string baselineDate, string settingRef, string userName)
+        public async Task<BaseResultModel> ProcessSO(string baselineDate, string settingRef)
         {
             try
             {
@@ -432,12 +422,11 @@ namespace RDOS.BaseLine.Service
                 }
 
                 // Function query
-                var query = @"SELECT * FROM collectrawso(@baselinedate, @username, @settingref, @workingday)";
+                var query = @"SELECT * FROM collectrawso(@baselinedate, @settingref, @workingday)";
 
                 // Handle parameter
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@baselinedate", baselineDate);
-                parameters.Add("@username", userName);
                 parameters.Add("@settingref", settingRef);
                 parameters.Add("@workingday", workingday);
 
@@ -475,7 +464,7 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<BaseResultModel> ProcessRunningSales(string baselineDate, string userName)
+        public async Task<BaseResultModel> ProcessRunningSales(string baselineDate)
         {
             try
             {
@@ -568,12 +557,11 @@ namespace RDOS.BaseLine.Service
                     var dateCollectFinal = dateCollect.ToString("yyyy-MM-dd");
 
                     // Function query
-                    var query = @"SELECT * FROM collectrunningsales(@baselinedate, @username)";
+                    var query = @"SELECT * FROM collectrunningsales(@baselinedate)";
 
                     // Handle parameter
                     DynamicParameters parameters = new DynamicParameters();
                     parameters.Add("@baselinedate", dateCollectFinal);
-                    parameters.Add("@username", userName);
 
                     // Excute query
                     var listData = ((List<BlRunningSale>)_dapper.QueryWithParams<BlRunningSale>(query, parameters));

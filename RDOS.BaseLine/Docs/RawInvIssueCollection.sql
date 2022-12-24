@@ -1,6 +1,6 @@
 -- Adjustment
-DROP FUNCTION collectissueadjustment(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR, typedata VARCHAR);
-CREATE FUNCTION collectissueadjustment(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR, typedata VARCHAR) RETURNS TABLE (
+DROP FUNCTION collectissueadjustment(baselinedate VARCHAR, settingref VARCHAR, typedata VARCHAR);
+CREATE FUNCTION collectissueadjustment(baselinedate VARCHAR, settingref VARCHAR, typedata VARCHAR) RETURNS TABLE (
     "Id" uuid,
     "BaselineDate" timestamp,
     "BaselineSettingRef" varchar(50),
@@ -150,7 +150,6 @@ CREATE FUNCTION collectissueadjustment(baselinedate VARCHAR, usename VARCHAR, se
         systemsetting."SettingValue" :: varchar(255), --as "OutQuantityTypeValue",
         systemsetting."Description" :: varchar(255), --as "OutQuantityTypeDesc",
         invtransaction."Issue" :: integer, --as "OutQuantity",
---         allocationdetail."BaseUom" :: varchar(255), --as "OutBaseUOM",
 		baseuom."UomId" :: varchar(255), --as "OutBaseUOM",
 		(invtransaction."Issue" / salesconvs."ConversionFactor") :: integer,
 		salesuom."UomId":: varchar(100),
@@ -266,12 +265,11 @@ CREATE FUNCTION collectissueadjustment(baselinedate VARCHAR, usename VARCHAR, se
         inventoryItem."Hierarchy" :: uuid, --as "Hierarchy",
         invtransaction."TransactionDate" :: timestamp, --as "CreatedDate",
         invtransaction."UpdatedDate" :: timestamp, --as "UpdatedDate",
-        usename :: character varying(250), --as "CreatedBy",
+        invtransaction."CreatedBy" :: character varying(250), --as "CreatedBy",
         NULL :: character varying(250), --as "UpdatedBy",
         invtransaction."IsDeleted" :: boolean -- as "IsDeleted"
     From 
         "INV_AdjustmentDetails" as invtransaction
---         join "INV_AllocationDetails" as allocationdetail on allocationdetail."ItemKey" = invtransaction."ItemKey"
         join "InventoryItems" as inventoryItem on inventoryItem."InventoryItemId" = invtransaction."ItemCode"
 		left join "ItemsUOMConversions" as salesconvs on salesconvs."ItemID" = inventoryItem."Id"
 		and salesconvs."FromUnit" = inventoryItem."SalesUnit" 
@@ -329,12 +327,12 @@ END $func$;
 SELECT
     *
 FROM
-    collectissueadjustment('2022-10-19', 'admin', 'BLS1', 'Daily')
+    collectissueadjustment('2022-10-19', 'BLS1', 'Daily')
 LIMIT 100;
 
 -- Transaction
-DROP FUNCTION collectissueinv(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR, typedata VARCHAR);
-CREATE FUNCTION collectissueinv(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR, typedata VARCHAR) RETURNS TABLE (
+DROP FUNCTION collectissueinv(baselinedate VARCHAR, settingref VARCHAR, typedata VARCHAR);
+CREATE FUNCTION collectissueinv(baselinedate VARCHAR, settingref VARCHAR, typedata VARCHAR) RETURNS TABLE (
     "Id" uuid,
     "BaselineDate" timestamp,
     "BaselineSettingRef" varchar(50),
@@ -484,7 +482,6 @@ CREATE FUNCTION collectissueinv(baselinedate VARCHAR, usename VARCHAR, settingre
         systemsetting."SettingValue" :: varchar(255), --as "OutQuantityTypeValue",
         systemsetting."Description" :: varchar(255), --as "OutQuantityTypeDesc",
         invtransaction."BaseQuantity" :: integer, --as "OutQuantity",
---         allocationdetail."BaseUom" :: varchar(255), --as "OutBaseUOM",
 		baseuom."UomId" :: varchar(255), --as "OutBaseUOM",
 		(invtransaction."BaseQuantity" / salesconvs."ConversionFactor") :: integer,
 		salesuom."UomId":: varchar(100),
@@ -600,12 +597,11 @@ CREATE FUNCTION collectissueinv(baselinedate VARCHAR, usename VARCHAR, settingre
         inventoryItem."Hierarchy" :: uuid, --as "Hierarchy",
         invtransaction."CreatedDate" :: timestamp, --as "CreatedDate",
         invtransaction."UpdatedDate" :: timestamp, --as "UpdatedDate",
-        usename :: character varying(250), --as "CreatedBy",
+        invtransaction."CreatedBy" :: character varying(250), --as "CreatedBy",
         NULL :: character varying(250), --as "UpdatedBy",
         invtransaction."IsDeleted" :: boolean -- as "IsDeleted"
     From 
         "INV_InventoryTransactions" as invtransaction
---         join "INV_AllocationDetails" as allocationdetail on allocationdetail."ItemKey" = invtransaction."ItemKey"
         join "InventoryItems" as inventoryItem on inventoryItem."InventoryItemId" = invtransaction."ItemCode"
 		left join "ItemsUOMConversions" as salesconvs on salesconvs."ItemID" = inventoryItem."Id"
 		and salesconvs."FromUnit" = inventoryItem."SalesUnit" 
@@ -667,12 +663,12 @@ END $func$;
 SELECT
     *
 FROM
-    collectissueinv('2022-10-19', 'admin', 'BLS1', 'Daily')
+    collectissueinv('2022-10-19', 'BLS1', 'Daily')
 LIMIT 100;
 
 -- Transfer
-DROP FUNCTION collectissuetransfer(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR, typedata VARCHAR);
-CREATE FUNCTION collectissuetransfer(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR, typedata VARCHAR) RETURNS TABLE (
+DROP FUNCTION collectissuetransfer(baselinedate VARCHAR, settingref VARCHAR, typedata VARCHAR);
+CREATE FUNCTION collectissuetransfer(baselinedate VARCHAR, settingref VARCHAR, typedata VARCHAR) RETURNS TABLE (
     "Id" uuid,
     "BaselineDate" timestamp,
     "BaselineSettingRef" varchar(50),
@@ -822,7 +818,6 @@ CREATE FUNCTION collectissuetransfer(baselinedate VARCHAR, usename VARCHAR, sett
         systemsetting."SettingValue" :: varchar(255), --as "OutQuantityTypeValue",
         systemsetting."Description" :: varchar(255), --as "OutQuantityTypeDesc",
         invtransaction."Issue" :: integer, --as "OutQuantity",
---         allocationdetail."BaseUom" :: varchar(255), --as "OutBaseUOM",
 		baseuom."UomId" :: varchar(255), --as "OutBaseUOM",
 		(invtransaction."Issue" / salesconvs."ConversionFactor") :: integer,
 		salesuom."UomId":: varchar(100),
@@ -938,12 +933,11 @@ CREATE FUNCTION collectissuetransfer(baselinedate VARCHAR, usename VARCHAR, sett
         inventoryItem."Hierarchy" :: uuid, --as "Hierarchy",
         invtransaction."TransactionDate" :: timestamp, --as "CreatedDate",
         invtransaction."UpdatedDate" :: timestamp, --as "UpdatedDate",
-        usename :: character varying(250), --as "CreatedBy",
+        invtransaction."CreatedBy" :: character varying(250), --as "CreatedBy",
         NULL :: character varying(250), --as "UpdatedBy",
         invtransaction."IsDeleted" :: boolean -- as "IsDeleted"
     From 
         "INV_WhTransferDetails" as invtransaction
---         join "INV_AllocationDetails" as allocationdetail on allocationdetail."ItemKey" = invtransaction."ItemKey"
         join "InventoryItems" as inventoryItem on inventoryItem."InventoryItemId" = invtransaction."ItemCode"
 		left join "ItemsUOMConversions" as salesconvs on salesconvs."ItemID" = inventoryItem."Id"
 		and salesconvs."FromUnit" = inventoryItem."SalesUnit" 
@@ -1001,5 +995,5 @@ END $func$;
 SELECT
     *
 FROM
-    collectissuetransfer('2022-10-06', 'admin', 'BLS1', 'Daily')
+    collectissuetransfer('2022-10-06', 'BLS1', 'Daily')
 LIMIT 100;

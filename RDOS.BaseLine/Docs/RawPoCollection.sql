@@ -1,5 +1,5 @@
-DROP FUNCTION collectrawpo(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR);
-CREATE FUNCTION collectrawpo(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR) RETURNS TABLE (
+DROP FUNCTION collectrawpo(baselinedate VARCHAR, settingref VARCHAR);
+CREATE FUNCTION collectrawpo(baselinedate VARCHAR, settingref VARCHAR) RETURNS TABLE (
 	"Id" uuid,
 	"BaselineDate" timestamp,
 	"BaselineSettingRef" varchar(50),
@@ -316,7 +316,7 @@ CREATE FUNCTION collectrawpo(baselinedate VARCHAR, usename VARCHAR, settingref V
 		inventoryItem."Hierarchy" :: uuid,  -- as "Hierarchy",
 		grpoInfo."CreatedDate" :: timestamp,  -- as "CreatedDate",
 		grpoInfo."UpdatedDate" :: timestamp,  -- as "UpdatedDate",
-		usename :: character varying(250),  -- as "CreatedBy",
+		grpoInfo."CreatedBy" :: character varying(250),  -- as "CreatedBy",
 		NULL :: character varying(250),  -- as "UpdatedBy",
 		grpoInfo."IsDeleted" :: boolean  -- as "IsDeleted"
 	From 
@@ -375,5 +375,5 @@ END $func$;
 SELECT
     *
 FROM
-    collectrawpo('2022-11-17', 'admin', 'BLS1')
+    collectrawpo('2022-11-17', 'BLS1')
 LIMIT 10;

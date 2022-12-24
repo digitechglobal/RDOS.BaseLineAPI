@@ -1,6 +1,6 @@
 -- Adjsutment
-DROP FUNCTION collectcloseadjustment(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR);
-CREATE FUNCTION collectcloseadjustment(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR) RETURNS TABLE (
+DROP FUNCTION collectcloseadjustment(baselinedate VARCHAR, settingref VARCHAR);
+CREATE FUNCTION collectcloseadjustment(baselinedate VARCHAR, settingref VARCHAR) RETURNS TABLE (
     "Id" uuid,
     "BaselineDate" timestamp,
     "BaselineSettingRef" varchar(50),
@@ -254,7 +254,7 @@ CREATE FUNCTION collectcloseadjustment(baselinedate VARCHAR, usename VARCHAR, se
         inventoryItem."Hierarchy" :: uuid, --as "Hierarchy",
         invtransaction."CreatedDate" :: timestamp, --as "CreatedDate",
         invtransaction."UpdatedDate" :: timestamp, --as "UpdatedDate",
-        usename :: character varying(250), --as "CreatedBy",
+        invtransaction."CreatedBy" :: character varying(250), --as "CreatedBy",
         NULL :: character varying(250), --as "UpdatedBy",
         invtransaction."IsDeleted" :: boolean -- as "IsDeleted"
     From 
@@ -315,12 +315,12 @@ END $func$;
 SELECT
     *
 FROM
-    collectcloseadjustment('2022-10-19', 'admin', 'BLS1')
+    collectcloseadjustment('2022-10-19', 'BLS1')
 LIMIT 100;
 
 -- Transfer
-DROP FUNCTION collectclosetransfer(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR);
-CREATE FUNCTION collectclosetransfer(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR) RETURNS TABLE (
+DROP FUNCTION collectclosetransfer(baselinedate VARCHAR, settingref VARCHAR);
+CREATE FUNCTION collectclosetransfer(baselinedate VARCHAR, settingref VARCHAR) RETURNS TABLE (
     "Id" uuid,
     "BaselineDate" timestamp,
     "BaselineSettingRef" varchar(50),
@@ -574,7 +574,7 @@ CREATE FUNCTION collectclosetransfer(baselinedate VARCHAR, usename VARCHAR, sett
         inventoryItem."Hierarchy" :: uuid, --as "Hierarchy",
         invtransaction."CreatedDate" :: timestamp, --as "CreatedDate",
         invtransaction."UpdatedDate" :: timestamp, --as "UpdatedDate",
-        usename :: character varying(250), --as "CreatedBy",
+        invtransaction."CreatedBy" :: character varying(250), --as "CreatedBy",
         NULL :: character varying(250), --as "UpdatedBy",
         invtransaction."IsDeleted" :: boolean -- as "IsDeleted"
     From 
@@ -635,12 +635,12 @@ END $func$;
 SELECT
     *
 FROM
-    collectclosetransfer('2022-10-06', 'admin', 'BLS1')
+    collectclosetransfer('2022-10-06', 'BLS1')
 LIMIT 100;
 
 -- Transaction
-DROP FUNCTION collectcloseinv(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR);
-CREATE FUNCTION collectcloseinv(baselinedate VARCHAR, usename VARCHAR, settingref VARCHAR) RETURNS TABLE (
+DROP FUNCTION collectcloseinv(baselinedate VARCHAR, settingref VARCHAR);
+CREATE FUNCTION collectcloseinv(baselinedate VARCHAR, settingref VARCHAR) RETURNS TABLE (
     "Id" uuid,
     "BaselineDate" timestamp,
     "BaselineSettingRef" varchar(50),
@@ -893,7 +893,7 @@ CREATE FUNCTION collectcloseinv(baselinedate VARCHAR, usename VARCHAR, settingre
         inventoryItem."Hierarchy" :: uuid, --as "Hierarchy",
         invtransaction."CreatedDate" :: timestamp, --as "CreatedDate",
         invtransaction."TransactionDate" :: timestamp, --as "UpdatedDate",
-        usename :: character varying(250), --as "CreatedBy",
+        invtransaction."CreatedBy" :: character varying(250), --as "CreatedBy",
         NULL :: character varying(250), --as "UpdatedBy",
         invtransaction."IsDeleted" :: boolean-- as "IsDeleted"
     From 
@@ -953,5 +953,5 @@ END $func$;
 SELECT
     *
 FROM
-    collectcloseinv('2022-10-19', 'admin', 'BLS1')
+    collectcloseinv('2022-10-19', 'BLS1')
 LIMIT 100;

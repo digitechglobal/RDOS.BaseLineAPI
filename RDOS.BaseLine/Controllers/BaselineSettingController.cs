@@ -78,48 +78,42 @@ namespace RDOS.BaseLine.Controllers
         [Route("ProcessPO")]
         public async Task<IActionResult> ProcessPO(ProcessRequest input)
         {
-            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok(await _blProcessService.ProcessPO(input.BaselineDate, input.SettingRef, username));
+            return Ok(await _blProcessService.ProcessPO(input.BaselineDate, input.SettingRef));
         }
 
         [HttpPost]
         [Route("ProcessInvIssue")]
         public async Task<IActionResult> ProcessInvIssue(ProcessRequest input)
         {
-            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok(await _blProcessService.ProcessInvIssue(input.BaselineDate, input.SettingRef, username, BaselineType.DAILY));
+            return Ok(await _blProcessService.ProcessInvIssue(input.BaselineDate, input.SettingRef, BaselineType.DAILY));
         }
 
         [HttpPost]
         [Route("ProcessInvReceipt")]
         public async Task<IActionResult> ProcessInvReceipt(ProcessRequest input)
         {
-            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok(await _blProcessService.ProcessInvReceipt(input.BaselineDate, input.SettingRef, username, BaselineType.DAILY));
+            return Ok(await _blProcessService.ProcessInvReceipt(input.BaselineDate, input.SettingRef, BaselineType.DAILY));
         }
 
         [HttpPost]
         [Route("ProcessInvClose")]
         public async Task<IActionResult> ProcessInvClose(ProcessRequest input)
         {
-            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok(await _blProcessService.ProcessInvCloseQty(input.BaselineDate, input.SettingRef, username));
+            return Ok(await _blProcessService.ProcessInvCloseQty(input.BaselineDate, input.SettingRef));
         }
 
         [HttpPost]
         [Route("ProcessSO")]
         public async Task<IActionResult> ProcessSO(ProcessRequest input)
         {
-            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok(await _blProcessService.ProcessSO(input.BaselineDate, input.SettingRef, username));
+            return Ok(await _blProcessService.ProcessSO(input.BaselineDate, input.SettingRef));
         }
 
         [HttpPost]
         [Route("ProcessRunningSales")]
         public async Task<IActionResult> ProcessRunningSales(ProcessRequest input)
         {
-            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok(await _blProcessService.ProcessRunningSales(input.BaselineDate, username));
+            return Ok(await _blProcessService.ProcessRunningSales(input.BaselineDate));
         }
 
         [HttpPost]
