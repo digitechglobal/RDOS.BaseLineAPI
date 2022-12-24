@@ -121,5 +121,12 @@ namespace RDOS.BaseLine.Controllers
             var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
             return Ok(await _blProcessService.ProcessRunningSales(input.BaselineDate, username));
         }
+
+        [HttpPost]
+        [Route("ProcessSafetyStockAssessment")]
+        public async Task<IActionResult> ProcessSafetyStockAssessment(ProcessRequest input)
+        {
+            return Ok(await _blProcessService.ProcessSafetyStockAssessment(input.BaselineDate));
+        }
     }
 }

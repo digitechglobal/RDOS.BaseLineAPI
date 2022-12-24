@@ -108,5 +108,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public DateTime? CompleteDate { get; set; }
         public DateTime? ShipDate { get; set; }
         public decimal ShippedPromotionAmt { get; set; }
+        public string? DiscountId { get; set; }
     }
 }

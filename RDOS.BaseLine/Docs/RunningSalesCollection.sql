@@ -1,5 +1,5 @@
-DROP FUNCTION collectrunningsales(baselinedate VARCHAR, usename VARCHAR);
-CREATE FUNCTION collectrunningsales(baselinedate VARCHAR, usename VARCHAR) RETURNS TABLE (
+DROP FUNCTION collectrunningsales(baselinedate VARCHAR, username VARCHAR);
+CREATE FUNCTION collectrunningsales(baselinedate VARCHAR, username VARCHAR) RETURNS TABLE (
     "Id" uuid,
     "BaselineDate" timestamp,
     "CreatedDate" timestamp,
@@ -97,7 +97,7 @@ CREATE FUNCTION collectrunningsales(baselinedate VARCHAR, usename VARCHAR) RETUR
         CAST(baselinedate AS timestamp) :: timestamp,
         now() :: timestamp, --as "CreatedDate",
         NULL :: timestamp, --as "UpdatedDate",
-        usename :: varchar(255), --as "CreatedBy",
+        username :: varchar(255), --as "CreatedBy",
         NULL :: varchar(255), --as "UpdatedBy",
         false as "IsDeleted",
         rawSOInfo."ItemId" :: varchar(100), --as "ItemId",

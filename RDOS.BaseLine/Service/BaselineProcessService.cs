@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Dapper;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.VariantTypes;
 using Microsoft.EntityFrameworkCore;
 using nProx.Helpers.Dapper;
 using nProx.Helpers.Services.Repository;
@@ -15,6 +13,8 @@ using static RDOS.BaseLine.Models.Results;
 using RDOS.BaseLine.Models.Result;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
+using SysAdmin.Models.StaticValue;
+using RestSharp.Extensions;
 
 namespace RDOS.BaseLine.Service
 {
@@ -36,6 +36,10 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<SaleCalendarHoliday> _holidayRepo;
         private readonly IBaseRepository<PoRpoparameter> _rpoParameterRepo;
         private readonly IBaseRepository<BlRunningSale> _runningSalesRepo;
+        private readonly IBaseRepository<PoStockKeepingDay> _poStockKeepingDayRepo;
+        private readonly IBaseRepository<PoStockKeepingDayItemHierarchy> _poStockKeepingDayItemRepo;
+        private readonly IBaseRepository<ItemHierarchyMapping> _itemHierarchyMappingRepo;
+        private readonly IBaseRepository<BlSafetyStockAssessment> _blSafetyStockAssessmentRepo;
         private readonly IMapper _mapper;
         private readonly IDapperRepositories _dapper;
 
@@ -56,6 +60,10 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<SaleCalendarHoliday> holidayRepo,
             IBaseRepository<PoRpoparameter> rpoParameterRepo,
             IBaseRepository<BlRunningSale> runningSalesRepo,
+            IBaseRepository<PoStockKeepingDay> poStockKeepingDayRepo,
+            IBaseRepository<PoStockKeepingDayItemHierarchy> poStockKeepingDayItemRepo,
+            IBaseRepository<ItemHierarchyMapping> itemHierarchyMappingRepo,
+            IBaseRepository<BlSafetyStockAssessment> blSafetyStockAssessmentRepo,
             IMapper mapper,
             IDapperRepositories dapper)
         {
@@ -77,6 +85,10 @@ namespace RDOS.BaseLine.Service
             _holidayRepo = holidayRepo;
             _rpoParameterRepo = rpoParameterRepo;
             _runningSalesRepo = runningSalesRepo;
+            _poStockKeepingDayRepo = poStockKeepingDayRepo;
+            _poStockKeepingDayItemRepo = poStockKeepingDayItemRepo;
+            _itemHierarchyMappingRepo = itemHierarchyMappingRepo;
+            _blSafetyStockAssessmentRepo = blSafetyStockAssessmentRepo;
         }
 
         public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef, string userName)
@@ -616,7 +628,7 @@ namespace RDOS.BaseLine.Service
                 {
                     Code = 200,
                     IsSuccess = true,
-                    Message = "N"
+                    Message = "Successfully"
                 };
 
             }
@@ -628,6 +640,443 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
+
+        public async Task<BaseResultModel> ProcessSafetyStockAssessment(string baselineDate)
+        {
+            try
+            {
+                DateTime baselineDateNew = DateTime.Parse(baselineDate);
+
+                // Function query
+                var query = @"SELECT * FROM collectsafetystock(@baselinedate)";
+
+                // Handle parameter
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@baselinedate", baselineDate);
+
+                // Excute query
+                var listData = ((List<BlSafetyStockAssessment>)_dapper.QueryWithParams<BlSafetyStockAssessment>(query, parameters));
+
+                foreach (var data in listData)
+                {
+                    Boolean isCheck = false;
+                    DateTime currentDate = DateTime.Today;
+                    var stockeepingDayInDb = new PoStockKeepingDay();
+
+                    // SubArea
+                    if (data.SubAreaId != null)
+                    {
+                        var resultStockKeepingDay = await GetDetailStockKeepingDay(data.SubAreaId);
+                        if (!resultStockKeepingDay.IsSuccess)
+                        {
+                            return new BaseResultModel
+                            {
+                                Code = resultStockKeepingDay.Code,
+                                IsSuccess = resultStockKeepingDay.IsSuccess,
+                                Message = resultStockKeepingDay.Message
+                            };
+                        }
+
+                        stockeepingDayInDb = resultStockKeepingDay.Data;
+
+                        if (stockeepingDayInDb != null)
+                        {
+                            isCheck = true;
+                        }
+                    }
+
+                    // Area
+                    if (data.AreaId != null && !isCheck)
+                    {
+                        var resultStockKeepingDay = await GetDetailStockKeepingDay(data.AreaId);
+                        if (!resultStockKeepingDay.IsSuccess)
+                        {
+                            return new BaseResultModel
+                            {
+                                Code = resultStockKeepingDay.Code,
+                                IsSuccess = resultStockKeepingDay.IsSuccess,
+                                Message = resultStockKeepingDay.Message
+                            };
+                        }
+
+                        stockeepingDayInDb = resultStockKeepingDay.Data;
+
+                        if (stockeepingDayInDb != null)
+                        {
+                            isCheck = true;
+                        }
+                    }
+
+                    // SubRegion
+                    if (data.SubRegionId != null && !isCheck)
+                    {
+                        var resultStockKeepingDay = await GetDetailStockKeepingDay(data.SubRegionId);
+                        if (!resultStockKeepingDay.IsSuccess)
+                        {
+                            return new BaseResultModel
+                            {
+                                Code = resultStockKeepingDay.Code,
+                                IsSuccess = resultStockKeepingDay.IsSuccess,
+                                Message = resultStockKeepingDay.Message
+                            };
+                        }
+
+                        stockeepingDayInDb = resultStockKeepingDay.Data;
+
+                        if (stockeepingDayInDb != null)
+                        {
+                            isCheck = true;
+                        }
+                    }
+
+                    // Region
+                    if (data.RegionId != null && !isCheck)
+                    {
+                        var resultStockKeepingDay = await GetDetailStockKeepingDay(data.RegionId);
+                        if (!resultStockKeepingDay.IsSuccess)
+                        {
+                            return new BaseResultModel
+                            {
+                                Code = resultStockKeepingDay.Code,
+                                IsSuccess = resultStockKeepingDay.IsSuccess,
+                                Message = resultStockKeepingDay.Message
+                            };
+                        }
+
+                        stockeepingDayInDb = resultStockKeepingDay.Data;
+
+                        if (stockeepingDayInDb != null)
+                        {
+                            isCheck = true;
+                        }
+                    }
+
+                    // Branch
+                    if (data.BranchId != null && !isCheck)
+                    {
+                        var resultStockKeepingDay = await GetDetailStockKeepingDay(data.BranchId);
+                        if (!resultStockKeepingDay.IsSuccess)
+                        {
+                            return new BaseResultModel
+                            {
+                                Code = resultStockKeepingDay.Code,
+                                IsSuccess = resultStockKeepingDay.IsSuccess,
+                                Message = resultStockKeepingDay.Message
+                            };
+                        }
+
+                        stockeepingDayInDb = resultStockKeepingDay.Data;
+
+                        if (stockeepingDayInDb != null)
+                        {
+                            isCheck = true;
+                        }
+                    }
+
+                    int stockKeepingDayNumber = 0;
+
+                    if (isCheck)
+                    {
+                        var itemHierachyInDb = _itemHierarchyMappingRepo.FirstOrDefault(x => x.Id == data.Hierarchy);
+                        if (itemHierachyInDb == null)
+                        {
+                            return new BaseResultModel
+                            {
+                                Code = 404,
+                                IsSuccess = false,
+                                Message = "Cannot found item group"
+                            };
+                        }
+                        
+
+                        BaseResultModel resultStockKeepingDayNumber = await CalStockKeepingDay(stockeepingDayInDb, itemHierachyInDb);
+                        if (!resultStockKeepingDayNumber.IsSuccess)
+                        {
+                            return resultStockKeepingDayNumber;
+                        }
+
+                        stockKeepingDayNumber = (int)resultStockKeepingDayNumber.Data;
+                    }
+
+                    var listCloseQtyInDb = _blCloseQty.Find(x => x.ItemId == data.ItemId &&
+                                                        x.DistributorId == data.DistributorId &&
+                                                        x.DistributorShipToId == data.DistributorShiptoId &&
+                                                        x.BaselineDate == baselineDateNew.Date).ToList();
+                    int closeQuantity = 0;
+                    int closePurchaseQty = 0;
+                    foreach (var closeQty in listCloseQtyInDb)
+                    {
+                        closeQuantity += closeQty.CloseQuantity != null ? closeQty.CloseQuantity.Value : 0;
+                        closePurchaseQty += closeQty.ClosePurchaseQuantity != null ? closeQty.ClosePurchaseQuantity.Value : 0;
+                    }
+
+                    data.CloseQuantityByBaseUom = closeQuantity;
+                    data.CloseQuantityByPurchaseUom = closePurchaseQty;
+
+                    // Handle Stock keeping number
+                    data.SskdayQtyByBaseUom = data.RunningSalesByBaseQty * stockKeepingDayNumber;
+                    data.SskdayQtyByPruchaseUom = data.RunningSalesByPurchaseQty * stockKeepingDayNumber;
+
+                    if (data.CloseQuantityByBaseUom >= data.SskdayQtyByBaseUom)
+                    {
+                        data.Result = true;
+                    }
+                    else
+                    {
+                        data.Result = false;
+                    }
+                }
+
+                // List record runningsales by baseline date
+                var listRawSafetyStock = _blSafetyStockAssessmentRepo.Find(x => x.AssessmentDate.Date == baselineDateNew.Date).ToList();
+
+                // Remove record by baseline date
+                if (listRawSafetyStock != null && listRawSafetyStock.Count > 0)
+                {
+                    _blSafetyStockAssessmentRepo.DeleteMany(listRawSafetyStock);
+                }
+
+                // Insert to database
+                _blSafetyStockAssessmentRepo.InsertMany(listData);
+
+
+                return new BaseResultModel
+                {
+                    Code = 200,
+                    IsSuccess = true,
+                    Message = "Successfully"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Code = 500,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
+
+        public async Task<ResultModelWithObject<PoStockKeepingDay>> GetDetailStockKeepingDay(string territoryValueKey)
+        {
+            try
+            {
+                DateTime currentDate = DateTime.Today;
+                var dataResponse = _poStockKeepingDayRepo.FirstOrDefault(x => x.TerritoryLevelValue == territoryValueKey &&
+                                                                               (x.EffectiveDate.Date <= currentDate.Date &&
+                                                                               ((x.ValidUntil.HasValue &&
+                                                                               x.ValidUntil.Value.Date > currentDate.Date) ||
+                                                                               !x.ValidUntil.HasValue)) &&
+                                                                               !x.IsDeleted);
+                return new ResultModelWithObject<PoStockKeepingDay>
+                {
+                    IsSuccess = true,
+                    Code = 200,
+                    Data = dataResponse
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new ResultModelWithObject<PoStockKeepingDay>
+                {
+                    IsSuccess = false,
+                    Code = 500,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
+
+        public async Task<BaseResultModel> CalStockKeepingDay(PoStockKeepingDay stockKeepingInDb, ItemHierarchyMapping itemGroup)
+        {
+            try
+            {
+                DateTime currentDate = DateTime.Now;
+                var itemHierarchies = _poStockKeepingDayItemRepo.Find(x => x.StockKeepingDayNumber == stockKeepingInDb.StockKeepingDayNumber && !x.IsDeleted).ToList();
+
+                if (stockKeepingInDb != null)
+                {
+                    if (itemGroup.ValuesAttribute10 != Guid.Empty)
+                    {
+                        var itemHirachy1 = itemHierarchies
+                            .FirstOrDefault(x => x.ItemHierarchyId == itemGroup.ValuesAttribute10);
+
+                        if (itemHirachy1 != null)
+                        {
+                            return new BaseResultModel
+                            {
+                                IsSuccess = true,
+                                Code = 200,
+                                Data = itemHirachy1.DayNumber
+                            };
+                        }
+                    }
+
+                    if (itemGroup.ValuesAttribute9 != Guid.Empty)
+                    {
+                        var itemHirachy2 = itemHierarchies
+                            .FirstOrDefault(x => x.ItemHierarchyId == itemGroup.ValuesAttribute9);
+
+                        if (itemHirachy2 != null)
+                        {
+                            return new BaseResultModel
+                            {
+                                IsSuccess = true,
+                                Code = 200,
+                                Data = itemHirachy2.DayNumber
+                            };
+                        }
+                    }
+
+                    if (itemGroup.ValuesAttribute8 != Guid.Empty)
+                    {
+                        var itemHirachy3 = itemHierarchies
+                            .FirstOrDefault(x => x.ItemHierarchyId == itemGroup.ValuesAttribute8);
+
+                        if (itemHirachy3 != null)
+                        {
+                            return new BaseResultModel
+                            {
+                                IsSuccess = true,
+                                Code = 200,
+                                Data = itemHirachy3.DayNumber
+                            };
+                        }
+                    }
+
+                    if (itemGroup.ValuesAttribute7 != Guid.Empty)
+                    {
+                        var itemHirachy4 = itemHierarchies
+                            .FirstOrDefault(x => x.ItemHierarchyId == itemGroup.ValuesAttribute7);
+
+                        if (itemHirachy4 != null)
+                        {
+                            return new BaseResultModel
+                            {
+                                IsSuccess = true,
+                                Code = 200,
+                                Data = itemHirachy4.DayNumber
+                            };
+                        }
+                    }
+
+                    if (itemGroup.ValuesAttribute6 != Guid.Empty)
+                    {
+                        var itemHirachy5 = itemHierarchies
+                            .FirstOrDefault(x => x.ItemHierarchyId == itemGroup.ValuesAttribute6);
+
+                        if (itemHirachy5 != null)
+                        {
+                            return new BaseResultModel
+                            {
+                                IsSuccess = true,
+                                Code = 200,
+                                Data = itemHirachy5.DayNumber
+                            };
+                        }
+                    }
+
+                    if (itemGroup.ValuesAttribute5 != Guid.Empty)
+                    {
+                        var itemHirachy6 = itemHierarchies
+                            .FirstOrDefault(x => x.ItemHierarchyId == itemGroup.ValuesAttribute5);
+
+                        if (itemHirachy6 != null)
+                        {
+                            return new BaseResultModel
+                            {
+                                IsSuccess = true,
+                                Code = 200,
+                                Data = itemHirachy6.DayNumber
+                            };
+                        }
+                    }
+
+                    if (itemGroup.ValuesAttribute4 != Guid.Empty)
+                    {
+                        var itemHirachy7 = itemHierarchies
+                            .FirstOrDefault(x => x.ItemHierarchyId == itemGroup.ValuesAttribute4);
+
+                        if (itemHirachy7 != null)
+                        {
+                            return new BaseResultModel
+                            {
+                                IsSuccess = true,
+                                Code = 200,
+                                Data = itemHirachy7.DayNumber
+                            };
+                        }
+                    }
+
+                    if (itemGroup.ValuesAttribute3 != Guid.Empty)
+                    {
+                        var itemHirachy8 = itemHierarchies
+                            .FirstOrDefault(x => x.ItemHierarchyId == itemGroup.ValuesAttribute3);
+
+                        if (itemHirachy8 != null)
+                        {
+                            return new BaseResultModel
+                            {
+                                IsSuccess = true,
+                                Code = 200,
+                                Data = itemHirachy8.DayNumber
+                            };
+                        }
+                    }
+
+                    if (itemGroup.ValuesAttribute2 != Guid.Empty)
+                    {
+                        var itemHirachy9 = itemHierarchies
+                            .FirstOrDefault(x => x.ItemHierarchyId == itemGroup.ValuesAttribute2);
+
+                        if (itemHirachy9 != null)
+                        {
+                            return new BaseResultModel
+                            {
+                                IsSuccess = true,
+                                Code = 200,
+                                Data = itemHirachy9.DayNumber
+                            };
+                        }
+                    }
+
+                    if (itemGroup.ValuesAttribute1 != Guid.Empty)
+                    {
+                        var itemHirachy10 = itemHierarchies
+                            .FirstOrDefault(x => x.ItemHierarchyId == itemGroup.ValuesAttribute1);
+
+                        if (itemHirachy10 != null)
+                        {
+                            return new BaseResultModel
+                            {
+                                IsSuccess = true,
+                                Code = 200,
+                                Data = itemHirachy10.DayNumber
+                            };
+                        }
+                    }
+                }
+
+                return new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Code = 200,
+                    Data = (int)0
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new BaseResultModel
+                {
+                    Code = 500,
+                    IsSuccess = true,
+                    Message = ex.InnerException?.Message ?? ex.Message
                 };
             }
         }

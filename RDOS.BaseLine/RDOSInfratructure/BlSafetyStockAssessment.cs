@@ -3,24 +3,35 @@ using System.Collections.Generic;
 
 namespace RDOS.BaseLine.RDOSInfratructure
 {
-    public partial class BlCloseStock
+    public partial class BlSafetyStockAssessment
     {
         public Guid Id { get; set; }
-        public DateTime BaselineDate { get; set; }
-        public string BaselineSettingRef { get; set; } = null!;
+        public DateTime AssessmentDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
+        public bool? IsDeleted { get; set; }
         public string? ItemId { get; set; }
         public string? InventoryShortName { get; set; }
         public string? InventoryReportName { get; set; }
         public string? InventoryDescription { get; set; }
-        public int? CloseQuantity { get; set; }
+        public string? Erpid { get; set; }
+        public int? CloseQuantityByBaseUom { get; set; }
         public string? CloseQuantityBaseUom { get; set; }
-        public int? CloseSalesQuantity { get; set; }
-        public string? CloseSalesUom { get; set; }
-        public int? ClosePurchaseQuantity { get; set; }
-        public string? ClosePurchaseUom { get; set; }
-        public string? LocationId { get; set; }
-        public string? WareHouseId { get; set; }
-        public string? WareHouseName { get; set; }
+        public int? CloseQuantityByPurchaseUom { get; set; }
+        public string? CloseQuantityPurchaseUom { get; set; }
+        public int? RunningSalesByBaseQty { get; set; }
+        public string? RunningSalesBaseUom { get; set; }
+        public int? RunningSalesByPurchaseQty { get; set; }
+        public string? RunningSalesPurchaseUom { get; set; }
+        public int? SskdayQtyByBaseUom { get; set; }
+        public string? SskdayBaseUom { get; set; }
+        public int? SskdayQtyByPruchaseUom { get; set; }
+        public string? SskdayPurchaseUom { get; set; }
+        public bool? Result { get; set; }
+        public string? WarehouseId { get; set; }
+        public string? WarehouseName { get; set; }
         public string? DistributorId { get; set; }
         public string? DistributorName { get; set; }
         public string? Dmscode { get; set; }
@@ -47,7 +58,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? DistributorDeptNo { get; set; }
         public string? DistributorLongtiue { get; set; }
         public string? DistributorLattitue { get; set; }
-        public string? DistributorShipToId { get; set; }
+        public string? DistributorShiptoId { get; set; }
         public string? ShiptoName { get; set; }
         public string? ShiptoCodeOnErp { get; set; }
         public string? DistributorShipToFullName { get; set; }
@@ -73,8 +84,24 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? DistributorShipToDeptNo { get; set; }
         public string? DistributorShipToLongtiue { get; set; }
         public string? DistributorShipToLattitue { get; set; }
-        public string? ItemGroupId { get; set; }
-        public string? ItemGroupDesc { get; set; }
+        public string? Chanels { get; set; }
+        public string? SubChanels { get; set; }
+        public string? PrincipalId { get; set; }
+        public string? PrincipalDesc { get; set; }
+        public string? SalesOrgId { get; set; }
+        public string? SalesOrgDesc { get; set; }
+        public string? BranchId { get; set; }
+        public string? BranchName { get; set; }
+        public string? RegionId { get; set; }
+        public string? RegionName { get; set; }
+        public string? SubRegionId { get; set; }
+        public string? SubRegionName { get; set; }
+        public string? AreaId { get; set; }
+        public string? AreaName { get; set; }
+        public string? SubAreaId { get; set; }
+        public string? SubAreaName { get; set; }
+        public string? Dsaid { get; set; }
+        public string? Dsadesc { get; set; }
         public string? InventoryAttributeId1 { get; set; }
         public string? InventoryAttributeName1 { get; set; }
         public string? InventoryAttributeDesc1 { get; set; }
@@ -126,10 +153,5 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? InventoryAttributeValueId10 { get; set; }
         public string? InventoryAttributeValueDesc10 { get; set; }
         public Guid? Hierarchy { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public string? CreatedBy { get; set; }
-        public string? UpdatedBy { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }
