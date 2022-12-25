@@ -1,10 +1,11 @@
-﻿using DemoCronjob.Models;
+﻿using RDOS.BaseLine.Models;
 using Quartz;
 using Quartz.Spi;
+using RDOS.BaseLine.Service.Interface;
 
-namespace DemoCronjob.Schedular
+namespace RDOS.BaseLine.Schedular
 {
-    public class MySchedular : IHostedService
+    public class MySchedular : IHostedService , IMySchedular
     {
         public IScheduler Scheduler { get; set; }
         private readonly IJobFactory _jobFactory;

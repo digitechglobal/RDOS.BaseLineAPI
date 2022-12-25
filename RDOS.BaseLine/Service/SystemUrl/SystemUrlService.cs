@@ -33,8 +33,14 @@ namespace SysAdmin.Web.Services.SystemUrl
                 {
                     foreach (var item in returnObject.Items)
                     {
-                        if(item.Code == SystemUrlCode.InventoryMngCode){
+                        if (item.Code == SystemUrlCode.InventoryMngCode)
+                        {
                             // add manual 
+                        }
+                        if (item.Code == SystemUrlCode.SaleOrderAPI)
+                        {
+                            // add manual 
+                            item.Url = "http://localhost:9091/api/v1/";
                         }
                     }
                 }

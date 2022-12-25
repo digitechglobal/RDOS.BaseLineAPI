@@ -55,39 +55,6 @@ namespace RDOS.BaseLine.Service
             _schedulerFactory = schedulerFactory;
         }
 
-        public ITrigger ReTriggered(ITrigger oldTrigger, string cronExpression)
-        {
-            var builder = oldTrigger.GetTriggerBuilder();
-            builder = builder.WithCronSchedule(cronExpression);
-
-            var newTrigger = builder.Build();
-            var simpleTrigger = newTrigger as ISimpleTrigger;
-            if (simpleTrigger != null)
-            {
-                var trigger = oldTrigger as ISimpleTrigger;
-                if (trigger != null)
-                    simpleTrigger.TimesTriggered = trigger.TimesTriggered;
-            }
-
-            return newTrigger;
-        }
-
-        public async Task<bool> ReSchedular()
-        {
-            try
-            {
-                Scheduler = await _schedulerFactory.GetScheduler();
-                var trigger = await Scheduler.GetTrigger(new TriggerKey("BaseLine", "DailyBaseLine"));
-                await Scheduler.RescheduleJob(trigger.Key, ReTriggered(trigger, "0/1 * * * * ?"));
-                return true;
-            }
-            catch (System.Exception ex)
-            {
-                return false;
-            }
-
-        }
-
         public async Task<BaseResultModel> ChangeSetting(BaselineSettingModel dataInput, string userLogin)
         {
             try
@@ -349,7 +316,7 @@ namespace RDOS.BaseLine.Service
                 dataResponse.ProcessPendings = listProcessPending;
                 dataResponse.BaseLineProcesses = listProcessNew;
                 dataResponse.BaselineSettingEmail = settingEmail;
-
+                
                 return new ResultModelWithObject<BaselineSettingDetailModel>
                 {
                     IsSuccess = true,

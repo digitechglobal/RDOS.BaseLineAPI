@@ -1,8 +1,8 @@
 ﻿using Quartz;
 
-namespace DemoCronjob.Jobs
+namespace RDOS.BaseLine.Jobs
 {
-    public class NotificationJob:IJob
+    public class NotificationJob : IJob
     {
         private readonly ILogger<NotificationJob> _logger;
         public NotificationJob(ILogger<NotificationJob> logger)

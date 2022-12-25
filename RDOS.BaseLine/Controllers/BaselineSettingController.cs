@@ -2,6 +2,7 @@
 using nProx.Helpers.Controllers;
 using nProx.Helpers.JWT;
 using nProx.Helpers.Services.Base;
+using Quartz;
 using RDOS.BaseLine.Constants;
 using RDOS.BaseLine.Models.Request;
 using RDOS.BaseLine.RDOSInfratructure;
@@ -14,22 +15,25 @@ namespace RDOS.BaseLine.Controllers
     public class BaselineSettingController : NormalController<BaselineSettingModel>
     {
         private readonly IBaselineSettingService _baseLineSettingService;
+        private readonly IPhattvBLProcessService _phattvBaseLineSettingService;
         private readonly IBaselineProcessService _blProcessService;
         public BaselineSettingController(
-            IBaseService<BaselineSettingModel> service, 
+            IBaseService<BaselineSettingModel> service,
             IBaselineSettingService baseLineSettingService,
-            IBaselineProcessService blProcessService) : base(service)
+            IBaselineProcessService blProcessService,
+            IPhattvBLProcessService phattvBaseLineSettingService) : base(service)
         {
             _baseLineSettingService = baseLineSettingService;
             _blProcessService = blProcessService;
+            _phattvBaseLineSettingService = phattvBaseLineSettingService;
         }
 
-        [HttpGet]
-        [Route("reschedule")]
-        public async Task<IActionResult> reschedule()
-        {
-            return Ok(await _baseLineSettingService.ReSchedular());
-        }
+        // [HttpGet]
+        // [Route("reschedule")]
+        // public async Task<IActionResult> reschedule()
+        // {
+        //     return Ok(await _phattvBaseLineSettingService.ReSchedular(new TriggerKey("BLPendingProcess", "DailyBaseLine"), "0/1 * * * * ?"));
+        // }
 
         [HttpGet]
         [Route("GetTransactionStatus")]
@@ -50,7 +54,7 @@ namespace RDOS.BaseLine.Controllers
         public async Task<IActionResult> ChangeSetting(BaselineSettingModel input)
         {
             var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok( await _baseLineSettingService.ChangeSetting(input, username));
+            return Ok(await _baseLineSettingService.ChangeSetting(input, username));
         }
 
         [HttpGet]
@@ -121,6 +125,20 @@ namespace RDOS.BaseLine.Controllers
         public async Task<IActionResult> ProcessSafetyStockAssessment(ProcessRequest input)
         {
             return Ok(await _blProcessService.ProcessSafetyStockAssessment(input.BaselineDate));
+        }
+
+        [HttpPost]
+        [Route("HandleProcessPendingData")]
+        public async Task<IActionResult> HandleProcessPendingData(DateTime baseLineDate)
+        {
+            return Ok(await _phattvBaseLineSettingService.HandleProcessPendingData(baseLineDate));
+        }
+
+        [HttpPost]
+        [Route("HandleCronFromBLSetting")]
+        public async Task<IActionResult> HandleCronFromBLSetting()
+        {
+            return Ok(await _phattvBaseLineSettingService.HandleCronFromBLSetting());
         }
     }
 }

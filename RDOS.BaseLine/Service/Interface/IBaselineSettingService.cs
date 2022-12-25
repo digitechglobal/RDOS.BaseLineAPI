@@ -11,6 +11,5 @@ namespace RDOS.BaseLine.Service.Interface
         Task<BaseResultModel> GetListProcess();
         Task<ResultModelWithObject<BaselineSettingDetailModel>> GetCurrentBaselineSetting();
         Task<ResultModelWithObject<ListBaselineSetting>> SearchBaselineSetting(BaselineSearch parameters);
-        Task<bool> ReSchedular();
     }
 }

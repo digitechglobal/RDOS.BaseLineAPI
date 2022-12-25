@@ -1,6 +1,6 @@
 ﻿using Quartz;
 
-namespace DemoCronjob.Jobs
+namespace RDOS.BaseLine.Jobs
 {
     public class LoggerJob : IJob
     {

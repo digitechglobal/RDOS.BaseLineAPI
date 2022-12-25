@@ -1,7 +1,7 @@
-using DemoCronjob.JobFactory;
-using DemoCronjob.Jobs;
-using DemoCronjob.Models;
-using DemoCronjob.Schedular;
+using RDOS.BaseLine.JobFactory;
+using RDOS.BaseLine.Jobs;
+using RDOS.BaseLine.Models;
+using RDOS.BaseLine.Schedular;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using nProx.Helpers;
@@ -14,17 +14,21 @@ using RDOS.BaseLine.Service;
 using RDOS.BaseLine.Service.Interface;
 using SysAdmin.Web.Services.SystemUrl;
 using static SysAdmin.Models.StaticValue.CommonData;
+using RDOS.BaseLine.Services.Interface;
+using RDOS.BaseLine.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 CoreDependency.InjectDependencies(builder.Services, builder);
 builder.Services.AddTransient<DbContext, RDOSContext>();
-builder.Services.AddScoped<IBaselineSettingService, BaselineSettingService>();
-builder.Services.AddScoped<IBaselineProcessService, BaselineProcessService>();
-builder.Services.AddScoped<IPhattvBLProcessService, PhattvBLProcessService>();
+builder.Services.AddTransient<IBaselineSettingService, BaselineSettingService>();
+builder.Services.AddTransient<IBaselineProcessService, BaselineProcessService>();
+builder.Services.AddTransient<IPhattvBLProcessService, PhattvBLProcessService>();
+builder.Services.AddTransient<IMySchedular, MySchedular>();
+builder.Services.AddTransient<IClientService, ClientService>();
+
 var connectStrings = Environment.GetEnvironmentVariable("CONNECTION");
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -33,7 +37,7 @@ builder.Services.AddSwaggerGen();
 
 
 //Get all url from table service
-builder.Services.AddScoped<ISystemUrlService, SystemUrlService>();
+builder.Services.AddTransient<ISystemUrlService, SystemUrlService>();
 SystemUrlService systemUrlService = new();
 SystemUrl = systemUrlService.GetAllSystemUrl().Result.Items.ToList();
 
@@ -42,11 +46,16 @@ builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 #region Adding JobType
 builder.Services.AddSingleton<NotificationJob>();
 builder.Services.AddSingleton<LoggerJob>();
+builder.Services.AddSingleton<InitialJob>();
+builder.Services.AddSingleton<PendingDataProcessJob>();
 #endregion
 
 List<JobMetadata> jobMetadatas = new List<JobMetadata>();
-jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(NotificationJob), "BaseLine", "0/5 * * * * ?", "DailyBaseLine"));
-//jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(LoggerJob), "Log Job", "0/5 * * * * ?"));
+//Lấy thời gian hiện tại 
+//ra được expression +  1ps 
+// jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "0/60 * * * * ?", "DailyBaseLine"));
+// jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(NotificationJob), "BLPendingProcess", "0/5 * * * * ?", "DailyBaseLine"));
+// jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(LoggerJob), "BLProcess", "0/5 * * * * ?", "DailyBaseLine"));
 
 builder.Services.AddSingleton(jobMetadatas);
 

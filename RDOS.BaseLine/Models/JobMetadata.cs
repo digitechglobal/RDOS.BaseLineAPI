@@ -1,4 +1,4 @@
-﻿namespace DemoCronjob.Models
+﻿namespace RDOS.BaseLine.Models
 {
     public class JobMetadata
     {

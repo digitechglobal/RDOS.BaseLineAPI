@@ -1,7 +1,7 @@
 ﻿using Quartz;
 using Quartz.Spi;
 
-namespace DemoCronjob.JobFactory
+namespace RDOS.BaseLine.JobFactory
 {
     public class MyJobFactory : IJobFactory
     {
