@@ -34,6 +34,8 @@ namespace RDOS.BaseLine.Service
         private readonly ISchedulerFactory _schedulerFactory;
         public IScheduler Scheduler { get; set; }
         public readonly IClientService _clientService;
+        private readonly IBaseRepository<SaleCalendarHoliday> _holidayRepo;
+        private readonly IBaseRepository<SaleCalendar> _salesCalendarRepo;
         public PhattvBLProcessService(
             ILogger<PhattvBLProcessService> logger,
             IBaseRepository<BlBlsettingInformation> blSettingInfoRepo,
@@ -45,7 +47,9 @@ namespace RDOS.BaseLine.Service
             IMapper mapper,
             IBaselineSettingService settingService,
             ISchedulerFactory schedulerFactory,
-            IClientService clientService
+            IClientService clientService,
+            IBaseRepository<SaleCalendarHoliday> holidayRepo,
+            IBaseRepository<SaleCalendar> salesCalendarRepo
             )
         {
             _logger = logger;
@@ -59,14 +63,60 @@ namespace RDOS.BaseLine.Service
             _settingService = settingService;
             _schedulerFactory = schedulerFactory;
             _clientService = clientService;
+            _holidayRepo = holidayRepo;
+            _salesCalendarRepo = salesCalendarRepo;
         }
 
         public async Task<DateTime?> GetBaseLineDate()
         {
             try
             {
-                var dateReturn = DateTime.Now;
-                return dateReturn;
+                var setting = await _settingService.GetCurrentBaselineSetting();
+                if (!setting.IsSuccess || setting.Data == null) return null;
+
+                var blsetting = setting.Data;
+                var leadDate = blsetting.BlBlsettingInformation.LeadDate;
+
+                var currentDate = DateTime.Now;
+                var curentYear = currentDate.Year;
+                DayOfWeek curentDay = currentDate.DayOfWeek;
+                var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == curentYear);
+                if (salesCalendar == null) return null;
+                bool isDayOff = false;
+                if (curentDay == DayOfWeek.Saturday)
+                {
+                    if (string.IsNullOrWhiteSpace(salesCalendar.IncludeWeekend)) isDayOff = true;
+                }
+                if (curentDay == DayOfWeek.Sunday)
+                {
+                    if (string.IsNullOrWhiteSpace(salesCalendar.IncludeWeekend)) isDayOff = true;
+                    if (salesCalendar.IncludeWeekend == CalendarConstant.SUN) isDayOff = true;
+                }
+
+                var listHoliday = salesCalendar != null ? _holidayRepo.Find(x => x.SaleCalendarId == salesCalendar.Id).ToList() : new List<SaleCalendarHoliday>();
+
+                if (listHoliday.Count > 0 && listHoliday.FirstOrDefault(x => x.SaleCalendarId == salesCalendar.Id && x.HolidayDate.Date == currentDate.Date) != null)
+                {
+                    isDayOff = true;
+                }
+
+                //ngày nghỉ
+                if (isDayOff)
+                {
+                    //ProcessOffCount  + 1 number ngày nghỉ 
+
+                    return null;
+                }
+                else
+                {
+                    // int ProcessOffCount = blsetting.ProcessOffCount;
+                    int processOffCount = 0;
+
+                    double subtractDays = (double)(0 - (leadDate.Value + processOffCount));
+                    var baseLineDate = currentDate.AddDays(subtractDays);
+                    return baseLineDate;
+                }
+                // return dateReturn;
             }
             catch (System.Exception ex)
             {
@@ -107,7 +157,7 @@ namespace RDOS.BaseLine.Service
                 // không đúng, 
                 //Check có đang chạy k, 
                 //Có => Đợi
-                var processResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "BaslineProcess", ptcron, "DailyBaseLine"));
+                // var processResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "BaslineProcess", ptcron, "DailyBaseLine"));
                 return new BaseResultModel
                 {
                     IsSuccess = true,
@@ -182,7 +232,7 @@ namespace RDOS.BaseLine.Service
                 else
                 {
                     //Check có đang setting trùng giờ hay k, có skip , không có > reschedule
-                    
+
                     //check có đang hoạt động hay k
                     //Có , đợi
 

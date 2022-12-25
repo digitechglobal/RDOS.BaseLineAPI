@@ -21,7 +21,5 @@ namespace RDOS.BaseLine.Jobs
             }
             return Task.CompletedTask;
         }
-
-
     }
 }

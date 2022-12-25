@@ -18,6 +18,7 @@ using RDOS.BaseLine.Services.Interface;
 using RDOS.BaseLine.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -53,7 +54,7 @@ builder.Services.AddSingleton<PendingDataProcessJob>();
 List<JobMetadata> jobMetadatas = new List<JobMetadata>();
 //Lấy thời gian hiện tại 
 //ra được expression +  1ps 
-// jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "0/60 * * * * ?", "DailyBaseLine"));
+jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "00 07 21 ? * *", "DailyBaseLine"));
 // jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(NotificationJob), "BLPendingProcess", "0/5 * * * * ?", "DailyBaseLine"));
 // jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(LoggerJob), "BLProcess", "0/5 * * * * ?", "DailyBaseLine"));
 
