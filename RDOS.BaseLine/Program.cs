@@ -29,6 +29,7 @@ builder.Services.AddTransient<IBaselineProcessService, BaselineProcessService>()
 builder.Services.AddTransient<IPhattvBLProcessService, PhattvBLProcessService>();
 builder.Services.AddTransient<IMySchedular, MySchedular>();
 builder.Services.AddTransient<IClientService, ClientService>();
+builder.Services.AddTransient<IConfirmPerformanceService, ConfirmPerformanceService>();
 
 var connectStrings = Environment.GetEnvironmentVariable("CONNECTION");
 

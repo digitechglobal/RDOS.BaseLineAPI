@@ -57,6 +57,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public virtual DbSet<BlBlsettingProcessPending> BlBlsettingProcessPendings { get; set; } = null!;
         public virtual DbSet<BlBlsettingTransactionStatus> BlBlsettingTransactionStatuses { get; set; } = null!;
         public virtual DbSet<BlCloseStock> BlCloseStocks { get; set; } = null!;
+        public virtual DbSet<BlConfirmPerformance> BlConfirmPerformances { get; set; } = null!;
+        public virtual DbSet<BlConfirmPerformanceDetail> BlConfirmPerformanceDetails { get; set; } = null!;
         public virtual DbSet<BlHistory> BlHistorys { get; set; } = null!;
         public virtual DbSet<BlIssueQty> BlIssueQtys { get; set; } = null!;
         public virtual DbSet<BlRawPo> BlRawPos { get; set; } = null!;
@@ -1568,6 +1570,64 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.WareHouseId).HasMaxLength(100);
 
                 entity.Property(e => e.WareHouseName).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<BlConfirmPerformance>(entity =>
+            {
+                entity.ToTable("BL_ConfirmPerformances");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.ConfirmByUser).HasMaxLength(50);
+
+                entity.Property(e => e.ConfirmDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.ConfirmRef).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.Description).HasMaxLength(255);
+
+                entity.Property(e => e.FileName).HasMaxLength(100);
+
+                entity.Property(e => e.FileType).HasMaxLength(100);
+
+                entity.Property(e => e.FromDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.SalesOrgCode).HasMaxLength(50);
+
+                entity.Property(e => e.SalesOrgDescription).HasMaxLength(80);
+
+                entity.Property(e => e.ToDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.Type).HasMaxLength(100);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+            });
+
+            modelBuilder.Entity<BlConfirmPerformanceDetail>(entity =>
+            {
+                entity.ToTable("BL_ConfirmPerformanceDetails");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.ConfirmRef).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.ValueCode).HasMaxLength(50);
+
+                entity.Property(e => e.ValueDescription).HasMaxLength(100);
             });
 
             modelBuilder.Entity<BlHistory>(entity =>

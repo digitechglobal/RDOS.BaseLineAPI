@@ -59,7 +59,7 @@ namespace RDOS.BaseLine.Controllers
 
         [HttpGet]
         [Route("GetDetail/{settingRef}")]
-        public async Task<IActionResult> ChangeSetting(string settingRef)
+        public async Task<IActionResult> GetDetail(string settingRef)
         {
             return Ok(await _baseLineSettingService.GetDetailBaselineSetting(settingRef));
         }
