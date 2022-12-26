@@ -129,50 +129,50 @@ namespace RDOS.BaseLine.Service
 
                 if (!string.IsNullOrWhiteSpace(parameters.SalesOrgCode) && 
                     !string.IsNullOrWhiteSpace(parameters.Type) &&
-                    !string.IsNullOrWhiteSpace(parameters.ValueCode))
+                    parameters.ValueCode.Count > 0)
                 {
                     if (parameters.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
                     {
                         res = res.Where(x =>
-                        (!string.IsNullOrWhiteSpace(x.BranchId) && x.BranchId == parameters.ValueCode) &&
+                        (!string.IsNullOrWhiteSpace(x.BranchId) && parameters.ValueCode.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
                     else if (parameters.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
                     {
                         res = res.Where(x =>
-                        (!string.IsNullOrWhiteSpace(x.RegionId) && x.RegionId == parameters.ValueCode) &&
+                        (!string.IsNullOrWhiteSpace(x.RegionId) && parameters.ValueCode.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
                     else if (parameters.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
                     {
                         res = res.Where(x =>
-                        (!string.IsNullOrWhiteSpace(x.SubRegionId) && x.SubRegionId == parameters.ValueCode) &&
+                        (!string.IsNullOrWhiteSpace(x.SubRegionId) && parameters.ValueCode.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
                     else if (parameters.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
                     {
                         res = res.Where(x =>
-                        (!string.IsNullOrWhiteSpace(x.AreaId) && x.AreaId == parameters.ValueCode) &&
+                        (!string.IsNullOrWhiteSpace(x.AreaId) && parameters.ValueCode.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
                     else if (parameters.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
                     {
                         res = res.Where(x =>
-                        (!string.IsNullOrWhiteSpace(x.SubAreaId) && x.SubAreaId == parameters.ValueCode) &&
+                        (!string.IsNullOrWhiteSpace(x.SubAreaId) && parameters.ValueCode.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
                     else if (parameters.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
                     {
                         res = res.Where(x =>
-                        (!string.IsNullOrWhiteSpace(x.BranchId) && x.Dsaid == parameters.ValueCode) &&
+                        (!string.IsNullOrWhiteSpace(x.BranchId) && parameters.ValueCode.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
                     else if (parameters.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
                     {
                         res = res.Where(x =>
-                        (!string.IsNullOrWhiteSpace(x.RouteZoneId) && x.RouteZoneId == parameters.ValueCode) &&
+                        (!string.IsNullOrWhiteSpace(x.RouteZoneId) && parameters.ValueCode.Contains(x.RouteZoneId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
-                    }
+                    } 
                     else
                     {
                         return new ResultModelWithObject<ListRawSoNotPerformance>

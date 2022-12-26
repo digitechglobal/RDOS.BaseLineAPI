@@ -52,6 +52,6 @@ namespace RDOS.BaseLine.Models.Request
     {
         public string SalesOrgCode { get; set; }
         public string Type { get; set; }
-        public string ValueCode { get; set; }
+        public List<string> ValueCode { get; set; }
     }
 }
