@@ -54,7 +54,9 @@ namespace RDOS.BaseLine.Controllers
         public async Task<IActionResult> ChangeSetting(BaselineSettingModel input)
         {
             var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok(await _baseLineSettingService.ChangeSetting(input, username));
+            var result = await _baseLineSettingService.ChangeSetting(input, username);
+            await _phattvBaseLineSettingService.HandleCronFromBLSetting();
+            return Ok(result);
         }
 
         [HttpGet]

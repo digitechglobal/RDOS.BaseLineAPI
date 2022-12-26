@@ -42,8 +42,7 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<BlRawPo> blRawPo,
             IMapper mapper,
             IDapperRepositories dapper,
-            ISchedulerFactory schedulerFactory,
-            IPhattvBLProcessService phattvService)
+            ISchedulerFactory schedulerFactory)
         {
             _logger = logger;
             _blSettingInfoRepo = blSettingInfoRepo;
@@ -56,7 +55,7 @@ namespace RDOS.BaseLine.Service
             _dapper = dapper;
             _blRawPo = blRawPo;
             _schedulerFactory = schedulerFactory;
-            _phattvService = phattvService;
+
         }
 
         public async Task<BaseResultModel> ChangeSetting(BaselineSettingModel dataInput, string userLogin)
@@ -112,7 +111,6 @@ namespace RDOS.BaseLine.Service
                     _blSettingEmailRepo.Insert(settingEmailNew);
                 }
                 _blSettingInfoRepo.Insert(createBaselineSetting);
-                await _phattvService.HandleCronFromBLSetting();
                 return new BaseResultModel
                 {
                     IsSuccess = true,
