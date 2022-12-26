@@ -129,9 +129,9 @@ namespace RDOS.BaseLine.Controllers
 
         [HttpPost]
         [Route("HandleProcessPendingData")]
-        public async Task<IActionResult> HandleProcessPendingData(DateTime baseLineDate)
+        public async Task<IActionResult> HandleProcessPendingData(List<DateTime> listBaseLineDate)
         {
-            return Ok(await _phattvBaseLineSettingService.HandleProcessPendingData(baseLineDate));
+            return Ok(await _phattvBaseLineSettingService.HandleProcessPendingData(listBaseLineDate));
         }
 
         [HttpPost]

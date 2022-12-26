@@ -1,4 +1,5 @@
 ﻿using Quartz;
+using RDOS.BaseLine.Models;
 using RDOS.BaseLine.Service.Interface;
 
 namespace RDOS.BaseLine.Jobs
@@ -12,12 +13,11 @@ namespace RDOS.BaseLine.Jobs
             this._logger = logger;
             this._phattvservice = phattvservice;
         }
-        public Task Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
-            var bruh = _phattvservice.HandleCronFromBLSetting();
-            var a = bruh.Result.Message;
-            _logger.LogInformation($"Log Job: at {DateTime.Now} and Jobtype: {context.JobDetail.JobType}");
-            return Task.CompletedTask;
+            await _phattvservice.HandleCronFromBLSetting();
+            await _phattvservice.DeleteJob(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "* * * ? * *", "DailyBaseLine"));
+            return;
         }
 
 

@@ -50,12 +50,14 @@ builder.Services.AddSingleton<NotificationJob>();
 builder.Services.AddSingleton<LoggerJob>();
 builder.Services.AddSingleton<InitialJob>();
 builder.Services.AddSingleton<PendingDataProcessJob>();
+builder.Services.AddSingleton<BaseLineProcessJob>();
 #endregion
 
 List<JobMetadata> jobMetadatas = new List<JobMetadata>();
 //Lấy thời gian hiện tại 
 //ra được expression +  1ps 
-jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "00 07 21 ? * *", "DailyBaseLine"));
+// jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "00 07 21 ? * *", "DailyBaseLine"));
+jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "1 * * * * ?", "DailyBaseLine"));
 // jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(NotificationJob), "BLPendingProcess", "0/5 * * * * ?", "DailyBaseLine"));
 // jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(LoggerJob), "BLProcess", "0/5 * * * * ?", "DailyBaseLine"));
 

@@ -16,6 +16,7 @@ using RDOS.BaseLine.Services.Interface;
 using SysAdmin.Models.StaticValue;
 using RestSharp;
 using RDOS.BaseLine.Models.Result;
+using static RDOS.BaseLine.Constants.Constants;
 
 namespace RDOS.BaseLine.Service
 {
@@ -36,6 +37,7 @@ namespace RDOS.BaseLine.Service
         public readonly IClientService _clientService;
         private readonly IBaseRepository<SaleCalendarHoliday> _holidayRepo;
         private readonly IBaseRepository<SaleCalendar> _salesCalendarRepo;
+        private readonly IBaselineProcessService _blProcessService;
         public PhattvBLProcessService(
             ILogger<PhattvBLProcessService> logger,
             IBaseRepository<BlBlsettingInformation> blSettingInfoRepo,
@@ -49,7 +51,8 @@ namespace RDOS.BaseLine.Service
             ISchedulerFactory schedulerFactory,
             IClientService clientService,
             IBaseRepository<SaleCalendarHoliday> holidayRepo,
-            IBaseRepository<SaleCalendar> salesCalendarRepo
+            IBaseRepository<SaleCalendar> salesCalendarRepo,
+            IBaselineProcessService blProcessService
             )
         {
             _logger = logger;
@@ -65,24 +68,101 @@ namespace RDOS.BaseLine.Service
             _clientService = clientService;
             _holidayRepo = holidayRepo;
             _salesCalendarRepo = salesCalendarRepo;
+            _blProcessService = blProcessService;
         }
 
-        public async Task<DateTime?> GetBaseLineDate()
+
+        public async Task<List<DateTime>> GetBaseLineDate()
         {
+            List<DateTime> listBaseLineDate = new();
             try
             {
                 var setting = await _settingService.GetCurrentBaselineSetting();
-                if (!setting.IsSuccess || setting.Data == null) return null;
+                if (!setting.IsSuccess || setting.Data == null) return new List<DateTime>();
 
                 var blsetting = setting.Data;
+                var blSettingInfo = blsetting.BlBlsettingInformation;
                 var leadDate = blsetting.BlBlsettingInformation.LeadDate;
 
                 var currentDate = DateTime.Now;
                 var curentYear = currentDate.Year;
-                DayOfWeek curentDay = currentDate.DayOfWeek;
+                // DayOfWeek curentDay = currentDate.DayOfWeek;
                 var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == curentYear);
-                if (salesCalendar == null) return null;
+                if (salesCalendar == null) return new List<DateTime>();
+
+                // bool isDayOff = false;
+                // if (curentDay == DayOfWeek.Saturday)
+                // {
+                //     if (string.IsNullOrWhiteSpace(salesCalendar.IncludeWeekend)) isDayOff = true;
+                // }
+                // if (curentDay == DayOfWeek.Sunday)
+                // {
+                //     if (string.IsNullOrWhiteSpace(salesCalendar.IncludeWeekend)) isDayOff = true;
+                //     if (salesCalendar.IncludeWeekend == CalendarConstant.SUN) isDayOff = true;
+                // }
+
+                // var listHoliday = salesCalendar != null ? _holidayRepo.Find(x => x.SaleCalendarId == salesCalendar.Id).ToList() : new List<SaleCalendarHoliday>();
+
+                // if (listHoliday.Count > 0 && listHoliday.FirstOrDefault(x => x.SaleCalendarId == salesCalendar.Id && x.HolidayDate.Date == currentDate.Date) != null)
+                // {
+                //     isDayOff = true;
+                // }
+
+                bool isDayOff = await CheckIsDayOff(currentDate, salesCalendar);
+
+                //ngày nghỉ
+                if (isDayOff)
+                {
+                    //ProcessOffCount  + 1 number ngày nghỉ 
+                    blSettingInfo.ProcessOffCount += 1;
+                    _blSettingInfoRepo.Update(blSettingInfo);
+                    return new List<DateTime>();
+                }
+                else
+                {
+                    int processOffCount = blSettingInfo.ProcessOffCount.HasValue ? blSettingInfo.ProcessOffCount.Value : 0;
+                    // int processOffCount = 0;
+                    double totalLeadDate = leadDate.Value + processOffCount;
+                    double subtractDays = (double)(0 - totalLeadDate);
+                    var baseLineDate = currentDate.AddDays(subtractDays);
+                    listBaseLineDate.Add(baseLineDate);
+                    if ((int)totalLeadDate > leadDate)
+                    {
+                        var blDayoffCheck = await CheckIsDayOff(baseLineDate, salesCalendar);
+
+                        if (blDayoffCheck)
+                        {
+                            for (int i = 1; i < processOffCount;)
+                            {
+                                processOffCount--;
+                                totalLeadDate = leadDate.Value + processOffCount;
+                                subtractDays = (double)(0 - totalLeadDate);
+                                listBaseLineDate.Add(currentDate.AddDays(subtractDays));
+                            }
+                        }
+                    }
+                    return listBaseLineDate;
+                }
+                // return dateReturn;
+            }
+            catch (System.Exception ex)
+            {
+                return new List<DateTime>();
+            }
+        }
+
+
+        private async Task<bool> CheckIsDayOff(DateTime currentDate, SaleCalendar salesCalendar)
+        {
+            try
+            {
+                var curentDay = currentDate.DayOfWeek;
+                var curentYear = currentDate.Year;
                 bool isDayOff = false;
+
+                // var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == curentYear);
+                // if (salesCalendar == null) return true;
+
                 if (curentDay == DayOfWeek.Saturday)
                 {
                     if (string.IsNullOrWhiteSpace(salesCalendar.IncludeWeekend)) isDayOff = true;
@@ -100,28 +180,13 @@ namespace RDOS.BaseLine.Service
                     isDayOff = true;
                 }
 
-                //ngày nghỉ
-                if (isDayOff)
-                {
-                    //ProcessOffCount  + 1 number ngày nghỉ 
-
-                    return null;
-                }
-                else
-                {
-                    // int ProcessOffCount = blsetting.ProcessOffCount;
-                    int processOffCount = 0;
-
-                    double subtractDays = (double)(0 - (leadDate.Value + processOffCount));
-                    var baseLineDate = currentDate.AddDays(subtractDays);
-                    return baseLineDate;
-                }
-                // return dateReturn;
+                return isDayOff;
             }
             catch (System.Exception ex)
             {
-                return null;
+                return false;
             }
+
         }
 
         public async Task<BaseResultModel> HandleCronFromBLSetting()
@@ -143,21 +208,9 @@ namespace RDOS.BaseLine.Service
                 var ptcron = "* * * ? * *";
                 ptcron = $@"{parsept.Seconds} {parsept.Minutes} {parseppt.Hours} ? * *";
 
-                //Check processPending có đang đúng time k
-
-                //Đúng, pass
-                // không đúng, 
-                //Check có đang chạy k, 
-                //Có => Đợi
                 var pendingResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(PendingDataProcessJob), "PendingDataProcess", pptcron, "DailyBaseLine"));
-
-                // ReSchedule
-                //Check processTime có đang đúng time k
-                //Đúng, pass
-                // không đúng, 
-                //Check có đang chạy k, 
-                //Có => Đợi
-                // var processResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "BaslineProcess", ptcron, "DailyBaseLine"));
+                var processResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(BaseLineProcessJob), "BaseLineProcessJob", ptcron, "DailyBaseLine"));
+                // var stopInitialJob = await DeleteJob(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "* * * ? * *", "DailyBaseLine"));
                 return new BaseResultModel
                 {
                     IsSuccess = true,
@@ -248,28 +301,136 @@ namespace RDOS.BaseLine.Service
 
         }
 
-        public async Task<BaseResultModel> HandleProcessPendingData(DateTime baseLineDate)
+
+        public async Task<bool> DeleteJob(JobMetadata jobMetadata)
+        {
+            try
+            {
+                Scheduler = await _schedulerFactory.GetScheduler();
+                // var trigger = await Scheduler.GetTrigger(new TriggerKey(jobMetadata.JobName, jobMetadata.JobGroup));
+                var jobKey = new JobKey(jobMetadata.JobName, jobMetadata.JobGroup);
+                await Scheduler.DeleteJob(jobKey);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+        public async Task<BaseResultModel> HandleProcessPendingData(List<DateTime> listBaseLineDate)
         {
             try
             {
                 var setting = await _settingService.GetCurrentBaselineSetting();
                 var processPendingSetting = setting.Data.ProcessPendings;
-                var req = new OrderPendingTransModel
+                if (!setting.Data.BlBlsettingInformation.IsProcessPendingData.Value)
                 {
-                    BaselineDate = baseLineDate,
-                    Detail = processPendingSetting.Select(x => new OrderPendingTransDetailModel
+                    return new BaseResultModel
                     {
-                        FromStatus = x.FromStatus,
-                        ToStatus = x.ToStatus
-                    }).ToList()
-                };
-
-                var handlePendingSOResult = await _clientService.CommonRequestAsync<BaseResultModel>(CommonData.SystemUrlCode.SaleOrderAPI, $"/SO/TransactionPendingData", Method.POST, null, req);
+                        IsSuccess = true,
+                        Message = "OK"
+                    };
+                }
+                foreach (var baseLineDate in listBaseLineDate)
+                {
+                    var req = new OrderPendingTransModel
+                    {
+                        BaselineDate = baseLineDate,
+                        Detail = processPendingSetting.Select(x => new OrderPendingTransDetailModel
+                        {
+                            FromStatus = x.FromStatus,
+                            ToStatus = x.ToStatus
+                        }).ToList()
+                    };
+                    var handlePendingSOResult = await _clientService.CommonRequestAsync<BaseResultModel>(CommonData.SystemUrlCode.SaleOrderAPI, $"/SO/TransactionPendingData", Method.POST, null, req);
+                }
                 return new BaseResultModel
                 {
                     IsSuccess = true,
                     Message = "OK"
                 };
+
+            }
+            catch (System.Exception ex)
+            {
+                return new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
+        }
+
+
+        public async Task<BaseResultModel> HandleBaseLineProcess(List<DateTime> listBaseLineDate)
+        {
+            try
+            {
+                var setting = await _settingService.GetCurrentBaselineSetting();
+                var blSettingProcess = setting.Data.BaseLineProcesses;
+                var blSettingInfo = setting.Data.BlBlsettingInformation;
+                var listSequentialProcess = blSettingProcess.Where(x => x.IsSequentialProcessing == true).OrderBy(x => x.Priority).ToList();
+                var listAsynchronousProcess = blSettingProcess.Where(x => x.IsSequentialProcessing == false).ToList();
+
+                foreach (var baseLineDate in listBaseLineDate)
+                {
+                    string blDate = baseLineDate.ToString("YYYY-MM-DD");
+                    foreach (var sequentialProcess in listSequentialProcess)
+                    {
+                        switch (sequentialProcess.ProcessCode)
+                        {
+                            case BlProcessConst.SOPROCESS:
+                                await _blProcessService.ProcessSO(blDate, blSettingInfo.SettingRef);
+                                break;
+                            case BlProcessConst.POPROCESS:
+                                await _blProcessService.ProcessPO(blDate, blSettingInfo.SettingRef);
+                                break;
+                            case BlProcessConst.IN_ISSUE:
+                                await _blProcessService.ProcessInvIssue(blDate, blSettingInfo.SettingRef, BaselineType.DAILY);
+                                break;
+                            case BlProcessConst.IN_RECEIPT:
+                                await _blProcessService.ProcessInvReceipt(blDate, blSettingInfo.SettingRef, BaselineType.DAILY);
+                                break;
+                            case BlProcessConst.BL_CLOSE_QTY:
+                                await _blProcessService.ProcessInvCloseQty(blDate, blSettingInfo.SettingRef);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    foreach (var asynchronousProcess in listAsynchronousProcess)
+                    {
+                        switch (asynchronousProcess.ProcessCode)
+                        {
+                            case BlProcessConst.SOPROCESS:
+                                _blProcessService.ProcessSO(blDate, blSettingInfo.SettingRef);
+                                break;
+                            case BlProcessConst.POPROCESS:
+                                _blProcessService.ProcessPO(blDate, blSettingInfo.SettingRef);
+                                break;
+                            case BlProcessConst.IN_ISSUE:
+                                _blProcessService.ProcessInvIssue(blDate, blSettingInfo.SettingRef, BaselineType.DAILY);
+                                break;
+                            case BlProcessConst.IN_RECEIPT:
+                                _blProcessService.ProcessInvReceipt(blDate, blSettingInfo.SettingRef, BaselineType.DAILY);
+                                break;
+                            case BlProcessConst.BL_CLOSE_QTY:
+                                _blProcessService.ProcessInvCloseQty(blDate, blSettingInfo.SettingRef);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                return new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Message = "OK"
+                };
+
             }
             catch (System.Exception ex)
             {
