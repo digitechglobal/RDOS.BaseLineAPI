@@ -1243,6 +1243,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Description).HasMaxLength(80);
 
+                entity.Property(e => e.ProcessOffCount)
+                    .HasColumnName("ProcessOffCount ")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.ProcessPendingTime).HasMaxLength(50);
 
                 entity.Property(e => e.ProcessTime).HasMaxLength(50);
