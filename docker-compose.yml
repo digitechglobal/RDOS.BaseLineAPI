@@ -2,6 +2,11 @@ version: '3.4'
 services:
   baseline_imagename:
     image: ${DOCKER_REGISTRY-}baseline
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '1024M'
     container_name: 'baseline'
     networks:
       - baseline_network

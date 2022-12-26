@@ -5,7 +5,7 @@ namespace RDOS.BaseLine.Models.Request
 {
     public class ConfirmPerformanceModel
     {
-        public DateTime ConfirmDate { get; set; }
+        public Guid? Id { get; set; }
         public string? Description { get; set; }
         public string? FileType { get; set; }
         public string? FilePath { get; set; }
@@ -17,10 +17,12 @@ namespace RDOS.BaseLine.Models.Request
         public DateTime ToDate { get; set; }
         public virtual List<ConfirmPerformanceDetailModel> ConfirmPerformanceDetails { get; set; }
         public List<Guid> RawSoIds { get; set; }
+        public bool IsConfirm { get; set; } = false;
     }
 
     public class ConfirmPerformanceDetailModel
     {
+        public Guid? Id { get; set; }
         public string? ValueCode { get; set; }
         public string? ValueDescription { get; set; }
     }

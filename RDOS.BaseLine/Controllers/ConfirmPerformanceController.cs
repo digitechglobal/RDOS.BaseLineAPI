@@ -30,11 +30,27 @@ namespace RDOS.BaseLine.Controllers
         }
 
         [HttpPost]
-        [Route("Confirm")]
+        [Route("Create")]
         public async Task<IActionResult> CreateConfirmPerformacne(ConfirmPerformanceModel input)
         {
             var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
             return Ok( await _confirmPerService.CreateConfirmPerformance(input, username));
+        }
+
+        [HttpPut]
+        [Route("Edit")]
+        public async Task<IActionResult> UpdateConfirmPerformacne(ConfirmPerformanceModel input)
+        {
+            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
+            return Ok(await _confirmPerService.UpdateConfirmPerformance(input, username));
+        }
+
+        [HttpDelete]
+        [Route("Delete/{confirmRef}")]
+        public async Task<IActionResult> DeleteConfirmPerformacne(string confirmRef)
+        {
+            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
+            return Ok(await _confirmPerService.DeleteConfirmPerformance(confirmRef, username));
         }
 
         [HttpPost]

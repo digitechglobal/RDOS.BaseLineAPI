@@ -9,5 +9,7 @@ namespace RDOS.BaseLine.Service.Interface
         Task<BaseResultModel> CreateConfirmPerformance(ConfirmPerformanceModel dataInput, string userLogin);
         Task<BaseResultModel> GetDetailConfirmPerformance(string confirmRef);
         Task<ResultModelWithObject<ListonfirmPerforamce>> SearchConfirmPer(ConfirmPerforamceSearch parameters);
+        Task<BaseResultModel> UpdateConfirmPerformance(ConfirmPerformanceModel dataInput, string userLogin);
+        Task<BaseResultModel> DeleteConfirmPerformance(string confirmRef, string userLogin);
     }
 }

@@ -7,8 +7,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
     {
         public Guid Id { get; set; }
         public string ConfirmRef { get; set; } = null!;
-        public DateTime ConfirmDate { get; set; }
-        public string ConfirmByUser { get; set; } = null!;
+        public DateTime? ConfirmDate { get; set; }
+        public string? ConfirmByUser { get; set; }
         public string? Description { get; set; }
         public string? FileType { get; set; }
         public string? FilePath { get; set; }
