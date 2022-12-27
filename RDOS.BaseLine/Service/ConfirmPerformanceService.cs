@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using nProx.Helpers.Dapper;
 using nProx.Helpers.Services.Repository;
 using Quartz;
@@ -19,6 +21,7 @@ namespace RDOS.BaseLine.Service
         private readonly IDapperRepositories _dapper;
         private readonly IBaseRepository<BlConfirmPerformance> _blConfirmPerformanceRepo;
         private readonly IBaseRepository<BlConfirmPerformanceDetail> _blConfirmPerformanceDetailRepo;
+        private readonly IBaseRepository<BlConfirmPerformanceRawSo> _blConfirmPerformanceRawSoRepo;
 
         public ConfirmPerformanceService(
             ILogger<ConfirmPerformanceService> logger,
@@ -26,7 +29,8 @@ namespace RDOS.BaseLine.Service
             IMapper mapper,
             IDapperRepositories dapper,
             IBaseRepository<BlConfirmPerformance> blConfirmPerformanceRepo,
-            IBaseRepository<BlConfirmPerformanceDetail> blConfirmPerformanceDetailRepo)
+            IBaseRepository<BlConfirmPerformanceDetail> blConfirmPerformanceDetailRepo,
+            IBaseRepository<BlConfirmPerformanceRawSo> blConfirmPerformanceRawSoRepo)
         {
             _logger = logger;
             _mapper = mapper;
@@ -34,6 +38,7 @@ namespace RDOS.BaseLine.Service
             _blRawSo = blRawSo;
             _blConfirmPerformanceRepo = blConfirmPerformanceRepo;
             _blConfirmPerformanceDetailRepo = blConfirmPerformanceDetailRepo;
+            _blConfirmPerformanceRawSoRepo = blConfirmPerformanceRawSoRepo;
         }
 
         private async Task<string> GenRefNumber()
@@ -79,7 +84,7 @@ namespace RDOS.BaseLine.Service
                     res = res.Where(x => x.CreatedDate.Value.Date <= parameters.ToDate.Value.Date.AddDays(1).AddTicks(-1));
                 }
 
-                res = res.ToList();
+                res = res.OrderByDescending(x => x.CreatedDate).ToList();
                 var items = _mapper.Map<List<BlConfirmPerformance>>(res);
 
                 if (parameters.IsDropdown)
@@ -125,7 +130,33 @@ namespace RDOS.BaseLine.Service
         {
             try
             {
-                var res = _blRawSo.Find(x => !x.IsDeleted && !(bool)x.RecordPerformance);
+                var res = _blRawSo.Find(x => !x.IsDeleted && !(bool)x.RecordPerformance).Select(x => new RawSoModel()
+                {
+                    Id = x.Id,
+                    TransactionDate = x.TransactionDate,
+                    OrderRefNumber = x.OrderRefNumber,
+                    Status = x.Status,
+                    CustomerId = x.CustomerId,
+                    CustomerName = x.CustomerName,
+                    CustomerShiptoId = x.CustomerShiptoId,
+                    CustomerShiptoName = x.CustomerShiptoName,
+                    Dsaid = x.Dsaid,
+                    Dsadesc = x.Dsadesc,
+                    RouteZoneId = x.RouteZoneId,
+                    RouteZoneDesc = x.RouteZoneDesc,
+                    BranchId = x.BranchId,
+                    BranchName = x.BranchName,
+                    RegionId = x.RegionId,
+                    RegionName = x.RegionName,
+                    SubRegionId = x.SubRegionId,
+                    SubRegionName = x.SubRegionName,
+                    AreaId = x.AreaId,
+                    AreaName = x.AreaName,
+                    SubAreaId = x.SubAreaId,
+                    SubAreaName = x.SubAreaName,
+                    SalesOrgId = x.SalesOrgId,
+                    BaselineDate = x.BaselineDate
+                });
 
                 if (!string.IsNullOrWhiteSpace(parameters.SalesOrgCode) && 
                     !string.IsNullOrWhiteSpace(parameters.Type) &&
@@ -164,7 +195,7 @@ namespace RDOS.BaseLine.Service
                     else if (parameters.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
                     {
                         res = res.Where(x =>
-                        (!string.IsNullOrWhiteSpace(x.BranchId) && parameters.ValueCode.Contains(x.Dsaid)) &&
+                        (!string.IsNullOrWhiteSpace(x.Dsaid) && parameters.ValueCode.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
                     else if (parameters.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
@@ -195,7 +226,7 @@ namespace RDOS.BaseLine.Service
                 }
 
                 res = res.ToList();
-                var items = _mapper.Map<List<BlRawSo>>(res);
+                var items = _mapper.Map<List<RawSoModel>>(res);
 
                 if (parameters.IsDropdown)
                 {
@@ -211,7 +242,7 @@ namespace RDOS.BaseLine.Service
                 }
                 else
                 {
-                    var baselineTempPagged = PagedList<BlRawSo>.ToPagedList(items, (parameters.PageNumber - 1) * parameters.PageSize, parameters.PageSize);
+                    var baselineTempPagged = PagedList<RawSoModel>.ToPagedList(items, (parameters.PageNumber - 1) * parameters.PageSize, parameters.PageSize);
                     var repsonse = new ListRawSoNotPerformance { Items = baselineTempPagged, MetaData = baselineTempPagged.MetaData };
 
                     //return metadata
@@ -335,6 +366,21 @@ namespace RDOS.BaseLine.Service
 
                 _blConfirmPerformanceDetailRepo.InsertMany(listDataDetail);
 
+                var listRawSoInsert = new List<BlConfirmPerformanceRawSo>();
+
+                foreach (var rawSo in dataInput.RawSoIds)
+                {
+                    var confirmPerRawSo = new BlConfirmPerformanceRawSo();
+                    confirmPerRawSo.Id = Guid.NewGuid();
+                    confirmPerRawSo.RowSoId = rawSo;
+                    confirmPerRawSo.ConfirmRef = confirmRefNew;
+                    confirmPerRawSo.CreatedBy = userLogin;
+                    confirmPerRawSo.CreatedDate = DateTime.Today;
+                    listRawSoInsert.Add(confirmPerRawSo);
+                }
+
+                _blConfirmPerformanceRawSoRepo.InsertMany(listRawSoInsert);
+
                 if (dataInput.IsConfirm)
                 {
                     foreach (var item in dataInput.RawSoIds)
@@ -457,6 +503,30 @@ namespace RDOS.BaseLine.Service
 
                 _blConfirmPerformanceDetailRepo.InsertMany(listDataDetail);
 
+                // Handle raw so
+                // Delete
+                var listDataRawSoInDb = _blConfirmPerformanceRawSoRepo.Find(x => x.ConfirmRef == dataInDb.ConfirmRef).ToList();
+                if (listDataRawSoInDb.Count > 0)
+                {
+                    _blConfirmPerformanceRawSoRepo.DeleteMany(listDataRawSoInDb);
+                }
+
+                // Insert
+                var listRawSoInsert = new List<BlConfirmPerformanceRawSo>();
+
+                foreach (var rawSo in dataInput.RawSoIds)
+                {
+                    var confirmPerRawSo = new BlConfirmPerformanceRawSo();
+                    confirmPerRawSo.Id = Guid.NewGuid();
+                    confirmPerRawSo.RowSoId = rawSo;
+                    confirmPerRawSo.ConfirmRef = dataInDb.ConfirmRef;
+                    confirmPerRawSo.CreatedBy = userLogin;
+                    confirmPerRawSo.CreatedDate = DateTime.Today;
+                    listRawSoInsert.Add(confirmPerRawSo);
+                }
+
+                _blConfirmPerformanceRawSoRepo.InsertMany(listRawSoInsert);
+
 
                 if (dataInput.IsConfirm)
                 {
@@ -521,14 +591,14 @@ namespace RDOS.BaseLine.Service
                     };
                 }
 
-                var listDataInDb = _blConfirmPerformanceDetailRepo.Find(x => x.ConfirmRef == dataInDb.ConfirmRef && !(bool)x.IsDeleted).ToList();
-
                 dataInDb.IsDeleted = true;
                 dataInDb.UpdatedDate = DateTime.Now;
                 dataInDb.UpdatedBy = userLogin;
 
-
                 _blConfirmPerformanceRepo.Update(dataInDb);
+
+                // Detail
+                var listDataInDb = _blConfirmPerformanceDetailRepo.Find(x => x.ConfirmRef == dataInDb.ConfirmRef && !(bool)x.IsDeleted).ToList();
 
                 // Delete detail
                 foreach (var itemInDb in listDataInDb)
@@ -539,12 +609,15 @@ namespace RDOS.BaseLine.Service
                     _blConfirmPerformanceDetailRepo.Update(itemInDb);
                 }
 
+                // Raw so
+                var listDataRawSoInDb = _blConfirmPerformanceRawSoRepo.Find(x => x.ConfirmRef == dataInDb.ConfirmRef).ToList();
+                _blConfirmPerformanceRawSoRepo.DeleteMany(listDataRawSoInDb);
+
                 return new BaseResultModel
                 {
                     IsSuccess = true,
                     Code = 200,
                     Message = "Deleted Successfully",
-                    Data = (await GetDetailConfirmPerformance(dataInDb.ConfirmRef)).Data
                 };
             }
             catch (Exception ex)
@@ -575,10 +648,42 @@ namespace RDOS.BaseLine.Service
                 }
 
                 var listDataDetail = _blConfirmPerformanceDetailRepo.Find(x => x.ConfirmRef == confirmRef && !(bool)x.IsDeleted).ToList();
+                var listDataRawSoDetail = _blConfirmPerformanceRawSoRepo.Find(x => x.ConfirmRef == confirmRef).Select(x => x.RowSoId).ToList();
+
+
+                var resRawSos = _blRawSo.Find(x => !x.IsDeleted && listDataRawSoDetail.Contains(x.Id)).Select(x => new RawSoModel()
+                {
+                    Id = x.Id,
+                    TransactionDate = x.TransactionDate,
+                    OrderRefNumber = x.OrderRefNumber,
+                    Status = x.Status,
+                    CustomerId = x.CustomerId,
+                    CustomerName = x.CustomerName,
+                    CustomerShiptoId = x.CustomerShiptoId,
+                    CustomerShiptoName = x.CustomerShiptoName,
+                    Dsaid = x.Dsaid,
+                    Dsadesc = x.Dsadesc,
+                    RouteZoneId = x.RouteZoneId,
+                    RouteZoneDesc = x.RouteZoneDesc,
+                    BranchId = x.BranchId,
+                    BranchName = x.BranchName,
+                    RegionId = x.RegionId,
+                    RegionName = x.RegionName,
+                    SubRegionId = x.SubRegionId,
+                    SubRegionName = x.SubRegionName,
+                    AreaId = x.AreaId,
+                    AreaName = x.AreaName,
+                    SubAreaId = x.SubAreaId,
+                    SubAreaName = x.SubAreaName,
+                    SalesOrgId = x.SalesOrgId,
+                    BaselineDate = x.BaselineDate
+                }).ToList();
+                
 
                 var dataRes = new ConfirmPerDetailModel();
                 dataRes.ConfirmPerformance = dataInDb;
                 dataRes.ConfirmPerformanceDetails = listDataDetail;
+                dataRes.ListRowSo = resRawSos;
                 
 
                 return new BaseResultModel

@@ -2,6 +2,7 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 RUN apt-get update && apt-get install -y libgdiplus
+ENV TZ="Asia/Ho_Chi_Minh"
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443

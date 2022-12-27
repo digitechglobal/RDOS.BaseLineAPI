@@ -17,15 +17,20 @@ namespace RDOS.BaseLine.Controllers
         private readonly IBaselineSettingService _baseLineSettingService;
         private readonly IPhattvBLProcessService _phattvBaseLineSettingService;
         private readonly IBaselineProcessService _blProcessService;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly string _token;
         public BaselineSettingController(
             IBaseService<BaselineSettingModel> service,
             IBaselineSettingService baseLineSettingService,
             IBaselineProcessService blProcessService,
-            IPhattvBLProcessService phattvBaseLineSettingService) : base(service)
+            IPhattvBLProcessService phattvBaseLineSettingService,
+            IHttpContextAccessor contextAccessor) : base(service)
         {
             _baseLineSettingService = baseLineSettingService;
             _blProcessService = blProcessService;
             _phattvBaseLineSettingService = phattvBaseLineSettingService;
+            _contextAccessor = contextAccessor;
+            _token = _contextAccessor.HttpContext.Request.Headers["Authorization"];
         }
 
         // [HttpGet]
@@ -141,6 +146,13 @@ namespace RDOS.BaseLine.Controllers
         public async Task<IActionResult> HandleCronFromBLSetting()
         {
             return Ok(await _phattvBaseLineSettingService.HandleCronFromBLSetting());
+        }
+
+        [HttpPost]
+        [Route("ProcessCalculateKPI/{baselineDate}")]
+        public async Task<IActionResult> ProcessCalculateKPI(DateTime baselineDate)
+        {
+            return Ok(await _blProcessService.ProcessCaculateKPI(baselineDate, _token));
         }
     }
 }

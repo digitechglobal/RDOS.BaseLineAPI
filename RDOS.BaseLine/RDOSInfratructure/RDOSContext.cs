@@ -59,6 +59,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public virtual DbSet<BlCloseStock> BlCloseStocks { get; set; } = null!;
         public virtual DbSet<BlConfirmPerformance> BlConfirmPerformances { get; set; } = null!;
         public virtual DbSet<BlConfirmPerformanceDetail> BlConfirmPerformanceDetails { get; set; } = null!;
+        public virtual DbSet<BlConfirmPerformanceRawSo> BlConfirmPerformanceRawSos { get; set; } = null!;
         public virtual DbSet<BlHistory> BlHistorys { get; set; } = null!;
         public virtual DbSet<BlIssueQty> BlIssueQtys { get; set; } = null!;
         public virtual DbSet<BlRawPo> BlRawPos { get; set; } = null!;
@@ -1632,6 +1633,19 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.ValueCode).HasMaxLength(50);
 
                 entity.Property(e => e.ValueDescription).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<BlConfirmPerformanceRawSo>(entity =>
+            {
+                entity.ToTable("BL_ConfirmPerformanceRawSos");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.ConfirmRef).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
             });
 
             modelBuilder.Entity<BlHistory>(entity =>

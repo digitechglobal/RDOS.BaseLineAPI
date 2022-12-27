@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Http;
 using System.Globalization;
 using SysAdmin.Models.StaticValue;
 using RestSharp.Extensions;
+using Newtonsoft.Json;
+using static RDOS.BaseLine.Constants.Constants;
 
 namespace RDOS.BaseLine.Service
 {
@@ -42,6 +44,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlSafetyStockAssessment> _blSafetyStockAssessmentRepo;
         private readonly IMapper _mapper;
         private readonly IDapperRepositories _dapper;
+        public IRestClient _client;
 
         public BaselineProcessService(
             ILogger<BaselineProcessService> logger, 
@@ -89,6 +92,7 @@ namespace RDOS.BaseLine.Service
             _poStockKeepingDayItemRepo = poStockKeepingDayItemRepo;
             _itemHierarchyMappingRepo = itemHierarchyMappingRepo;
             _blSafetyStockAssessmentRepo = blSafetyStockAssessmentRepo;
+            _client = new RestClient(CommonData.SystemUrl.Where(x => x.Code == CommonData.SystemUrlCode.KpiCode).Select(x => x.Url).FirstOrDefault());
         }
 
         public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef)
@@ -1058,6 +1062,150 @@ namespace RDOS.BaseLine.Service
                 };
             }
             catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new BaseResultModel
+                {
+                    Code = 500,
+                    IsSuccess = true,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
+        }
+
+        public async Task<BaseResultModel> ProcessPoKPI(DateTime baseLineDate, string token)
+        {
+            try
+            {
+                string tokenSplit = token.Split(" ").Last();
+                _client.Authenticator = new JwtAuthenticator($"Rdos {tokenSplit}");
+
+                var listData = _blRawPo.Find(x => x.BaselineDate.Date == baseLineDate.Date)
+                    .Select(x => x.TransactionDate).GroupBy(x => x.Value.Date).Select(x => x.First()).OrderBy(x => x.Value).ToList();
+
+                foreach (var item in listData)
+                {
+                    var requestKPI = new RestRequest($"calculatekpi/calculationkpiswithpurchaseorder", Method.POST, DataFormat.Json);
+                    requestKPI.AddJsonBody(new RequestCalculateKpiModel { IsToPresentTime = true, TimeToCalculateKPIs = item.Value});
+                    var resultKPI = _client.Execute(requestKPI);
+
+                    if (resultKPI == null || resultKPI.Content == String.Empty)
+                    {
+                        return new BaseResultModel
+                        {
+                            IsSuccess = false,
+                            Code = 400,
+                            Message = $"Cannot calculate purchase order KPI date: {item.Value}"
+                        };
+                    }
+
+                    var resultData = JsonConvert.DeserializeObject<BaseResultModel>(JsonConvert.DeserializeObject(resultKPI.Content).ToString());
+                    if (!resultData.IsSuccess)
+                    {
+                        return resultData;
+                    }
+                }
+
+                return new BaseResultModel
+                {
+                    Code = 200,
+                    IsSuccess = true,
+                    Message = "Successfully"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new BaseResultModel
+                {
+                    Code = 500,
+                    IsSuccess = true,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
+        }
+
+        public async Task<BaseResultModel> ProcessSoKPI(DateTime baseLineDate, string token)
+        {
+            try
+            {
+                string tokenSplit = token.Split(" ").Last();
+                _client.Authenticator = new JwtAuthenticator($"Rdos {tokenSplit}");
+
+                var listDateFinal = new List<DateTime?>();
+
+                // Get list date in Raw so with status = cancel
+                var listDataCancel = _blRawSo.Find(x => x.BaselineDate.Date == baseLineDate.Date && x.Status == StatusSOConst.CANCEL)
+                    .Select(x => x.CancelDate).GroupBy(x => x.Value.Date).Select(x => x.First()).OrderBy(x => x.Value).ToList();
+
+                listDateFinal.AddRange(listDataCancel);
+
+                // Get list date in Raw so with status != cancel
+                var listData = _blRawSo.Find(x => x.BaselineDate.Date == baseLineDate.Date && x.Status != StatusSOConst.CANCEL)
+                    .Select(x => x.CompletedDate).GroupBy(x => x.Value.Date).Select(x => x.First()).OrderBy(x => x.Value).ToList();
+
+                listDateFinal.AddRange(listData);
+
+                foreach (var item in listDateFinal.GroupBy(x => x.Value.Date).Select(x => x.First()).OrderBy(x => x.Value).ToList())
+                {
+                    var requestKPI = new RestRequest($"calculatekpi/calculationkpiswithsalesorder", Method.POST, DataFormat.Json);
+                    requestKPI.AddJsonBody(new RequestCalculateKpiModel { IsToPresentTime = true, TimeToCalculateKPIs = item.Value });
+                    var resultKPI = _client.Execute(requestKPI);
+
+                    if (resultKPI == null || resultKPI.Content == String.Empty)
+                    {
+                        return new BaseResultModel
+                        {
+                            IsSuccess = false,
+                            Code = 400,
+                            Message = $"Cannot calculate purchase order KPI date: {item.Value}"
+                        };
+                    }
+
+                    var resultData = JsonConvert.DeserializeObject<BaseResultModel>(JsonConvert.DeserializeObject(resultKPI.Content).ToString());
+                    if (!resultData.IsSuccess)
+                    {
+                        return resultData;
+                    }
+                }
+
+                return new BaseResultModel
+                {
+                    Code = 200,
+                    IsSuccess = true,
+                    Message = "Successfully"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new BaseResultModel
+                {
+                    Code = 500,
+                    IsSuccess = true,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
+        }
+
+        public async Task<BaseResultModel> ProcessCaculateKPI(DateTime baselineDate, string token)
+        {
+            try
+            {
+                var _kpiPO = await ProcessPoKPI(baselineDate, token);
+                if (!_kpiPO.IsSuccess) return _kpiPO;
+
+                var _kpiSO = await ProcessSoKPI(baselineDate, token);
+                if (!_kpiSO.IsSuccess) return _kpiSO;
+
+                return new BaseResultModel
+                {
+                    Code = 200,
+                    IsSuccess = true,
+                    Message = "Successfully"
+                };
+            }
+            catch(Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
                 return new BaseResultModel

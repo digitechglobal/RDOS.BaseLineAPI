@@ -40,7 +40,7 @@ namespace RDOS.BaseLine.Models.Request
 
     public class ListRawSoNotPerformance
     {
-        public List<BlRawSo> Items { get; set; }
+        public List<RawSoModel> Items { get; set; }
         public MetaData MetaData { get; set; }
     }
 
@@ -48,6 +48,7 @@ namespace RDOS.BaseLine.Models.Request
     {
         public BlConfirmPerformance ConfirmPerformance { get; set; }
         public virtual List<BlConfirmPerformanceDetail> ConfirmPerformanceDetails { get; set; }
+        public virtual List<RawSoModel> ListRowSo { get; set; }
     }
 
     public class FilterConfirmPer : EcoParameters
@@ -55,5 +56,33 @@ namespace RDOS.BaseLine.Models.Request
         public string SalesOrgCode { get; set; }
         public string Type { get; set; }
         public List<string> ValueCode { get; set; }
+    }
+
+    public class RawSoModel
+    {
+        public Guid Id { get; set; }
+        public DateTime? TransactionDate { get; set; }
+        public string? OrderRefNumber { get; set; }
+        public string? Status { get; set; }
+        public string? CustomerId { get; set; }
+        public string? CustomerName { get; set; }
+        public string? CustomerShiptoId { get; set; }
+        public string? CustomerShiptoName { get; set; }
+        public string? Dsaid { get; set; }
+        public string? Dsadesc { get; set; }
+        public string? RouteZoneId { get; set; }
+        public string? RouteZoneDesc { get; set; }
+        public string? BranchId { get; set; }
+        public string? BranchName { get; set; }
+        public string? RegionId { get; set; }
+        public string? RegionName { get; set; }
+        public string? SubRegionId { get; set; }
+        public string? SubRegionName { get; set; }
+        public string? AreaId { get; set; }
+        public string? AreaName { get; set; }
+        public string? SubAreaId { get; set; }
+        public string? SubAreaName { get; set; }
+        public string? SalesOrgId { get; set; }
+        public DateTime BaselineDate { get; set; }
     }
 }

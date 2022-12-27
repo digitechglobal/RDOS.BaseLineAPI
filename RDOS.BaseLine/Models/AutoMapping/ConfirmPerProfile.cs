@@ -11,6 +11,7 @@ namespace RDOS.BaseLine.Models.AutoMapping
         {
             CreateMap<BlConfirmPerformance, ConfirmPerformanceModel>().ReverseMap();
             CreateMap<BlConfirmPerformanceDetail, ConfirmPerformanceDetailModel>().ReverseMap();
+            CreateMap<BlRawSo, RawSoModel>().ReverseMap();
         }
     }
 }
