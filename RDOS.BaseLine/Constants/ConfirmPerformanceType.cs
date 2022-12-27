@@ -2,11 +2,11 @@
 {
     public class ConfirmPerformanceType
     {
-        public const string BRANCH = "Branch";
-        public const string REGION = "Region";
-        public const string SUBREGION = "SubRegion";
-        public const string AREA = "Area";
-        public const string SUBAREA = "SubArea";
+        public const string BRANCH = "TL01";
+        public const string REGION = "TL02";
+        public const string SUBREGION = "TL03";
+        public const string AREA = "TL04";
+        public const string SUBAREA = "TL05";
         public const string DSA = "DSA";
         public const string ROUTEZONE = "RouteZone";
     }
