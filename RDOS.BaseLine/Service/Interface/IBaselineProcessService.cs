@@ -12,5 +12,6 @@ namespace RDOS.BaseLine.Service.Interface
         Task<BaseResultModel> ProcessRunningSales(string baselineDate);
         Task<BaseResultModel> ProcessSafetyStockAssessment(string baselineDate);
         Task<BaseResultModel> ProcessCaculateKPI(DateTime baselineDate, string token);
+        Task<BaseResultModel> ProcessSoKPI(DateTime baseLineDate, string token);
     }
 }

@@ -1196,6 +1196,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Description).HasMaxLength(255);
 
+                entity.Property(e => e.IsSequentialProcessing)
+                    .IsRequired()
+                    .HasDefaultValueSql("true");
+
                 entity.Property(e => e.LinkApi)
                     .HasMaxLength(255)
                     .HasColumnName("LinkAPI");

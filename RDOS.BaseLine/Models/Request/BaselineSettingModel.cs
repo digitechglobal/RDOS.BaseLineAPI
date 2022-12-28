@@ -26,8 +26,6 @@ namespace RDOS.BaseLine.Models.Request
     public class BaseLineProcessModel
     {
         public string ProcessCode { get; set; }
-        public int? Priority { get; set; } = 0;
-        public bool? IsSequentialProcessing { get; set; } = false;
     }
 
     public class BaselineSettingEmailModel
@@ -42,8 +40,11 @@ namespace RDOS.BaseLine.Models.Request
     // Model detail
     public class BlBlsettingProcessDetail : BlBlsettingProcess
     {
+        public bool IsSequentialProcessing { get; set; }
+        public int Priority { get; set; }
         public BlBlprocess Process { get; set; }
     }
+
     public class BaselineSettingDetailModel
     {
         public BlBlsettingInformation BlBlsettingInformation { get; set; }

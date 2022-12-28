@@ -68,14 +68,14 @@ namespace RDOS.BaseLine.Controllers
         [Route("GetDetail/{settingRef}")]
         public async Task<IActionResult> GetDetail(string settingRef)
         {
-            return Ok(await _baseLineSettingService.GetDetailBaselineSetting(settingRef));
+            return Ok(await _baseLineSettingService.GetDetailBaselineSetting(settingRef, false));
         }
 
         [HttpGet]
         [Route("GetCurrent")]
         public async Task<IActionResult> GetBaselineSettingCurrent()
         {
-            return Ok(await _baseLineSettingService.GetCurrentBaselineSetting());
+            return Ok(await _baseLineSettingService.GetDetailBaselineSetting(null, true));
         }
 
         [HttpPost]

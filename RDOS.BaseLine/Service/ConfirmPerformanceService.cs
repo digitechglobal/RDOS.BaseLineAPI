@@ -22,6 +22,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlConfirmPerformance> _blConfirmPerformanceRepo;
         private readonly IBaseRepository<BlConfirmPerformanceDetail> _blConfirmPerformanceDetailRepo;
         private readonly IBaseRepository<BlConfirmPerformanceRawSo> _blConfirmPerformanceRawSoRepo;
+        private readonly IBaselineProcessService _processService;
 
         public ConfirmPerformanceService(
             ILogger<ConfirmPerformanceService> logger,
@@ -30,7 +31,8 @@ namespace RDOS.BaseLine.Service
             IDapperRepositories dapper,
             IBaseRepository<BlConfirmPerformance> blConfirmPerformanceRepo,
             IBaseRepository<BlConfirmPerformanceDetail> blConfirmPerformanceDetailRepo,
-            IBaseRepository<BlConfirmPerformanceRawSo> blConfirmPerformanceRawSoRepo)
+            IBaseRepository<BlConfirmPerformanceRawSo> blConfirmPerformanceRawSoRepo,
+            IBaselineProcessService processService)
         {
             _logger = logger;
             _mapper = mapper;
@@ -39,6 +41,7 @@ namespace RDOS.BaseLine.Service
             _blConfirmPerformanceRepo = blConfirmPerformanceRepo;
             _blConfirmPerformanceDetailRepo = blConfirmPerformanceDetailRepo;
             _blConfirmPerformanceRawSoRepo = blConfirmPerformanceRawSoRepo;
+            _processService = processService;
         }
 
         private async Task<string> GenRefNumber()
@@ -324,7 +327,7 @@ namespace RDOS.BaseLine.Service
                 };
             }
         }
-        public async Task<BaseResultModel> CreateConfirmPerformance(ConfirmPerformanceModel dataInput, string userLogin)
+        public async Task<BaseResultModel> CreateConfirmPerformance(ConfirmPerformanceModel dataInput, string userLogin, string token)
         {
             try
             {
@@ -383,18 +386,8 @@ namespace RDOS.BaseLine.Service
 
                 if (dataInput.IsConfirm)
                 {
-                    foreach (var item in dataInput.RawSoIds)
-                    {
-                        var rawSoInDb = _blRawSo.Find(x => x.Id == item).FirstOrDefault();
-                        if (rawSoInDb != null)
-                        {
-                            rawSoInDb.RecordPerformance = true;
-                            rawSoInDb.WorkingDay = true;
-                            rawSoInDb.RecordPerformanceUpdateBy = userLogin;
-                            rawSoInDb.RecordPerformanceUpdateDateTime = DateTime.Today;
-                            _blRawSo.Update(rawSoInDb);
-                        }
-                    }
+                    var confirmResult = await Confirm(dataInput.RawSoIds, userLogin, token);
+                    if (!confirmResult.IsSuccess) return confirmResult;
                 }
 
 
@@ -418,7 +411,50 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<BaseResultModel> UpdateConfirmPerformance(ConfirmPerformanceModel dataInput, string userLogin)
+        public async Task<BaseResultModel> Confirm(List<Guid> RawSoIds, string userLogin, string token)
+        {
+            try
+            {
+                List<DateTime> listBaselineDate = new List<DateTime>();
+                foreach (var item in RawSoIds)
+                {
+                    var rawSoInDb = _blRawSo.Find(x => x.Id == item).FirstOrDefault();
+                    if (rawSoInDb != null)
+                    {
+                        rawSoInDb.RecordPerformance = true;
+                        rawSoInDb.WorkingDay = true;
+                        rawSoInDb.RecordPerformanceUpdateBy = userLogin;
+                        rawSoInDb.RecordPerformanceUpdateDateTime = DateTime.Today;
+                        _blRawSo.Update(rawSoInDb);
+                        listBaselineDate.Add(rawSoInDb.BaselineDate);
+                    }
+                }
+
+                //foreach (var baselineDate in listBaselineDate.GroupBy(x => x.Date).Select(x => x.First()).ToList())
+                //{
+                //    var reCaculateSOKPI = await _processService.ProcessSoKPI(baselineDate, token);
+                //    if (!reCaculateSOKPI.IsSuccess) return reCaculateSOKPI;
+                //}
+
+                return new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Code = 200
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Code = 500,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
+        }
+
+        public async Task<BaseResultModel> UpdateConfirmPerformance(ConfirmPerformanceModel dataInput, string userLogin, string token)
         {
             try
             {
@@ -530,18 +566,8 @@ namespace RDOS.BaseLine.Service
 
                 if (dataInput.IsConfirm)
                 {
-                    foreach (var item in dataInput.RawSoIds)
-                    {
-                        var rawSoInDb = _blRawSo.Find(x => x.Id == item).FirstOrDefault();
-                        if (rawSoInDb != null)
-                        {
-                            rawSoInDb.RecordPerformance = true;
-                            rawSoInDb.WorkingDay = true;
-                            rawSoInDb.RecordPerformanceUpdateBy = userLogin;
-                            rawSoInDb.RecordPerformanceUpdateDateTime = DateTime.Today;
-                            _blRawSo.Update(rawSoInDb);
-                        }
-                    }
+                    var confirmResult = await Confirm(dataInput.RawSoIds, userLogin, token);
+                    if (!confirmResult.IsSuccess) return confirmResult;
                 }
                 
 

@@ -7,9 +7,8 @@ namespace RDOS.BaseLine.Service.Interface
     {
         Task<BaseResultModel> GetListSettingTransactionStatus();
         Task<BaseResultModel> ChangeSetting(BaselineSettingModel dataInput, string userLogin);
-        Task<BaseResultModel> GetDetailBaselineSetting(string settingRef);
+        Task<ResultModelWithObject<BaselineSettingDetailModel>> GetDetailBaselineSetting(string? settingRef, bool isCurrent);
         Task<BaseResultModel> GetListProcess();
-        Task<ResultModelWithObject<BaselineSettingDetailModel>> GetCurrentBaselineSetting();
         Task<ResultModelWithObject<ListBaselineSetting>> SearchBaselineSetting(BaselineSearch parameters);
     }
 }

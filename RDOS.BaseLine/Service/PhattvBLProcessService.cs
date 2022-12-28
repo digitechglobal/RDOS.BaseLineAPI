@@ -77,7 +77,7 @@ namespace RDOS.BaseLine.Service
             List<DateTime> listBaseLineDate = new();
             try
             {
-                var setting = await _settingService.GetCurrentBaselineSetting();
+                var setting = await _settingService.GetDetailBaselineSetting(null, true);
                 if (!setting.IsSuccess || setting.Data == null) return new List<DateTime>();
 
                 var blsetting = setting.Data;
@@ -193,7 +193,7 @@ namespace RDOS.BaseLine.Service
         {
             try
             {
-                var setting = await _settingService.GetCurrentBaselineSetting();
+                var setting = await _settingService.GetDetailBaselineSetting(null, true);
                 var processPendingTime = setting.Data.BlBlsettingInformation.ProcessPendingTime;
                 var processTime = setting.Data.BlBlsettingInformation.ProcessTime;
 
@@ -323,7 +323,7 @@ namespace RDOS.BaseLine.Service
         {
             try
             {
-                var setting = await _settingService.GetCurrentBaselineSetting();
+                var setting = await _settingService.GetDetailBaselineSetting(null, true);
                 var processPendingSetting = setting.Data.ProcessPendings;
                 if (!setting.Data.BlBlsettingInformation.IsProcessPendingData.Value)
                 {
@@ -368,7 +368,7 @@ namespace RDOS.BaseLine.Service
         {
             try
             {
-                var setting = await _settingService.GetCurrentBaselineSetting();
+                var setting = await _settingService.GetDetailBaselineSetting(null, true);
                 var blSettingProcess = setting.Data.BaseLineProcesses;
                 var blSettingInfo = setting.Data.BlBlsettingInformation;
                 var listSequentialProcess = blSettingProcess.Where(x => x.IsSequentialProcessing == true).OrderBy(x => x.Priority).ToList();

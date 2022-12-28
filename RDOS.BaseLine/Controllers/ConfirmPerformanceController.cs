@@ -15,11 +15,16 @@ namespace RDOS.BaseLine.Controllers
     public class ConfirmPerformanceController : NormalController<ConfirmPerformanceModel>
     {
         private readonly IConfirmPerformanceService _confirmPerService;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly string _token;
         public ConfirmPerformanceController(
             IBaseService<ConfirmPerformanceModel> service, 
-            IConfirmPerformanceService confirmPerService) : base(service)
+            IConfirmPerformanceService confirmPerService,
+            IHttpContextAccessor contextAccessor) : base(service)
         {
             _confirmPerService = confirmPerService;
+            _contextAccessor = contextAccessor;
+            _token = _contextAccessor.HttpContext.Request.Headers["Authorization"];
         }
 
         [HttpPost]
@@ -34,7 +39,7 @@ namespace RDOS.BaseLine.Controllers
         public async Task<IActionResult> CreateConfirmPerformacne(ConfirmPerformanceModel input)
         {
             var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok( await _confirmPerService.CreateConfirmPerformance(input, username));
+            return Ok( await _confirmPerService.CreateConfirmPerformance(input, username, _token));
         }
 
         [HttpPut]
@@ -42,7 +47,7 @@ namespace RDOS.BaseLine.Controllers
         public async Task<IActionResult> UpdateConfirmPerformacne(ConfirmPerformanceModel input)
         {
             var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok(await _confirmPerService.UpdateConfirmPerformance(input, username));
+            return Ok(await _confirmPerService.UpdateConfirmPerformance(input, username, _token));
         }
 
         [HttpDelete]
