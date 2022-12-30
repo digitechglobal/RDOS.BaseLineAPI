@@ -42,17 +42,19 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<PoStockKeepingDayItemHierarchy> _poStockKeepingDayItemRepo;
         private readonly IBaseRepository<ItemHierarchyMapping> _itemHierarchyMappingRepo;
         private readonly IBaseRepository<BlSafetyStockAssessment> _blSafetyStockAssessmentRepo;
+        private readonly IBaseRepository<BlAuditLog> _blAuditLogRepo;
         private readonly IMapper _mapper;
         private readonly IDapperRepositories _dapper;
         public IRestClient _client;
+        private string _username;
 
         public BaselineProcessService(
-            ILogger<BaselineProcessService> logger, 
-            IBaseRepository<BlBlsettingInformation> blSettingInfoRepo, 
-            IBaseRepository<BlBlsettingProcess> blSettingProcessRepo, 
-            IBaseRepository<BlBlsettingTransactionStatus> blSettingTransactionStatusRepo, 
-            IBaseRepository<BlBlsettingProcessPending> blSettingProcessPendingRepo, 
-            IBaseRepository<BlBlsettingEmail> blSettingEmailRepo, 
+            ILogger<BaselineProcessService> logger,
+            IBaseRepository<BlBlsettingInformation> blSettingInfoRepo,
+            IBaseRepository<BlBlsettingProcess> blSettingProcessRepo,
+            IBaseRepository<BlBlsettingTransactionStatus> blSettingTransactionStatusRepo,
+            IBaseRepository<BlBlsettingProcessPending> blSettingProcessPendingRepo,
+            IBaseRepository<BlBlsettingEmail> blSettingEmailRepo,
             IBaseRepository<BlBlprocess> blProcessRepo,
             IBaseRepository<BlRawPo> blRawPo,
             IBaseRepository<BlIssueQty> blIssuseQty,
@@ -68,7 +70,8 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<ItemHierarchyMapping> itemHierarchyMappingRepo,
             IBaseRepository<BlSafetyStockAssessment> blSafetyStockAssessmentRepo,
             IMapper mapper,
-            IDapperRepositories dapper)
+            IDapperRepositories dapper,
+            IBaseRepository<BlAuditLog> blAuditLogRepo)
         {
             _logger = logger;
             _blSettingInfoRepo = blSettingInfoRepo;
@@ -118,7 +121,7 @@ namespace RDOS.BaseLine.Service
                 if (listRawPo != null && listRawPo.Count > 0)
                 {
                     _blRawPo.DeleteMany(listRawPo);
-                } 
+                }
 
                 // Insert to database
                 _blRawPo.InsertMany(listData);
@@ -394,8 +397,8 @@ namespace RDOS.BaseLine.Service
                 var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baselineDateNew.Year);
                 if (salesCalendar == null)
                 {
-                    return new BaseResultModel 
-                    { 
+                    return new BaseResultModel
+                    {
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales calendar"
@@ -407,14 +410,14 @@ namespace RDOS.BaseLine.Service
 
                 var workingday = "true";
 
-                if (salesCalendar.IncludeWeekend == CalendarConstant.SAT && 
+                if (salesCalendar.IncludeWeekend == CalendarConstant.SAT &&
                     baselineDateNew.DayOfWeek.ToString() == CalendarConstant.Sunday)
                 {
                     workingday = "false";
                 }
 
-                if (string.IsNullOrEmpty(salesCalendar.IncludeWeekend) && 
-                    (baselineDateNew.DayOfWeek.ToString() == CalendarConstant.Saturday || 
+                if (string.IsNullOrEmpty(salesCalendar.IncludeWeekend) &&
+                    (baselineDateNew.DayOfWeek.ToString() == CalendarConstant.Saturday ||
                     baselineDateNew.DayOfWeek.ToString() == CalendarConstant.Sunday))
                 {
                     workingday = "false";
@@ -527,7 +530,7 @@ namespace RDOS.BaseLine.Service
 
                 List<DateTime> listDateFinal = new List<DateTime>();
 
-                DateTime EndDate = baselineDateNew.AddDays(-(xFinal-1));
+                DateTime EndDate = baselineDateNew.AddDays(-(xFinal - 1));
                 for (var dateCurrent = baselineDateNew.Date; dateCurrent >= baselineDateNew.AddDays(-(xFinal - 1)); dateCurrent = dateCurrent.AddDays(-1))
                 {
                     if (x == 6 && dateCurrent.DayOfWeek.ToString() == CalendarConstant.Sunday)
@@ -536,7 +539,7 @@ namespace RDOS.BaseLine.Service
                         continue;
                     }
 
-                    if (x == 5 && 
+                    if (x == 5 &&
                        (dateCurrent.DayOfWeek.ToString() == CalendarConstant.Saturday ||
                        dateCurrent.DayOfWeek.ToString() == CalendarConstant.Sunday))
                     {
@@ -782,7 +785,7 @@ namespace RDOS.BaseLine.Service
                                 Message = "Cannot found item group"
                             };
                         }
-                        
+
 
                         BaseResultModel resultStockKeepingDayNumber = await CalStockKeepingDay(stockeepingDayInDb, itemHierachyInDb);
                         if (!resultStockKeepingDayNumber.IsSuccess)
@@ -1086,7 +1089,7 @@ namespace RDOS.BaseLine.Service
                 foreach (var item in listData)
                 {
                     var requestKPI = new RestRequest($"calculatekpi/calculationkpiswithpurchaseorder", Method.POST, DataFormat.Json);
-                    requestKPI.AddJsonBody(new RequestCalculateKpiModel { IsToPresentTime = true, TimeToCalculateKPIs = item.Value});
+                    requestKPI.AddJsonBody(new RequestCalculateKpiModel { IsToPresentTime = true, TimeToCalculateKPIs = item.Value });
                     var resultKPI = _client.Execute(requestKPI);
 
                     if (resultKPI == null || resultKPI.Content == String.Empty)
@@ -1205,7 +1208,7 @@ namespace RDOS.BaseLine.Service
                     Message = "Successfully"
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
                 return new BaseResultModel

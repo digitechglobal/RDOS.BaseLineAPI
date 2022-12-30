@@ -38,6 +38,9 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<SaleCalendarHoliday> _holidayRepo;
         private readonly IBaseRepository<SaleCalendar> _salesCalendarRepo;
         private readonly IBaselineProcessService _blProcessService;
+        private readonly IBaseRepository<BlAuditLog> _blAuditLogRepo;
+        private string _username;
+
         public PhattvBLProcessService(
             ILogger<PhattvBLProcessService> logger,
             IBaseRepository<BlBlsettingInformation> blSettingInfoRepo,
@@ -52,7 +55,8 @@ namespace RDOS.BaseLine.Service
             IClientService clientService,
             IBaseRepository<SaleCalendarHoliday> holidayRepo,
             IBaseRepository<SaleCalendar> salesCalendarRepo,
-            IBaselineProcessService blProcessService
+            IBaselineProcessService blProcessService,
+            IBaseRepository<BlAuditLog> blAuditLogRepo
             )
         {
             _logger = logger;
@@ -69,8 +73,8 @@ namespace RDOS.BaseLine.Service
             _holidayRepo = holidayRepo;
             _salesCalendarRepo = salesCalendarRepo;
             _blProcessService = blProcessService;
+            _blAuditLogRepo = blAuditLogRepo;
         }
-
 
         public async Task<List<DateTime>> GetBaseLineDate()
         {
@@ -430,7 +434,6 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = true,
                     Message = "OK"
                 };
-
             }
             catch (System.Exception ex)
             {
@@ -441,5 +444,25 @@ namespace RDOS.BaseLine.Service
                 };
             }
         }
+
+        #region AuditLog
+        private void CreateAuditLog(BaseResultModel resultLog, DateTime baseLineDate, string settingRef, string processCode)
+        {
+            _blAuditLogRepo.Insert(new BlAuditLog
+            {
+                Id = Guid.NewGuid(),
+                BaselineSettingRef = settingRef,
+                BaselineDate = baseLineDate,
+                CreatedDate = DateTime.Now,
+                CreatedBy = _username,
+                ProcessCode = processCode,
+                IsSuccess = resultLog.IsSuccess,
+                Description = resultLog.Message,
+                FinishTime = DateTime.Now,
+                UpdatedBy = null
+            });
+            return;
+        }
+        #endregion
     }
 }
