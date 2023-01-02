@@ -17,5 +17,21 @@
             public const string DELIVERED = "SO_ST_DELIVERED";
             public const string PARTIALDELIVERED = "SO_ST_PARTIALDELIVERED";
         }
+
+        public static class SIIDConst
+        {
+            public const string ACTUALVOLUME = "ActualVolume";
+            public const string ACTUALREVENUE = "ActualRevenue";
+            public const string ACTUALPC = "ActualPC";
+            public const string ACTUALLPPC = "ActualLPPC";
+            public const string ASO = "ASO";
+            public const string SKUBUYED = "SKUBuyed";
+            public const string VPO = "VPO";
+            public const string LPPC = "LPPC";
+            public const string WEEKVISITED = "WeekVisited";
+            public const string SPVISITED = "SPVisited";
+            public const string QUATERVISITED = "QuaterVisited";
+            public const string YEARVISITED = "YearVisited";
+        }
     }
 }

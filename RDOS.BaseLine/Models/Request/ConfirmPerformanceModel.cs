@@ -18,6 +18,11 @@ namespace RDOS.BaseLine.Models.Request
         public virtual List<ConfirmPerformanceDetailModel> ConfirmPerformanceDetails { get; set; }
         public List<Guid> RawSoIds { get; set; }
         public bool IsConfirm { get; set; } = false;
+        public int? SaleYear { get; set; }
+        public string? SalePeriod { get; set; }
+        public int? Ordinal { get; set; }
+        public DateTime? CalendarStartDate { get; set; }
+        public DateTime? CalendarEndDate { get; set; }
     }
 
     public class ConfirmPerformanceDetailModel

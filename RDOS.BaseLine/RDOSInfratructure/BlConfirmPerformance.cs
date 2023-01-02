@@ -23,5 +23,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
         public bool? IsDeleted { get; set; }
+        public int? SaleYear { get; set; }
+        public string? SalePeriod { get; set; }
+        public int? Ordinal { get; set; }
+        public DateTime? CalendarStartDate { get; set; }
+        public DateTime? CalendarEndDate { get; set; }
     }
 }

@@ -154,5 +154,12 @@ namespace RDOS.BaseLine.Controllers
         {
             return Ok(await _blProcessService.ProcessCaculateKPI(baselineDate, _token));
         }
+
+        [HttpPost]
+        [Route("ProcessCustomerPerformance/{baselineDate}")]
+        public async Task<IActionResult> ProcessCustomerPerformance(DateTime baselineDate)
+        {
+            return Ok(await _blProcessService.ProcessCusPerDaily(baselineDate));
+        }
     }
 }
