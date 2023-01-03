@@ -12,7 +12,7 @@
         //"CONNECTION": "Server=127.0.0.1;Port=9777;Database=onesuat_system;User Id=postgresrdos;Password=RDOSGolive2022"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:9778"
+      "applicationUrl": "http://localhost:9777"
     },
     "IIS Express": {
       "commandName": "IISExpress",

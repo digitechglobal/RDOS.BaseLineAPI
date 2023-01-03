@@ -17,6 +17,7 @@ using SysAdmin.Models.StaticValue;
 using RestSharp;
 using RDOS.BaseLine.Models.Result;
 using static RDOS.BaseLine.Constants.Constants;
+using static Quartz.MisfireInstruction;
 
 namespace RDOS.BaseLine.Service
 {
@@ -210,10 +211,10 @@ namespace RDOS.BaseLine.Service
 
                 var parsept = TimeSpan.Parse(processTime);
                 var ptcron = "* * * ? * *";
-                ptcron = $@"{parsept.Seconds} {parsept.Minutes} {parseppt.Hours} ? * *";
+                ptcron = $@"{parsept.Seconds} {parsept.Minutes} {parsept.Hours} ? * *";
 
-                var pendingResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(PendingDataProcessJob), "PendingDataProcess", pptcron, "DailyBaseLine"));
-                var processResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(BaseLineProcessJob), "BaseLineProcessJob", ptcron, "DailyBaseLine"));
+                var pendingResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(PendingDataProcessJob), "PendingDataProcess", pptcron, "DailyBaseLine"), parseppt);
+                var processResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(BaseLineProcessJob), "BaseLineProcessJob", ptcron, "DailyBaseLine"), parsept);
                 // var stopInitialJob = await DeleteJob(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "* * * ? * *", "DailyBaseLine"));
                 return new BaseResultModel
                 {
@@ -268,7 +269,7 @@ namespace RDOS.BaseLine.Service
             return newTrigger;
         }
 
-        public async Task<bool> ReSchedular(JobMetadata jobMetadata)
+        public async Task<bool> ReSchedular(JobMetadata jobMetadata, TimeSpan timeCron)
         {
             try
             {
@@ -281,14 +282,26 @@ namespace RDOS.BaseLine.Service
                 {
                     IJobDetail jobDetail = QuartzHelper.CreateJob(jobMetadata);
                     //Create trigger
-                    ITrigger createdTrigger = QuartzHelper.CreateTrigger(jobMetadata);
+                    if (trigger == null)
+                    {
+                        trigger = QuartzHelper.CreateTrigger(jobMetadata);
+                    }
                     //Schedule job
-                    Scheduler.ScheduleJob(jobDetail, createdTrigger, new CancellationToken()).GetAwaiter();
+                    Scheduler.ScheduleJob(jobDetail, trigger, new CancellationToken()).GetAwaiter();
                     // Create Job
                 }
                 else
                 {
+
                     //Check có đang setting trùng giờ hay k, có skip , không có > reschedule
+                    var triggerOfJob = await Scheduler.GetTriggersOfJob(jobKey);
+                    var cronTrigger = triggerOfJob.FirstOrDefault();
+                    TimeSpan startTime = cronTrigger.StartTimeUtc.TimeOfDay;
+                    if (startTime.Equals(timeCron))
+                    {
+                        return true;
+                    }
+
 
                     //check có đang hoạt động hay k
                     //Có , đợi
@@ -372,6 +385,7 @@ namespace RDOS.BaseLine.Service
         {
             try
             {
+
                 var setting = await _settingService.GetDetailBaselineSetting(null, true);
                 var blSettingProcess = setting.Data.BaseLineProcesses;
                 var blSettingInfo = setting.Data.BlBlsettingInformation;

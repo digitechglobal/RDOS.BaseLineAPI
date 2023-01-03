@@ -325,8 +325,8 @@ CREATE FUNCTION collectrawso(baselinedate VARCHAR, settingref VARCHAR, workingda
 		CAST(baselinedate AS timestamp) :: timestamp, -- as "BaselineDate",
 		settingref :: varchar(50), -- as "BaselineSettingRef",
 		CASE WHEN CAST(soOrderInfo."OrderDate" AS DATE) = CAST(baselinedate AS DATE) THEN true ELSE false END :: boolean, -- OrderDate = BaselineDate => true
-		NULL :: timestamp,
-		NULL :: varchar(255),
+		NULL :: timestamp, --"RecordPerformanceUpdateDateTime"
+		NULL :: varchar(255), --"RecordPerformanceUpdateBy"
 		CAST(workingday as boolean) :: boolean, -- neu roi vao ngay nghi ngay le theo sales period thi bang false
 		soOrderInfo."PeriodID" :: varchar(50), --as "SalesPeriodId",
 		soOrderInfo."VisitDate" :: timestamp, --as "VisitDate",
@@ -380,10 +380,10 @@ CREATE FUNCTION collectrawso(baselinedate VARCHAR, settingref VARCHAR, workingda
 		soOrderInfo."Shipped_Extend_Amt" :: decimal, --as "ShippedExtendAmt",
 		soOrderInfo."TotalVAT" :: decimal, --as "TotalVAT",
 		soOrderInfo."ConfirmCount" :: integer, --as "ConfirmCount",
-		soOrderInfo."PromotionRefNumber" :: varchar(100), --as "DiscountId",
-		NULL :: varchar(255), --as "DiscountFullName",
-		NULL :: varchar(255), --as "DiscountFullShortName",
-		NULL :: varchar(255), --as "DiscountScheme",
+		soOrderInfo."DiscountID" :: varchar(100), --as "DiscountId",
+		discount."FullName" :: varchar(255), --as "DiscountFullName",
+		discount."ShortName" :: varchar(255), --as "DiscountFullShortName",
+		discount."Scheme" :: varchar(255), --as "DiscountScheme",
 		soOrderInfo."PrincipalID" :: varchar(100), --as "PrincipalId",
 		principalProfile."FullName" :: varchar(255), --as "PrincipalDesc",
 		soOrderInfo."SalesOrgID" :: varchar(100), --as "SalesOrgId",
@@ -571,11 +571,20 @@ CREATE FUNCTION collectrawso(baselinedate VARCHAR, settingref VARCHAR, workingda
 		promotionInfo."ShortName" :: varchar(255), --as "PromotionShortName",
 		promotionInfo."FullName" :: varchar(255), --as "PromotionFullName",
 		promotionInfo."Scheme" :: varchar(255), --as "PromotionScheme",
-		soItemInfo."ProgramCustomersDetailCode" :: varchar(100), --as "ProgramCustomersDetailId",
-		NULL :: varchar(255), --as "ProgramCustomersShortName",
-		NULL :: varchar(255), --as "ProgramCustomersFullName",
-		NULL :: varchar(255), --as "RewardId",
-		NULL :: varchar(255), --as "RewardDescription",
+		case  when soItemInfo."PromotionType" = 'Promotion' then soItemInfo."ProgramCustomersDetailCode" 
+				when soItemInfo."PromotionType" = 'Display' then TpDiscounts."Code" 
+				when soItemInfo."PromotionType" = 'Accumulate' then NULL  
+		else NULL end:: varchar(100), --as "ProgramCustomersDetailId" --Accumulate later,
+		case  when soItemInfo."PromotionType" = 'Promotion' then soItemInfo."ProgramCustomersDetailDesc" 
+				when soItemInfo."PromotionType" = 'Display' then TpDiscounts."ShortName" 
+				when soItemInfo."PromotionType" = 'Accumulate' then NULL  
+		else NULL end :: varchar(255), --as "ProgramCustomersShortName",
+		case  when soItemInfo."PromotionType" = 'Promotion' then soItemInfo."ProgramCustomersDetailDesc" 
+				when soItemInfo."PromotionType" = 'Display' then TpDiscounts."FullName" 
+				when soItemInfo."PromotionType" = 'Accumulate' then NULL  
+		else NULL end :: varchar(255), --as "ProgramCustomersFullName",
+		case when soItemInfo."IsFree" = TRUE then soItemInfo."InventoryID" else NULL end :: varchar(255), --as "RewardId",
+		case when soItemInfo."IsFree" = TRUE then soItemInfo."ItemDescription" else NULL end :: varchar(255), --as "RewardDescription",
 		soItemInfo."Orig_Ord_Line_Amt" :: decimal, --as "OrigOrdLineAmt",
 		soItemInfo."Ord_Line_Amt" :: decimal, --as "OrdLineAmt",
 		soItemInfo."Shipped_Line_Amt" :: decimal, --as "ShippedLineAmt",
@@ -729,6 +738,8 @@ CREATE FUNCTION collectrawso(baselinedate VARCHAR, settingref VARCHAR, workingda
 		left join "PrincipalWarehouseLocations" as locationInfo on locationInfo."Code" = CAST(soItemInfo."LocationID" AS INT)
 		left join "TpPromotions" as promotionInfo on promotionInfo."PromotionType" = soItemInfo."PromotionType" 
 		and promotionInfo."Code" = soItemInfo."PromotionCode"
+		left join "TpDiscounts" as TpDiscounts on TpDiscounts."Code" = soItemInfo."PromotionCode"
+		left join "TpDiscounts" as discount on discount."Code" = soItemInfo."DiscountID"
 		Where soItemInfo."IsDeleted" = false
 		and CAST(baselinedate AS DATE) =
 			CASE WHEN soOrderInfo."UpdatedDate" IS NULL THEN CAST(soOrderInfo."CreatedDate" AS DATE)
