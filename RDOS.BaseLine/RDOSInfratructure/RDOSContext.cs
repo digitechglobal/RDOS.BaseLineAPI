@@ -63,7 +63,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public virtual DbSet<BlCurrentCustomerPerformanceDaily> BlCurrentCustomerPerformanceDailys { get; set; } = null!;
         public virtual DbSet<BlCusPerDailySkubuyedDetail> BlCusPerDailySkubuyedDetails { get; set; } = null!;
         public virtual DbSet<BlCustomerPerformanceDaily> BlCustomerPerformanceDailys { get; set; } = null!;
-        public virtual DbSet<BlHistory> BlHistorys { get; set; } = null!;
+        public virtual DbSet<BlHistory> BlHistories { get; set; } = null!;
         public virtual DbSet<BlIssueQty> BlIssueQtys { get; set; } = null!;
         public virtual DbSet<BlNormOfBussinessModel> BlNormOfBussinessModels { get; set; } = null!;
         public virtual DbSet<BlOutletAccumulate> BlOutletAccumulates { get; set; } = null!;
@@ -1982,7 +1982,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
             modelBuilder.Entity<BlHistory>(entity =>
             {
-                entity.ToTable("BL_Historys");
+                entity.ToTable("BL_Histories");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
@@ -1990,7 +1990,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
 
-                entity.Property(e => e.CreatedBy).HasMaxLength(250);
+                entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
@@ -2002,9 +2002,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.StartTimeDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.Type).HasMaxLength(100);
+                entity.Property(e => e.Type).HasMaxLength(255);
 
-                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
+                entity.Property(e => e.UpdatedBy).HasMaxLength(255);
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
             });
