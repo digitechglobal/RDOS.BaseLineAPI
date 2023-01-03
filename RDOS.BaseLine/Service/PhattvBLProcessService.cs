@@ -41,6 +41,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaselineProcessService _blProcessService;
         private readonly IBaseRepository<BlAuditLog> _blAuditLogRepo;
         private string _username;
+        private readonly IBaseRepository<BlRawSo> _blRawSo;
 
         public PhattvBLProcessService(
             ILogger<PhattvBLProcessService> logger,
@@ -57,7 +58,8 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<SaleCalendarHoliday> holidayRepo,
             IBaseRepository<SaleCalendar> salesCalendarRepo,
             IBaselineProcessService blProcessService,
-            IBaseRepository<BlAuditLog> blAuditLogRepo
+            IBaseRepository<BlAuditLog> blAuditLogRepo,
+            IBaseRepository<BlRawSo> blRawSo
             )
         {
             _logger = logger;
@@ -75,6 +77,7 @@ namespace RDOS.BaseLine.Service
             _salesCalendarRepo = salesCalendarRepo;
             _blProcessService = blProcessService;
             _blAuditLogRepo = blAuditLogRepo;
+            _blRawSo = blRawSo;
         }
 
         public async Task<List<DateTime>> GetBaseLineDate()
@@ -302,7 +305,7 @@ namespace RDOS.BaseLine.Service
                         return true;
                     }
 
-
+                    // Scheduler.PauseJob()
                     //check có đang hoạt động hay k
                     //Có , đợi
 
@@ -459,24 +462,23 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        #region AuditLog
-        private void CreateAuditLog(BaseResultModel resultLog, DateTime baseLineDate, string settingRef, string processCode)
-        {
-            _blAuditLogRepo.Insert(new BlAuditLog
-            {
-                Id = Guid.NewGuid(),
-                BaselineSettingRef = settingRef,
-                BaselineDate = baseLineDate,
-                CreatedDate = DateTime.Now,
-                CreatedBy = _username,
-                ProcessCode = processCode,
-                IsSuccess = resultLog.IsSuccess,
-                Description = resultLog.Message,
-                FinishTime = DateTime.Now,
-                UpdatedBy = null
-            });
-            return;
-        }
-        #endregion
+        // public async Task<BaseResultModel> AccumulateProcess(DateTime baseLineDate)
+        // {
+        //     try
+        //     {
+        //         var listRawSo = _blRawSo.Find(x => !x.IsDeleted &&
+        //             x.BaselineDate.Date == baseLineDate.Date &&
+        //             !string.IsNullOrWhiteSpace(x.OrderType) &&
+        //             x.OrderType.ToLower().Trim() == SO_SaleOrderTypeConst.SalesOrder.ToLower().Trim()).ToList();
+        //     }
+        //     catch (System.Exception ex)
+        //     {
+        //         return new BaseResultModel
+        //         {
+        //             IsSuccess = false,
+        //             Message = ex.InnerException?.Message ?? ex.Message
+        //         };
+        //     }
+        // }
     }
 }

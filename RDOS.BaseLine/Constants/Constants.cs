@@ -9,7 +9,17 @@
             public const string IN_RECEIPT = "PROS03";
             public const string IN_ISSUE = "PROS04";
             public const string BL_CLOSE_QTY = "PROS05";
+            public const string BL_SAFE_STOCK_ACESSMENT = "PROS06";
+            public const string AVERATE_DAILY_RUNNING_SALE = "PROS07";
+            public const string CAL_KPI = "PROS08";
+            public const string CUS_PER_DAILY = "PROS09";
         }
+        public class SO_SaleOrderTypeConst
+        {
+            public const string SalesOrder = "SalesOrder";
+            public const string ReturnOrder = "ReturnOrder";
+        }
+
         public static class StatusSOConst
         {
             public const string CANCEL = "SO_ST_CANCEL";

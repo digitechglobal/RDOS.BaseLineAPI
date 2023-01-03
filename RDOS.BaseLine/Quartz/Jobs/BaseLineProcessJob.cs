@@ -3,6 +3,7 @@ using RDOS.BaseLine.Service.Interface;
 
 namespace RDOS.BaseLine.Jobs
 {
+    [DisallowConcurrentExecution]
     public class BaseLineProcessJob : IJob
     {
         private readonly ILogger<BaseLineProcessJob> _logger;

@@ -121,9 +121,9 @@ namespace RDOS.BaseLine.Service
 
         public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef)
         {
+            DateTime baselineDateNew = DateTime.Parse(baselineDate);
             try
             {
-                DateTime baselineDateNew = DateTime.Parse(baselineDate);
                 // Function query
                 var query = @"SELECT * FROM collectrawpo(@baselinedate, @settingref)";
 
@@ -146,31 +146,36 @@ namespace RDOS.BaseLine.Service
 
                 // Insert to database
                 _blRawPo.InsertMany(listData);
-
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = true,
                     Code = 200,
                     Message = "Successfully"
-                };
+                }, baselineDateNew, settingRef, BlProcessConst.POPROCESS);
+                // return new BaseResultModel
+                // {
+                //     IsSuccess = true,
+                //     Code = 200,
+                //     Message = "Successfully"
+                // };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                };
+                }, baselineDateNew, settingRef, BlProcessConst.POPROCESS);
             }
         }
 
         public async Task<BaseResultModel> ProcessInvIssue(string baselineDate, string settingRef, string typeData)
         {
+            DateTime baselineDateNew = DateTime.Parse(baselineDate);
             try
             {
-                DateTime baselineDateNew = DateTime.Parse(baselineDate);
                 List<BlIssueQty> listDataFinal = new List<BlIssueQty>();
                 // Function query
                 var query = @"SELECT * FROM collectissueadjustment(@baselinedate, @settingref, @typedata)";
@@ -225,30 +230,30 @@ namespace RDOS.BaseLine.Service
                 // Insert to database
                 _blIssueQty.InsertMany(listDataFinal);
 
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = true,
                     Code = 200,
                     Message = "Successfully"
-                };
+                }, baselineDateNew, settingRef, BlProcessConst.IN_ISSUE);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                };
+                }, baselineDateNew, settingRef, BlProcessConst.IN_ISSUE);
             }
         }
 
         public async Task<BaseResultModel> ProcessInvReceipt(string baselineDate, string settingRef, string typeData)
         {
+            DateTime baselineDateNew = DateTime.Parse(baselineDate);
             try
             {
-                DateTime baselineDateNew = DateTime.Parse(baselineDate);
                 List<BlReceiptQty> listDataFinal = new List<BlReceiptQty>();
                 // Function query
                 var query = @"SELECT * FROM collectreceiptadjustment(@baselinedate, @settingref, @typedata)";
@@ -302,31 +307,31 @@ namespace RDOS.BaseLine.Service
 
                 // Insert to database
                 _blReceiptyQty.InsertMany(listDataFinal);
-
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = true,
                     Code = 200,
                     Message = "Successfully"
-                };
+                }, baselineDateNew, settingRef, BlProcessConst.IN_RECEIPT);
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                };
+                }, baselineDateNew, settingRef, BlProcessConst.IN_RECEIPT);
             }
         }
 
         public async Task<BaseResultModel> ProcessInvCloseQty(string baselineDate, string settingRef)
         {
+            DateTime baselineDateNew = DateTime.Parse(baselineDate);
             try
             {
-                DateTime baselineDateNew = DateTime.Parse(baselineDate);
                 List<BlCloseStock> listDataConcat = new List<BlCloseStock>();
                 // Function query
                 var query = @"SELECT * FROM collectcloseinv(@baselinedate, @settingref)";
@@ -390,40 +395,40 @@ namespace RDOS.BaseLine.Service
 
                 // Insert to database
                 _blCloseQty.InsertMany(listDataFinal);
-
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = true,
                     Code = 200,
                     Message = "Successfully"
-                };
+                }, baselineDateNew, settingRef, BlProcessConst.BL_CLOSE_QTY);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                };
+                }, baselineDateNew, settingRef, BlProcessConst.BL_CLOSE_QTY);
             }
         }
 
         public async Task<BaseResultModel> ProcessSO(string baselineDate, string settingRef)
         {
+            DateTime baselineDateNew = DateTime.Parse(baselineDate);
             try
             {
-                DateTime baselineDateNew = DateTime.Parse(baselineDate);
                 var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baselineDateNew.Year);
                 if (salesCalendar == null)
                 {
-                    return new BaseResultModel
+                    return await CreateAuditLog(new BaseResultModel
                     {
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales calendar"
-                    };
+                    }, baselineDateNew, settingRef, BlProcessConst.SOPROCESS);
+
                 }
 
                 // Handle holiday
@@ -472,54 +477,54 @@ namespace RDOS.BaseLine.Service
 
                 // Insert to database
                 _blRawSo.InsertMany(listData);
-
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = true,
                     Code = 200,
                     Message = "Successfully"
-                };
+                }, baselineDateNew, settingRef, BlProcessConst.SOPROCESS);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                };
+                }, baselineDateNew, settingRef, BlProcessConst.SOPROCESS);
             }
         }
 
         public async Task<BaseResultModel> ProcessRunningSales(string baselineDate)
         {
+            DateTime baselineDateNew = DateTime.Parse(baselineDate);
             try
             {
                 // Check runnig sales week from RPO
                 var rpoParameter = _rpoParameterRepo.FirstOrDefault(x => x != null);
                 if (rpoParameter == null)
                 {
-                    return new BaseResultModel
+                    return await CreateAuditLog(new BaseResultModel
                     {
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found rpo parameter"
-                    };
+                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
+
                 }
 
                 int? runningRate = rpoParameter.SellOutRunningRate;
 
-                DateTime baselineDateNew = DateTime.Parse(baselineDate);
                 var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baselineDateNew.Year);
                 if (salesCalendar == null)
                 {
-                    return new BaseResultModel
+                    return await CreateAuditLog(new BaseResultModel
                     {
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales calendar"
-                    };
+                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
                 }
 
                 // Handle holiday
@@ -541,12 +546,12 @@ namespace RDOS.BaseLine.Service
 
                 if (xFinal == 0)
                 {
-                    return new BaseResultModel
+                    return await CreateAuditLog(new BaseResultModel
                     {
                         Code = 404,
                         IsSuccess = false,
                         Message = "Cannot found day number"
-                    };
+                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
                 }
 
                 List<DateTime> listDateFinal = new List<DateTime>();
@@ -640,31 +645,31 @@ namespace RDOS.BaseLine.Service
                 // Insert to database
                 _runningSalesRepo.InsertMany(dataFinalGroup);
 
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     Code = 200,
                     IsSuccess = true,
                     Message = "Successfully"
-                };
+                }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
 
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                };
+                }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
             }
         }
 
         public async Task<BaseResultModel> ProcessSafetyStockAssessment(string baselineDate)
         {
+            DateTime baselineDateNew = DateTime.Parse(baselineDate);
             try
             {
-                DateTime baselineDateNew = DateTime.Parse(baselineDate);
 
                 // Function query
                 var query = @"SELECT * FROM collectsafetystock(@baselinedate)";
@@ -688,12 +693,12 @@ namespace RDOS.BaseLine.Service
                         var resultStockKeepingDay = await GetDetailStockKeepingDay(data.SubAreaId);
                         if (!resultStockKeepingDay.IsSuccess)
                         {
-                            return new BaseResultModel
+                            return await CreateAuditLog(new BaseResultModel
                             {
                                 Code = resultStockKeepingDay.Code,
                                 IsSuccess = resultStockKeepingDay.IsSuccess,
                                 Message = resultStockKeepingDay.Message
-                            };
+                            }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
                         }
 
                         stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -710,12 +715,12 @@ namespace RDOS.BaseLine.Service
                         var resultStockKeepingDay = await GetDetailStockKeepingDay(data.AreaId);
                         if (!resultStockKeepingDay.IsSuccess)
                         {
-                            return new BaseResultModel
+                            return await CreateAuditLog(new BaseResultModel
                             {
                                 Code = resultStockKeepingDay.Code,
                                 IsSuccess = resultStockKeepingDay.IsSuccess,
                                 Message = resultStockKeepingDay.Message
-                            };
+                            }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
                         }
 
                         stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -732,12 +737,12 @@ namespace RDOS.BaseLine.Service
                         var resultStockKeepingDay = await GetDetailStockKeepingDay(data.SubRegionId);
                         if (!resultStockKeepingDay.IsSuccess)
                         {
-                            return new BaseResultModel
+                            return await CreateAuditLog(new BaseResultModel
                             {
                                 Code = resultStockKeepingDay.Code,
                                 IsSuccess = resultStockKeepingDay.IsSuccess,
                                 Message = resultStockKeepingDay.Message
-                            };
+                            }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
                         }
 
                         stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -754,12 +759,12 @@ namespace RDOS.BaseLine.Service
                         var resultStockKeepingDay = await GetDetailStockKeepingDay(data.RegionId);
                         if (!resultStockKeepingDay.IsSuccess)
                         {
-                            return new BaseResultModel
+                            return await CreateAuditLog(new BaseResultModel
                             {
                                 Code = resultStockKeepingDay.Code,
                                 IsSuccess = resultStockKeepingDay.IsSuccess,
                                 Message = resultStockKeepingDay.Message
-                            };
+                            }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
                         }
 
                         stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -776,12 +781,12 @@ namespace RDOS.BaseLine.Service
                         var resultStockKeepingDay = await GetDetailStockKeepingDay(data.BranchId);
                         if (!resultStockKeepingDay.IsSuccess)
                         {
-                            return new BaseResultModel
+                            return await CreateAuditLog(new BaseResultModel
                             {
                                 Code = resultStockKeepingDay.Code,
                                 IsSuccess = resultStockKeepingDay.IsSuccess,
                                 Message = resultStockKeepingDay.Message
-                            };
+                            }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
                         }
 
                         stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -799,19 +804,19 @@ namespace RDOS.BaseLine.Service
                         var itemHierachyInDb = _itemHierarchyMappingRepo.FirstOrDefault(x => x.Id == data.Hierarchy);
                         if (itemHierachyInDb == null)
                         {
-                            return new BaseResultModel
+                            return await CreateAuditLog(new BaseResultModel
                             {
                                 Code = 404,
                                 IsSuccess = false,
                                 Message = "Cannot found item group"
-                            };
+                            }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
                         }
 
 
                         BaseResultModel resultStockKeepingDayNumber = await CalStockKeepingDay(stockeepingDayInDb, itemHierachyInDb);
                         if (!resultStockKeepingDayNumber.IsSuccess)
                         {
-                            return resultStockKeepingDayNumber;
+                            return await CreateAuditLog(resultStockKeepingDayNumber, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
                         }
 
                         stockKeepingDayNumber = (int)resultStockKeepingDayNumber.Data;
@@ -858,23 +863,22 @@ namespace RDOS.BaseLine.Service
                 // Insert to database
                 _blSafetyStockAssessmentRepo.InsertMany(listData);
 
-
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     Code = 200,
                     IsSuccess = true,
                     Message = "Successfully"
-                };
+                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                };
+                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
             }
         }
 
@@ -1217,27 +1221,27 @@ namespace RDOS.BaseLine.Service
             try
             {
                 var _kpiPO = await ProcessPoKPI(baselineDate, token);
-                if (!_kpiPO.IsSuccess) return _kpiPO;
+                if (!_kpiPO.IsSuccess) return await CreateAuditLog(_kpiPO, baselineDate, null, BlProcessConst.CAL_KPI);
 
                 var _kpiSO = await ProcessSoKPI(baselineDate, token);
-                if (!_kpiSO.IsSuccess) return _kpiSO;
+                if (!_kpiSO.IsSuccess) return await CreateAuditLog(_kpiSO, baselineDate, null, BlProcessConst.CAL_KPI);
 
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     Code = 200,
                     IsSuccess = true,
                     Message = "Successfully"
-                };
+                }, baselineDate, null, BlProcessConst.CAL_KPI);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-                return new BaseResultModel
+                return await CreateAuditLog(new BaseResultModel
                 {
                     Code = 500,
                     IsSuccess = true,
                     Message = ex.InnerException?.Message ?? ex.Message
-                };
+                }, baselineDate, null, BlProcessConst.CAL_KPI);
             }
         }
 
@@ -1330,7 +1334,7 @@ namespace RDOS.BaseLine.Service
                     Data = dataRes
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
                 return new ResultModelWithObject<SaleCalendarGenerate>
@@ -1347,35 +1351,32 @@ namespace RDOS.BaseLine.Service
             try
             {
                 var userLogin = _blSettingInfoRepo.Find(x => !x.IsDeleted).OrderByDescending(x => x.CreatedDate).First().CreatedBy;
-                var returnResult = new BaseResultModel();
                 // Get sales calendar
                 var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baselineDate.Year);
                 if (salesCalendar == null)
                 {
-                    returnResult = new BaseResultModel
+                    return await CreateAuditLog(new BaseResultModel
                     {
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales calendar"
-                    };
-                    return returnResult;
+                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                 }
 
                 // Get sales period
-                var salesPeriod = _saleCalendarGenerateRepo.FirstOrDefault(x => x.SaleCalendarId == salesCalendar.Id && 
+                var salesPeriod = _saleCalendarGenerateRepo.FirstOrDefault(x => x.SaleCalendarId == salesCalendar.Id &&
                                                                  x.Type == CalendarConstant.MONTH &&
                                                                  x.StartDate.Value.Date <= baselineDate.Date &&
                                                                  x.EndDate.Value.Date >= baselineDate.Date);
 
                 if (salesPeriod == null)
                 {
-                    returnResult = new BaseResultModel
+                    return await CreateAuditLog(new BaseResultModel
                     {
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales period"
-                    };
-                    return returnResult;
+                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                 }
 
                 // Get week
@@ -1383,23 +1384,22 @@ namespace RDOS.BaseLine.Service
 
                 if (listCalendarGenerate.Count == 0)
                 {
-                    returnResult = new BaseResultModel
+                    return await CreateAuditLog(new BaseResultModel
                     {
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found calendar generate"
-                    };
-                    return returnResult;
+                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                 }
 
                 var listRawSo = _blRawSo.Find(x => x.BaselineDate.Date == baselineDate.Date &&
                                              x.CusShiptoAttributeValueId4 != null &&
-                                            (x.Status == StatusSOConst.PARTIALDELIVERED || 
+                                            (x.Status == StatusSOConst.PARTIALDELIVERED ||
                                             x.Status == StatusSOConst.DELIVERED)).ToList();
 
                 var listRawSoGroup = listRawSo.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => x.First()).ToList();
                 var listSI = _blSalesIndicatorRepo.GetAll();
-                
+
                 foreach (var rawSoGroup in listRawSoGroup)
                 {
                     var listCusPerDailyInsert = new List<BlCustomerPerformanceDaily>();
@@ -1458,7 +1458,7 @@ namespace RDOS.BaseLine.Service
                             dataInsert.Siid = si.Siid;
                             dataInsert.Sidesc = si.Description;
                         }
-                        
+
 
                         // Calculate Actual volume
                         if (si.Siid == SIIDConst.ACTUALVOLUME)
@@ -1473,7 +1473,7 @@ namespace RDOS.BaseLine.Service
                                 var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALVOLUME);
                                 value += Int32.Parse(valueCurrent.Value);
                             }
-                            
+
                             dataInsert.Value = value.ToString();
                             listCusPerDailyInsert.Add(dataInsert);
                             continue;
@@ -1661,25 +1661,25 @@ namespace RDOS.BaseLine.Service
                                 var weekCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, baselineDate.Date, false);
                                 if (!weekCurrentInfo.IsSuccess)
                                 {
-                                    return new BaseResultModel
+                                    return await CreateAuditLog(new BaseResultModel
                                     {
                                         IsSuccess = false,
                                         Code = weekCurrentInfo.Code,
                                         Message = weekCurrentInfo.Message
-                                    };
+                                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                                 }
 
                                 // Week current in Database
                                 var weekCurrentInDb = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, listCusPerCurrentFilter.First().BaselineDate, false);
-                                
+
                                 if (!weekCurrentInDb.IsSuccess)
                                 {
-                                    return new BaseResultModel
+                                    return await CreateAuditLog(new BaseResultModel
                                     {
                                         IsSuccess = false,
                                         Code = weekCurrentInDb.Code,
                                         Message = weekCurrentInDb.Message
-                                    };
+                                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                                 }
 
                                 if (weekCurrentInDb.Data.Code != weekCurrentInfo.Data.Code)
@@ -1687,7 +1687,7 @@ namespace RDOS.BaseLine.Service
                                     checkWeek = false;
                                 }
                             }
-                            
+
 
                             int value = 0;
                             if (listCusPerCurrentFilter.Count > 0 && checkWeek)
@@ -1722,12 +1722,12 @@ namespace RDOS.BaseLine.Service
 
                             if (!spCurrentInfo.IsSuccess)
                             {
-                                return new BaseResultModel
+                                return await CreateAuditLog(new BaseResultModel
                                 {
                                     IsSuccess = false,
                                     Code = spCurrentInfo.Code,
                                     Message = spCurrentInfo.Message
-                                };
+                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                             }
 
                             if (listCusPerCurrentFilter.Count > 0)
@@ -1737,12 +1737,12 @@ namespace RDOS.BaseLine.Service
 
                                 if (!spCurrentInDbInfo.IsSuccess)
                                 {
-                                    return new BaseResultModel
+                                    return await CreateAuditLog(new BaseResultModel
                                     {
                                         IsSuccess = false,
                                         Code = spCurrentInDbInfo.Code,
                                         Message = spCurrentInDbInfo.Message
-                                    };
+                                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                                 }
 
                                 if (spCurrentInfo.Code == spCurrentInDbInfo.Code)
@@ -1766,12 +1766,12 @@ namespace RDOS.BaseLine.Service
 
                             if (!spCurrentInfo.IsSuccess)
                             {
-                                return new BaseResultModel
+                                return await CreateAuditLog(new BaseResultModel
                                 {
                                     IsSuccess = false,
                                     Code = spCurrentInfo.Code,
                                     Message = spCurrentInfo.Message
-                                };
+                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                             }
 
                             if (listCusPerCurrentFilter.Count > 0)
@@ -1781,12 +1781,12 @@ namespace RDOS.BaseLine.Service
 
                                 if (!spCurrentInDbInfo.IsSuccess)
                                 {
-                                    return new BaseResultModel
+                                    return await CreateAuditLog(new BaseResultModel
                                     {
                                         IsSuccess = false,
                                         Code = spCurrentInDbInfo.Code,
                                         Message = spCurrentInDbInfo.Message
-                                    };
+                                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                                 }
 
                                 if (spCurrentInfo.Code == spCurrentInDbInfo.Code)
@@ -1827,25 +1827,25 @@ namespace RDOS.BaseLine.Service
                             var actualVolumeInserted = listCusPerDailyInsert.FirstOrDefault(x => x.Siid == SIIDConst.ACTUALVOLUME);
                             if (actualVolumeInserted == null)
                             {
-                                return new BaseResultModel
+                                return await CreateAuditLog(new BaseResultModel
                                 {
                                     IsSuccess = false,
                                     Code = 404,
                                     Message = "Cannot found Actual volume"
-                                };
+                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                             }
 
                             var salePeriodVPO = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDate.Date, true);
                             if (!salePeriodVPO.IsSuccess)
                             {
-                                return new BaseResultModel
+                                return await CreateAuditLog(new BaseResultModel
                                 {
                                     IsSuccess = false,
                                     Code = salePeriodVPO.Code,
                                     Message = salePeriodVPO.Message
-                                };
+                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                             }
-                            var normVPO = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId && 
+                            var normVPO = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId &&
                                                                                     x.SalesPeriod == salePeriodVPO.Data.Code &&
                                                                                     x.Siid == si.Siid);
                             if (normVPO == null)
@@ -1872,25 +1872,25 @@ namespace RDOS.BaseLine.Service
                             var actualLPPCInserted = listCusPerDailyInsert.FirstOrDefault(x => x.Siid == SIIDConst.ACTUALLPPC);
                             if (actualLPPCInserted == null)
                             {
-                                return new BaseResultModel
+                                return await CreateAuditLog(new BaseResultModel
                                 {
                                     IsSuccess = false,
                                     Code = 404,
                                     Message = "Cannot found Actual LPPC"
-                                };
+                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                             }
 
                             var salePeriodLPPC = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDate.Date, true);
                             if (!salePeriodLPPC.IsSuccess)
                             {
-                                return new BaseResultModel
+                                return await CreateAuditLog(new BaseResultModel
                                 {
                                     IsSuccess = false,
                                     Code = salePeriodLPPC.Code,
                                     Message = salePeriodLPPC.Message
-                                };
+                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
                             }
-                            var normLPPC = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId && 
+                            var normLPPC = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId &&
                                                                                     x.SalesPeriod == salePeriodLPPC.Data.Code &&
                                                                                     x.Siid == si.Siid);
                             if (normLPPC == null)
@@ -1919,23 +1919,115 @@ namespace RDOS.BaseLine.Service
 
                     _blCurrentCusPerDailyRepo.InsertMany(_mapper.Map<List<BlCurrentCustomerPerformanceDaily>>(listCusPerDailyInsert));
                 }
-                return new BaseResultModel
+
+                return await CreateAuditLog(new BaseResultModel
                 {
                     Code = 200,
                     IsSuccess = true,
                     Message = "Successfully"
+                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return await CreateAuditLog(new BaseResultModel
+                {
+                    Code = 500,
+                    IsSuccess = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+            }
+        }
+
+
+        #region AuditLog
+        private async Task<BaseResultModel> CreateAuditLog(BaseResultModel resultLog, DateTime baseLineDate, string settingRef, string processCode)
+        {
+            if (settingRef == null)
+            {
+                var setting = await GetDetailBaselineSetting(null, true);
+                settingRef = setting.Data.BlBlsettingInformation.SettingRef;
+            }
+            _blAuditLogRepo.Insert(new BlAuditLog
+            {
+                Id = Guid.NewGuid(),
+                BaselineSettingRef = settingRef,
+                BaselineDate = baseLineDate,
+                CreatedDate = DateTime.Now,
+                CreatedBy = _username,
+                ProcessCode = processCode,
+                IsSuccess = resultLog.IsSuccess,
+                Description = resultLog.Message,
+                FinishTime = DateTime.Now,
+                UpdatedBy = null
+
+            });
+            return resultLog;
+        }
+
+        private async Task<ResultModelWithObject<BaselineSettingDetailModel>> GetDetailBaselineSetting(string? settingRef, bool isCurrent)
+        {
+            try
+            {
+                var settingInfo = new BlBlsettingInformation();
+                if (isCurrent)
+                {
+                    settingInfo = _blSettingInfoRepo.Find(x => !x.IsDeleted).OrderByDescending(x => x.CreatedDate).FirstOrDefault();
+                }
+                else
+                {
+                    settingInfo = _blSettingInfoRepo.FirstOrDefault(x => !x.IsDeleted && x.SettingRef == settingRef);
+                }
+
+                if (settingInfo == null)
+                {
+                    return new ResultModelWithObject<BaselineSettingDetailModel>
+                    {
+                        IsSuccess = false,
+                        Code = 404,
+                        Message = $"Cannot found baseline setting {settingRef}"
+                    };
+                }
+                var listTransactionStatus = _blSettingTransactionStatusRepo.Find(x => x != null).ToList();
+                var listProcessPending = _blSettingProcessPendingRepo.Find(x => !x.IsDeleted && x.BaselineSettingRef == settingInfo.SettingRef).ToList();
+                var listProcess = _blSettingProcessRepo.Find(x => !x.IsDeleted && x.BaselineSettingRef == settingInfo.SettingRef).ToList();
+                var listProcessNew = _mapper.Map<List<BlBlsettingProcessDetail>>(listProcess);
+                foreach (var item in listProcessNew)
+                {
+                    var process = _blProcessRepo.FirstOrDefault(x => x.ProcessCode == item.ProcessCode);
+                    item.Process = process;
+                    item.IsSequentialProcessing = process.IsSequentialProcessing.Value;
+                    item.Priority = process.Priority;
+                }
+                var settingEmail = _blSettingEmailRepo.Find(x => !x.IsDeleted && x.BaselineSettingRef == settingInfo.SettingRef).FirstOrDefault();
+
+                var dataResponse = new BaselineSettingDetailModel();
+                dataResponse.BlBlsettingInformation = settingInfo;
+                dataResponse.ProcessPendings = listProcessPending;
+                dataResponse.BaseLineProcesses = listProcessNew;
+                dataResponse.BaselineSettingEmail = settingEmail;
+
+                return new ResultModelWithObject<BaselineSettingDetailModel>
+                {
+                    IsSuccess = true,
+                    Code = 200,
+                    Message = "Successfully",
+                    Data = dataResponse
                 };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-                return new BaseResultModel
+                return new ResultModelWithObject<BaselineSettingDetailModel>
                 {
+                    IsSuccess = false,
                     Code = 500,
-                    IsSuccess = true,
                     Message = ex.InnerException?.Message ?? ex.Message
                 };
             }
         }
+        #endregion
+
     }
 }
