@@ -1,5 +1,7 @@
 ﻿using Quartz;
+using RDOS.BaseLine.Constants;
 using RDOS.BaseLine.Service.Interface;
+using static RDOS.BaseLine.Constants.Constants;
 
 namespace RDOS.BaseLine.Jobs
 {
@@ -18,7 +20,7 @@ namespace RDOS.BaseLine.Jobs
             var baseLineDate = _phattvservice.GetBaseLineDate().Result;
             if (baseLineDate != null && baseLineDate.Count > 0)
             {
-                await _phattvservice.HandleBaseLineProcess(baseLineDate);
+                await _phattvservice.HandleBaseLineProcess(baseLineDate, BaselineType.DAILY, BLScopeConst.ALL);
             }
             return;
             // return Task.CompletedTask;

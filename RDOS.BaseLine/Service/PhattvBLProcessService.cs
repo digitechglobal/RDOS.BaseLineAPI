@@ -30,6 +30,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlBlsettingProcessPending> _blSettingProcessPendingRepo;
         private readonly IBaseRepository<BlBlsettingEmail> _blSettingEmailRepo;
         private readonly IBaseRepository<BlBlprocess> _blProcessRepo;
+        private readonly IBaseRepository<BlHistory> _blHistoryRepo;
         private readonly IMapper _mapper;
 
         private readonly IBaselineSettingService _settingService;
@@ -42,6 +43,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlAuditLog> _blAuditLogRepo;
         private string _username;
         private readonly IBaseRepository<BlRawSo> _blRawSo;
+        private readonly IBaseRepository<SaleCalendarGenerate> _saleCalendarGenerateRepo;
 
         public PhattvBLProcessService(
             ILogger<PhattvBLProcessService> logger,
@@ -59,7 +61,9 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<SaleCalendar> salesCalendarRepo,
             IBaselineProcessService blProcessService,
             IBaseRepository<BlAuditLog> blAuditLogRepo,
-            IBaseRepository<BlRawSo> blRawSo
+            IBaseRepository<BlRawSo> blRawSo,
+            IBaseRepository<BlHistory> blHistoryRepo,
+            IBaseRepository<SaleCalendarGenerate> saleCalendarGenerateRepo
             )
         {
             _logger = logger;
@@ -78,6 +82,8 @@ namespace RDOS.BaseLine.Service
             _blProcessService = blProcessService;
             _blAuditLogRepo = blAuditLogRepo;
             _blRawSo = blRawSo;
+            _blHistoryRepo = blHistoryRepo;
+            _saleCalendarGenerateRepo = saleCalendarGenerateRepo;
         }
 
         public async Task<List<DateTime>> GetBaseLineDate()
@@ -384,11 +390,11 @@ namespace RDOS.BaseLine.Service
         }
 
 
-        public async Task<BaseResultModel> HandleBaseLineProcess(List<DateTime> listBaseLineDate)
+        public async Task<BaseResultModel> HandleBaseLineProcess(List<DateTime> listBaseLineDate, string blType, string scope)
         {
             try
             {
-
+                var startTime = DateTime.Now;
                 var setting = await _settingService.GetDetailBaselineSetting(null, true);
                 var blSettingProcess = setting.Data.BaseLineProcesses;
                 var blSettingInfo = setting.Data.BlBlsettingInformation;
@@ -445,7 +451,32 @@ namespace RDOS.BaseLine.Service
                                 break;
                         }
                     }
+
+                    //History
+                    var listAuditLog = _blAuditLogRepo.Find(x => x.BaselineDate.Value.Date == baseLineDate.Date);
+                    var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baseLineDate.Year);
+                    var salesPeriod = _saleCalendarGenerateRepo.FirstOrDefault(x => x.SaleCalendarId == salesCalendar.Id &&
+                                                                 x.Type == CalendarConstant.MONTH &&
+                                                                 x.StartDate.Value.Date <= baseLineDate.Date &&
+                                                                 x.EndDate.Value.Date >= baseLineDate.Date);
+                    _blHistoryRepo.Insert(new BlHistory
+                    {
+                        Id = Guid.NewGuid(),
+                        BaselineSettingRef = blSettingInfo.SettingRef,
+                        BaselineDate = baseLineDate,
+                        SalesPeriod = salesPeriod.Code,
+                        StartTimeDate = startTime,
+                        EndTimeDate = DateTime.Now,
+                        IsCompleted = listAuditLog.Any(x => !x.IsSuccess.Value) ? false : true,
+                        Type = blType,
+                        Scope = scope,
+                        CreatedDate = DateTime.Now,
+                        UpdatedDate = null,
+                        CreatedBy = null,
+                        UpdatedBy = null,
+                    });
                 }
+
                 return new BaseResultModel
                 {
                     IsSuccess = true,
