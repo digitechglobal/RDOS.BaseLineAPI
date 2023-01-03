@@ -60,11 +60,13 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public virtual DbSet<BlConfirmPerformance> BlConfirmPerformances { get; set; } = null!;
         public virtual DbSet<BlConfirmPerformanceDetail> BlConfirmPerformanceDetails { get; set; } = null!;
         public virtual DbSet<BlConfirmPerformanceRawSo> BlConfirmPerformanceRawSos { get; set; } = null!;
-        public virtual DbSet<BlCurentCustomerPerformanceDaily> BlCurentCustomerPerformanceDailys { get; set; } = null!;
+        public virtual DbSet<BlCurrentCustomerPerformanceDaily> BlCurrentCustomerPerformanceDailys { get; set; } = null!;
         public virtual DbSet<BlCusPerDailySkubuyedDetail> BlCusPerDailySkubuyedDetails { get; set; } = null!;
         public virtual DbSet<BlCustomerPerformanceDaily> BlCustomerPerformanceDailys { get; set; } = null!;
         public virtual DbSet<BlHistory> BlHistorys { get; set; } = null!;
         public virtual DbSet<BlIssueQty> BlIssueQtys { get; set; } = null!;
+        public virtual DbSet<BlNormOfBussinessModel> BlNormOfBussinessModels { get; set; } = null!;
+        public virtual DbSet<BlOutletAccumulate> BlOutletAccumulates { get; set; } = null!;
         public virtual DbSet<BlRawPo> BlRawPos { get; set; } = null!;
         public virtual DbSet<BlRawSo> BlRawSos { get; set; } = null!;
         public virtual DbSet<BlReceiptQty> BlReceiptQtys { get; set; } = null!;
@@ -1663,9 +1665,9 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
             });
 
-            modelBuilder.Entity<BlCurentCustomerPerformanceDaily>(entity =>
+            modelBuilder.Entity<BlCurrentCustomerPerformanceDaily>(entity =>
             {
-                entity.ToTable("BL_CurentCustomerPerformanceDailys");
+                entity.ToTable("BL_CurrentCustomerPerformanceDailys");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
@@ -1683,15 +1685,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CusShiptoAttributeDesc4).HasMaxLength(255);
+                entity.Property(e => e.CusShiptoAttributeDesc).HasMaxLength(255);
 
-                entity.Property(e => e.CusShiptoAttributeId4).HasMaxLength(100);
+                entity.Property(e => e.CusShiptoAttributeId).HasMaxLength(100);
 
-                entity.Property(e => e.CusShiptoAttributeName4).HasMaxLength(255);
+                entity.Property(e => e.CusShiptoAttributeName).HasMaxLength(255);
 
-                entity.Property(e => e.CusShiptoAttributeValueDesc4).HasMaxLength(255);
+                entity.Property(e => e.CusShiptoAttributeValueDesc).HasMaxLength(255);
 
-                entity.Property(e => e.CusShiptoAttributeValueId4).HasMaxLength(100);
+                entity.Property(e => e.CusShiptoAttributeValueId).HasMaxLength(100);
 
                 entity.Property(e => e.CustomerId).HasMaxLength(100);
 
@@ -1788,15 +1790,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CusShiptoAttributeDesc4).HasMaxLength(255);
+                entity.Property(e => e.CusShiptoAttributeDesc).HasMaxLength(255);
 
-                entity.Property(e => e.CusShiptoAttributeId4).HasMaxLength(100);
+                entity.Property(e => e.CusShiptoAttributeId).HasMaxLength(100);
 
-                entity.Property(e => e.CusShiptoAttributeName4).HasMaxLength(255);
+                entity.Property(e => e.CusShiptoAttributeName).HasMaxLength(255);
 
-                entity.Property(e => e.CusShiptoAttributeValueDesc4).HasMaxLength(255);
+                entity.Property(e => e.CusShiptoAttributeValueDesc).HasMaxLength(255);
 
-                entity.Property(e => e.CusShiptoAttributeValueId4).HasMaxLength(100);
+                entity.Property(e => e.CusShiptoAttributeValueId).HasMaxLength(100);
 
                 entity.Property(e => e.CustomerId).HasMaxLength(100);
 
@@ -1893,15 +1895,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.CusShiptoAttributeDesc4).HasMaxLength(255);
+                entity.Property(e => e.CusShiptoAttributeDesc).HasMaxLength(255);
 
-                entity.Property(e => e.CusShiptoAttributeId4).HasMaxLength(100);
+                entity.Property(e => e.CusShiptoAttributeId).HasMaxLength(100);
 
-                entity.Property(e => e.CusShiptoAttributeName4).HasMaxLength(255);
+                entity.Property(e => e.CusShiptoAttributeName).HasMaxLength(255);
 
-                entity.Property(e => e.CusShiptoAttributeValueDesc4).HasMaxLength(255);
+                entity.Property(e => e.CusShiptoAttributeValueDesc).HasMaxLength(255);
 
-                entity.Property(e => e.CusShiptoAttributeValueId4).HasMaxLength(100);
+                entity.Property(e => e.CusShiptoAttributeValueId).HasMaxLength(100);
 
                 entity.Property(e => e.CustomerId).HasMaxLength(100);
 
@@ -2274,6 +2276,118 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.WareHouseId).HasMaxLength(100);
 
                 entity.Property(e => e.WareHouseName).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<BlNormOfBussinessModel>(entity =>
+            {
+                entity.ToTable("BL_NormOfBussinessModels");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.BusinessModelDesc).HasMaxLength(255);
+
+                entity.Property(e => e.BusinessModelId).HasMaxLength(100);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.SalesPeriod).HasMaxLength(100);
+
+                entity.Property(e => e.Sidesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("SIDesc");
+
+                entity.Property(e => e.Siid)
+                    .HasMaxLength(100)
+                    .HasColumnName("SIId");
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.Value).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<BlOutletAccumulate>(entity =>
+            {
+                entity.ToTable("BL_OutletAccumulates");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.AccuByProdActualUom)
+                    .HasMaxLength(255)
+                    .HasColumnName("AccuByProdActualUOM");
+
+                entity.Property(e => e.AccuByProdTarget).HasMaxLength(255);
+
+                entity.Property(e => e.AccuByProdTargetUom)
+                    .HasMaxLength(255)
+                    .HasColumnName("AccuByProdTargetUOM");
+
+                entity.Property(e => e.AccuProductDesc).HasMaxLength(255);
+
+                entity.Property(e => e.AccuProductId).HasMaxLength(100);
+
+                entity.Property(e => e.AccuWeighProductDesc).HasMaxLength(255);
+
+                entity.Property(e => e.AccuWeighProductId).HasMaxLength(100);
+
+                entity.Property(e => e.AccuWeightByProgActualUom)
+                    .HasMaxLength(255)
+                    .HasColumnName("AccuWeightByProgActualUOM");
+
+                entity.Property(e => e.AccuWeightByProgTargetUom)
+                    .HasMaxLength(255)
+                    .HasColumnName("AccuWeightByProgTargetUOM");
+
+                entity.Property(e => e.AccuWeightType).HasMaxLength(100);
+
+                entity.Property(e => e.AccumulateType).HasMaxLength(100);
+
+                entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.CustomerId).HasMaxLength(100);
+
+                entity.Property(e => e.CustomerName).HasMaxLength(255);
+
+                entity.Property(e => e.CustomerShiptoId).HasMaxLength(100);
+
+                entity.Property(e => e.CustomerShiptoName).HasMaxLength(255);
+
+                entity.Property(e => e.FrequencyType).HasMaxLength(100);
+
+                entity.Property(e => e.FrequnecyValue).HasMaxLength(255);
+
+                entity.Property(e => e.ProductType).HasMaxLength(100);
+
+                entity.Property(e => e.TmkprogramDesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("TMKProgramDesc");
+
+                entity.Property(e => e.TmkprogramId)
+                    .HasMaxLength(100)
+                    .HasColumnName("TMKProgramId");
+
+                entity.Property(e => e.TmkprogramLevelDesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("TMKProgramLevelDesc");
+
+                entity.Property(e => e.TmkprogramLevelId)
+                    .HasMaxLength(100)
+                    .HasColumnName("TMKProgramLevelId");
+
+                entity.Property(e => e.TmkprogramType)
+                    .HasMaxLength(100)
+                    .HasColumnName("TMKProgramType");
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
             });
 
             modelBuilder.Entity<BlRawPo>(entity =>

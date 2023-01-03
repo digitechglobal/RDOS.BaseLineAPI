@@ -15,11 +15,11 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? Siid { get; set; }
         public string? Sidesc { get; set; }
         public string? Value { get; set; }
-        public string? CusShiptoAttributeId4 { get; set; }
-        public string? CusShiptoAttributeName4 { get; set; }
-        public string? CusShiptoAttributeDesc4 { get; set; }
-        public string? CusShiptoAttributeValueId4 { get; set; }
-        public string? CusShiptoAttributeValueDesc4 { get; set; }
+        public string? CusShiptoAttributeId { get; set; }
+        public string? CusShiptoAttributeName { get; set; }
+        public string? CusShiptoAttributeDesc { get; set; }
+        public string? CusShiptoAttributeValueId { get; set; }
+        public string? CusShiptoAttributeValueDesc { get; set; }
         public string? SalesOrgId { get; set; }
         public string? SalesOrgDesc { get; set; }
         public string? BranchId { get; set; }

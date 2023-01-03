@@ -43,12 +43,13 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<ItemHierarchyMapping> _itemHierarchyMappingRepo;
         private readonly IBaseRepository<BlSafetyStockAssessment> _blSafetyStockAssessmentRepo;
         private readonly IBaseRepository<BlCustomerPerformanceDaily> _blCusPerDailyRepo;
-        private readonly IBaseRepository<BlCurentCustomerPerformanceDaily> _blCurrentCusPerDailyRepo;
+        private readonly IBaseRepository<BlCurrentCustomerPerformanceDaily> _blCurrentCusPerDailyRepo;
         private readonly IBaseRepository<BlSalesIndicator> _blSalesIndicatorRepo;
         private readonly IBaseRepository<SaleCalendarGenerate> _saleCalendarGenerateRepo;
         private readonly IBaseRepository<BlCusPerDailySkubuyedDetail> _blCusPerDailySkubuyedDetailRepo;
         private readonly IBaseRepository<VisitList> _visitListRepo;
         private readonly IBaseRepository<BlAuditLog> _blAuditLogRepo;
+        private readonly IBaseRepository<BlNormOfBussinessModel> _blNormOfBussinessModelRepo;
         private readonly IMapper _mapper;
         private readonly IDapperRepositories _dapper;
         public IRestClient _client;
@@ -76,14 +77,15 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<ItemHierarchyMapping> itemHierarchyMappingRepo,
             IBaseRepository<BlSafetyStockAssessment> blSafetyStockAssessmentRepo,
             IBaseRepository<BlCustomerPerformanceDaily> blCusPerDailyRepo,
-            IBaseRepository<BlCurentCustomerPerformanceDaily> blCurrentCusPerDailyRepo,
+            IBaseRepository<BlCurrentCustomerPerformanceDaily> blCurrentCusPerDailyRepo,
             IBaseRepository<BlCusPerDailySkubuyedDetail> blCusPerDailySkubuyedDetailRepo,
             IBaseRepository<BlSalesIndicator> blSalesIndicatorRepo,
             IBaseRepository<SaleCalendarGenerate> saleCalendarGenerateRepo,
             IBaseRepository<VisitList> visitListRepo,
             IMapper mapper,
             IDapperRepositories dapper,
-            IBaseRepository<BlAuditLog> blAuditLogRepo)
+            IBaseRepository<BlAuditLog> blAuditLogRepo,
+            IBaseRepository<BlNormOfBussinessModel> blNormOfBussinessModelRepo)
         {
             _logger = logger;
             _blSettingInfoRepo = blSettingInfoRepo;
@@ -114,6 +116,7 @@ namespace RDOS.BaseLine.Service
             _saleCalendarGenerateRepo = saleCalendarGenerateRepo;
             _blCusPerDailySkubuyedDetailRepo = blCusPerDailySkubuyedDetailRepo;
             _visitListRepo = visitListRepo;
+            _blNormOfBussinessModelRepo = blNormOfBussinessModelRepo;
         }
 
         public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef)
@@ -1238,14 +1241,86 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<ResultModelWithObject<SaleCalendarGenerate>> GetCalendarGenerate(List<SaleCalendarGenerate> listDataInDb, string calendarType, DateTime dateQuery )
+        public async Task<ResultModelWithObject<SaleCalendarGenerate>> GetCalendarGenerate(List<SaleCalendarGenerate> listDataInDb, string calendarType, DateTime dateQuery, bool isPrevious)
         {
             try
             {
-                
+                if (isPrevious && calendarType == CalendarConstant.MONTH)
+                {
+                    int monthCurrent = dateQuery.Month;
+                    int yearCurrent = dateQuery.Year;
+                    if (monthCurrent == 1)
+                    {
+                        // Get sales calendar year - 1
+                        var saleCalendarPrevious = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == yearCurrent - 1);
+                        if (saleCalendarPrevious == null)
+                        {
+                            return new ResultModelWithObject<SaleCalendarGenerate>
+                            {
+                                Code = 404,
+                                IsSuccess = false,
+                                Message = $"Cannot found sale calendar year {yearCurrent - 1} in sale calendar generate",
+                            };
+                        }
+
+                        var monthOfYearPrevious = _saleCalendarGenerateRepo.FirstOrDefault(x => x.SaleCalendarId == saleCalendarPrevious.Id &&
+                                                                                 x.Type == calendarType && x.Ordinal == 12);
+
+                        if (monthOfYearPrevious == null)
+                        {
+                            return new ResultModelWithObject<SaleCalendarGenerate>
+                            {
+                                Code = 404,
+                                IsSuccess = false,
+                                Message = $"Cannot found month {12} of year {yearCurrent - 1} in sale calendar generate",
+                            };
+                        }
+
+                        return new ResultModelWithObject<SaleCalendarGenerate>
+                        {
+                            Code = 200,
+                            IsSuccess = true,
+                            Message = "Successfully",
+                            Data = monthOfYearPrevious
+                        };
+                    }
+                    else
+                    {
+                        var monthOfYearCurrent = listDataInDb.FirstOrDefault(x => x.Type == calendarType && x.Ordinal == monthCurrent - 1);
+
+                        if (monthOfYearCurrent == null)
+                        {
+                            return new ResultModelWithObject<SaleCalendarGenerate>
+                            {
+                                Code = 404,
+                                IsSuccess = false,
+                                Message = $"Cannot found month {monthCurrent - 1} of year {yearCurrent} in sale calendar generate",
+                            };
+                        }
+
+                        return new ResultModelWithObject<SaleCalendarGenerate>
+                        {
+                            Code = 200,
+                            IsSuccess = true,
+                            Message = "Successfully",
+                            Data = monthOfYearCurrent
+                        };
+                    }
+                }
+
                 var dataRes = listDataInDb.FirstOrDefault(x => x.Type == calendarType &&
                                                         x.StartDate.Value.Date <= dateQuery.Date &&
                                                         x.EndDate.Value.Date >= dateQuery.Date);
+
+                if (dataRes == null)
+                {
+                    return new ResultModelWithObject<SaleCalendarGenerate>
+                    {
+                        Code = 404,
+                        IsSuccess = false,
+                        Message = $"Cannot found {calendarType} of year {dateQuery.Year} in sale calendar generate",
+                    };
+                }
 
                 return new ResultModelWithObject<SaleCalendarGenerate>
                 {
@@ -1346,11 +1421,11 @@ namespace RDOS.BaseLine.Service
                             dataInsert.CustomerName = rawSoGroup.CustomerName;
                             dataInsert.CustomerShiptoId = rawSoGroup.CustomerShiptoId;
                             dataInsert.CustomerShiptoName = rawSoGroup.CustomerShiptoName;
-                            dataInsert.CusShiptoAttributeId4 = rawSoGroup.CusShiptoAttributeId4;
-                            dataInsert.CusShiptoAttributeName4 = rawSoGroup.CusShiptoAttributeName4;
-                            dataInsert.CusShiptoAttributeDesc4 = rawSoGroup.CusShiptoAttributeDesc4;
-                            dataInsert.CusShiptoAttributeValueId4 = rawSoGroup.CusShiptoAttributeValueId4;
-                            dataInsert.CusShiptoAttributeValueDesc4 = rawSoGroup.CusShiptoAttributeValueDesc4;
+                            dataInsert.CusShiptoAttributeId = rawSoGroup.CusShiptoAttributeId4;
+                            dataInsert.CusShiptoAttributeName = rawSoGroup.CusShiptoAttributeName4;
+                            dataInsert.CusShiptoAttributeDesc = rawSoGroup.CusShiptoAttributeDesc4;
+                            dataInsert.CusShiptoAttributeValueId = rawSoGroup.CusShiptoAttributeValueId4;
+                            dataInsert.CusShiptoAttributeValueDesc = rawSoGroup.CusShiptoAttributeValueDesc4;
                             dataInsert.SalesOrgId = rawSoGroup.SalesOrgId;
                             dataInsert.SalesOrgDesc = rawSoGroup.SalesOrgDesc;
                             dataInsert.BranchId = rawSoGroup.BranchId;
@@ -1451,7 +1526,7 @@ namespace RDOS.BaseLine.Service
                             actualPC = actualPC + listDataRawSoFilter.Count;
 
                             // Calculate ActualLPPC
-                            int value = 0;
+                            float value = 0;
                             if (listCusPerCurrentFilter.Count > 0)
                             {
                                 var listSkuBuyedNew = listDataRawSoFilter.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
@@ -1490,11 +1565,11 @@ namespace RDOS.BaseLine.Service
 
                             if (value > 0)
                             {
-                                dataInsert.Value = "True";
+                                dataInsert.Value = 1.ToString();
                             }
                             else
                             {
-                                dataInsert.Value = "False";
+                                dataInsert.Value = 0.ToString();
                             }
                             listCusPerDailyInsert.Add(dataInsert);
                             continue;
@@ -1530,11 +1605,11 @@ namespace RDOS.BaseLine.Service
                                 dataSkuInsert.CustomerName = rawSoGroup.CustomerName;
                                 dataSkuInsert.CustomerShiptoId = rawSoGroup.CustomerShiptoId;
                                 dataSkuInsert.CustomerShiptoName = rawSoGroup.CustomerShiptoName;
-                                dataSkuInsert.CusShiptoAttributeId4 = rawSoGroup.CusShiptoAttributeId4;
-                                dataSkuInsert.CusShiptoAttributeName4 = rawSoGroup.CusShiptoAttributeName4;
-                                dataSkuInsert.CusShiptoAttributeDesc4 = rawSoGroup.CusShiptoAttributeDesc4;
-                                dataSkuInsert.CusShiptoAttributeValueId4 = rawSoGroup.CusShiptoAttributeValueId4;
-                                dataSkuInsert.CusShiptoAttributeValueDesc4 = rawSoGroup.CusShiptoAttributeValueDesc4;
+                                dataSkuInsert.CusShiptoAttributeId = rawSoGroup.CusShiptoAttributeId4;
+                                dataSkuInsert.CusShiptoAttributeName = rawSoGroup.CusShiptoAttributeName4;
+                                dataSkuInsert.CusShiptoAttributeDesc = rawSoGroup.CusShiptoAttributeDesc4;
+                                dataSkuInsert.CusShiptoAttributeValueId = rawSoGroup.CusShiptoAttributeValueId4;
+                                dataSkuInsert.CusShiptoAttributeValueDesc = rawSoGroup.CusShiptoAttributeValueDesc4;
                                 dataSkuInsert.SalesOrgId = rawSoGroup.SalesOrgId;
                                 dataSkuInsert.SalesOrgDesc = rawSoGroup.SalesOrgDesc;
                                 dataSkuInsert.BranchId = rawSoGroup.BranchId;
@@ -1583,19 +1658,30 @@ namespace RDOS.BaseLine.Service
                             if (listCusPerCurrentFilter.Count > 0)
                             {
                                 // Get week current
-                                var weekCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, baselineDate.Date);
-                                if (weekCurrentInfo.Data == null)
+                                var weekCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, baselineDate.Date, false);
+                                if (!weekCurrentInfo.IsSuccess)
                                 {
                                     return new BaseResultModel
                                     {
                                         IsSuccess = false,
-                                        Code = 400,
-                                        Message = $"Cannot found week for baseline date {baselineDate}"
+                                        Code = weekCurrentInfo.Code,
+                                        Message = weekCurrentInfo.Message
                                     };
                                 }
 
                                 // Week current in Database
-                                var weekCurrentInDb = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, listCusPerCurrentFilter.First().BaselineDate);
+                                var weekCurrentInDb = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, listCusPerCurrentFilter.First().BaselineDate, false);
+                                
+                                if (!weekCurrentInDb.IsSuccess)
+                                {
+                                    return new BaseResultModel
+                                    {
+                                        IsSuccess = false,
+                                        Code = weekCurrentInDb.Code,
+                                        Message = weekCurrentInDb.Message
+                                    };
+                                }
+
                                 if (weekCurrentInDb.Data.Code != weekCurrentInfo.Data.Code)
                                 {
                                     checkWeek = false;
@@ -1632,12 +1718,33 @@ namespace RDOS.BaseLine.Service
                             int value = 0;
                             value += visited;
 
-                            var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDate.Date);
+                            var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDate.Date, false);
+
+                            if (!spCurrentInfo.IsSuccess)
+                            {
+                                return new BaseResultModel
+                                {
+                                    IsSuccess = false,
+                                    Code = spCurrentInfo.Code,
+                                    Message = spCurrentInfo.Message
+                                };
+                            }
 
                             if (listCusPerCurrentFilter.Count > 0)
                             {
                                 var dateCusPerDailyInDb = listCusPerCurrentFilter.First().BaselineDate;
-                                var spCurrentInDbInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, dateCusPerDailyInDb.Date);
+                                var spCurrentInDbInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, dateCusPerDailyInDb.Date, false);
+
+                                if (!spCurrentInDbInfo.IsSuccess)
+                                {
+                                    return new BaseResultModel
+                                    {
+                                        IsSuccess = false,
+                                        Code = spCurrentInDbInfo.Code,
+                                        Message = spCurrentInDbInfo.Message
+                                    };
+                                }
+
                                 if (spCurrentInfo.Code == spCurrentInDbInfo.Code)
                                 {
                                     var spVisitedInDb = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.SPVISITED).Value;
@@ -1655,12 +1762,33 @@ namespace RDOS.BaseLine.Service
                             int value = 0;
                             value += visited;
 
-                            var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.QUARTER, baselineDate.Date);
+                            var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.QUARTER, baselineDate.Date, false);
+
+                            if (!spCurrentInfo.IsSuccess)
+                            {
+                                return new BaseResultModel
+                                {
+                                    IsSuccess = false,
+                                    Code = spCurrentInfo.Code,
+                                    Message = spCurrentInfo.Message
+                                };
+                            }
 
                             if (listCusPerCurrentFilter.Count > 0)
                             {
                                 var dateCusPerDailyInDb = listCusPerCurrentFilter.First().BaselineDate;
-                                var spCurrentInDbInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.QUARTER, dateCusPerDailyInDb.Date);
+                                var spCurrentInDbInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.QUARTER, dateCusPerDailyInDb.Date, false);
+
+                                if (!spCurrentInDbInfo.IsSuccess)
+                                {
+                                    return new BaseResultModel
+                                    {
+                                        IsSuccess = false,
+                                        Code = spCurrentInDbInfo.Code,
+                                        Message = spCurrentInDbInfo.Message
+                                    };
+                                }
+
                                 if (spCurrentInfo.Code == spCurrentInDbInfo.Code)
                                 {
                                     var spVisitedInDb = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.YEARVISITED).Value;
@@ -1693,6 +1821,95 @@ namespace RDOS.BaseLine.Service
                             listCusPerDailyInsert.Add(dataInsert);
                         }
 
+                        // Handle VPO
+                        if (si.Siid == SIIDConst.VPO)
+                        {
+                            var actualVolumeInserted = listCusPerDailyInsert.FirstOrDefault(x => x.Siid == SIIDConst.ACTUALVOLUME);
+                            if (actualVolumeInserted == null)
+                            {
+                                return new BaseResultModel
+                                {
+                                    IsSuccess = false,
+                                    Code = 404,
+                                    Message = "Cannot found Actual volume"
+                                };
+                            }
+
+                            var salePeriodVPO = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDate.Date, true);
+                            if (!salePeriodVPO.IsSuccess)
+                            {
+                                return new BaseResultModel
+                                {
+                                    IsSuccess = false,
+                                    Code = salePeriodVPO.Code,
+                                    Message = salePeriodVPO.Message
+                                };
+                            }
+                            var normVPO = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId && 
+                                                                                    x.SalesPeriod == salePeriodVPO.Data.Code &&
+                                                                                    x.Siid == si.Siid);
+                            if (normVPO == null)
+                            {
+                                dataInsert.Value = 0.ToString();
+                            }
+                            else
+                            {
+                                if (Int32.Parse(normVPO.Value) <= Int32.Parse(actualVolumeInserted.Value))
+                                {
+                                    dataInsert.Value = 1.ToString();
+                                }
+                                else
+                                {
+                                    dataInsert.Value = 0.ToString();
+                                }
+                            }
+                            listCusPerDailyInsert.Add(dataInsert);
+                        }
+
+                        // Handle LPPC
+                        if (si.Siid == SIIDConst.LPPC)
+                        {
+                            var actualLPPCInserted = listCusPerDailyInsert.FirstOrDefault(x => x.Siid == SIIDConst.ACTUALLPPC);
+                            if (actualLPPCInserted == null)
+                            {
+                                return new BaseResultModel
+                                {
+                                    IsSuccess = false,
+                                    Code = 404,
+                                    Message = "Cannot found Actual LPPC"
+                                };
+                            }
+
+                            var salePeriodLPPC = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDate.Date, true);
+                            if (!salePeriodLPPC.IsSuccess)
+                            {
+                                return new BaseResultModel
+                                {
+                                    IsSuccess = false,
+                                    Code = salePeriodLPPC.Code,
+                                    Message = salePeriodLPPC.Message
+                                };
+                            }
+                            var normLPPC = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId && 
+                                                                                    x.SalesPeriod == salePeriodLPPC.Data.Code &&
+                                                                                    x.Siid == si.Siid);
+                            if (normLPPC == null)
+                            {
+                                dataInsert.Value = 0.ToString();
+                            }
+                            else
+                            {
+                                if (float.Parse(normLPPC.Value) <= float.Parse(actualLPPCInserted.Value))
+                                {
+                                    dataInsert.Value = 1.ToString();
+                                }
+                                else
+                                {
+                                    dataInsert.Value = 0.ToString();
+                                }
+                            }
+                            listCusPerDailyInsert.Add(dataInsert);
+                        }
                     }
                     _blCusPerDailyRepo.InsertMany(listCusPerDailyInsert);
                     if (listCusPerCurrentFilter.Count > 0)
@@ -1700,7 +1917,7 @@ namespace RDOS.BaseLine.Service
                         _blCurrentCusPerDailyRepo.DeleteMany(listCusPerCurrentFilter);
                     }
 
-                    _blCurrentCusPerDailyRepo.InsertMany(_mapper.Map<List<BlCurentCustomerPerformanceDaily>>(listCusPerDailyInsert));
+                    _blCurrentCusPerDailyRepo.InsertMany(_mapper.Map<List<BlCurrentCustomerPerformanceDaily>>(listCusPerDailyInsert));
                 }
                 return new BaseResultModel
                 {

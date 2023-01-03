@@ -13,7 +13,7 @@ namespace RDOS.BaseLine.Models.AutoMapping
             CreateMap<BlBlsettingProcess, BaseLineProcessModel>().ReverseMap();
             CreateMap<BlBlsettingEmail, BaselineSettingEmailModel>().ReverseMap();
             CreateMap<BlBlsettingProcessDetail, BlBlsettingProcess>().ReverseMap();
-            CreateMap<BlCurentCustomerPerformanceDaily, BlCustomerPerformanceDaily>().ReverseMap()
+            CreateMap<BlCurrentCustomerPerformanceDaily, BlCustomerPerformanceDaily>().ReverseMap()
                 .ForMember(d => d.Id, o => o.MapFrom(x => Guid.NewGuid()));
             CreateMap<BlCusPerDailySkubuyedDetail, BlCustomerPerformanceDaily>().ReverseMap()
                 .ForMember(d => d.Id, o => o.MapFrom(x => Guid.NewGuid()));
