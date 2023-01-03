@@ -117,6 +117,7 @@ namespace RDOS.BaseLine.Service
             _blCusPerDailySkubuyedDetailRepo = blCusPerDailySkubuyedDetailRepo;
             _visitListRepo = visitListRepo;
             _blNormOfBussinessModelRepo = blNormOfBussinessModelRepo;
+            _blAuditLogRepo = blAuditLogRepo;
         }
 
         public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef)
@@ -1955,7 +1956,7 @@ namespace RDOS.BaseLine.Service
                 BaselineSettingRef = settingRef,
                 BaselineDate = baseLineDate,
                 CreatedDate = DateTime.Now,
-                CreatedBy = _username,
+                CreatedBy = null,
                 ProcessCode = processCode,
                 IsSuccess = resultLog.IsSuccess,
                 Description = resultLog.Message,
