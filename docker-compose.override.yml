@@ -20,6 +20,6 @@ services:
       - MONGODATABASE=onesuat_system
       - IS_DEPLOY=true
       - PRINCIPALCODE=ONES
-      - TZ="Asia/Ho_Chi_Minh"
+      - TZ=Asia/Ho_Chi_Minh
     ports:
       - "9778:80"
