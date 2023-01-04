@@ -16,13 +16,16 @@ namespace RDOS.BaseLine.Services
         private readonly ILogger<ClientService> _logger;
         private readonly IMapper _mapper;
         private RestClient _client;
+        private readonly IJwtUtils _jwtUtils;
 
         public ClientService(ILogger<ClientService> logger,
-            IMapper mapper
+            IMapper mapper,
+            IJwtUtils jwtUtils
             )
         {
             _logger = logger;
             _mapper = mapper;
+            _jwtUtils = jwtUtils;
         }
 
         public T CommonRequest<T>(string urlCode, string route, RestSharp.Method method, string token, object dataRequest, bool? includeDeleteAll = false)
@@ -79,19 +82,29 @@ namespace RDOS.BaseLine.Services
                 }
                 else
                 {
-                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjEwMDAxMTEiLCJNb2R1bGVUb2tlbiI6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUoxYzJWeWJtRnRaU0k2SWpFd01EQXhNVEVpTENKVmMyVnlTVVFpT2lKbU0yWmxOemszTnkwM1pHTmxMVFJsTUdRdFlqVTRaQzFsTkRJMU56YzFObUkwTnpjaUxDSkZiWEJKWkNJNklpSXNJbTVpWmlJNk1UWTNNakUxTnpRME9Td2laWGh3SWpveE5qY3lNVGN4TWpRNUxDSnBZWFFpT2pFMk56SXhOVGMwTkRsOS51YlhIX01HbWFoRHFLbFdweFAxYTFZbE1mT1J1VFkzelotUmdFT3VZUW04IiwiUHJpbmNpcGFsQ29kZSI6Ik9ORVMiLCJyb2xlIjoiRGlzdEFjY291bnRhbnQiLCJuYmYiOjE2NzIxNTc0NDksImV4cCI6MTY3Mjc2MjI0OSwiaWF0IjoxNjcyMTU3NDQ5LCJpc3MiOiJodHRwczovL2dhdGV3YXkucmRvcy52biIsImF1ZCI6Imh0dHBzOi8vZ2F0ZXdheS5yZG9zLnZuIn0.Uk9P6whqSrWGYzEANMVTr27HIAhWIQaiVG8T78OTyik";
+                    if (urlCode != SystemUrlCode.StagingApi)
+                    {
+                        Auth auth = new Auth()
+                        {
+                            UserName = "admin",
+                            Password = "Tinh!@#123"
+                        };
+                        string jwt = _jwtUtils.GenerateJwtToken(auth, Guid.NewGuid().ToString(), "");
+                        token = jwt;
+                        dataRequest = JsonConvert.SerializeObject(dataRequest, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                    }
                 }
-                // if (urlCode == SystemUrlCode.StagingApi)
-                // {
-                //     Auth auth = new Auth()
-                //     {
-                //         UserName = "0111111198",
-                //         Password = "123456Ab"
-                //     };
-                //     string jwt = "Bearer " + _jwtUtils.GenerateJwtToken(auth, Guid.NewGuid().ToString(), "");
-                //     token = jwt;
-                //     dataRequest = JsonConvert.SerializeObject(dataRequest, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-                // }
+                if (urlCode == SystemUrlCode.StagingApi)
+                {
+                    Auth auth = new Auth()
+                    {
+                        UserName = "0111111198",
+                        Password = "123456Ab"
+                    };
+                    string jwt = "Bearer " + _jwtUtils.GenerateJwtToken(auth, Guid.NewGuid().ToString(), "");
+                    token = jwt;
+                    dataRequest = JsonConvert.SerializeObject(dataRequest, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                }
                 _client = new RestClient(CommonData.SystemUrl.Where(x => x.Code == urlCode).Select(x => x.Url).FirstOrDefault());
                 _client.Authenticator = new JwtAuthenticator($"Rdos {token}");
                 var req = new RestRequest($"{route}", method, DataFormat.Json);

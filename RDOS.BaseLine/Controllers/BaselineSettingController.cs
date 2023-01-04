@@ -136,9 +136,9 @@ namespace RDOS.BaseLine.Controllers
 
         [HttpPost]
         [Route("HandleProcessPendingData")]
-        public async Task<IActionResult> HandleProcessPendingData(List<DateTime> listBaseLineDate)
+        public async Task<IActionResult> HandleProcessPendingData()
         {
-            return Ok(await _phattvBaseLineSettingService.HandleProcessPendingData(listBaseLineDate));
+            return Ok(await _phattvBaseLineSettingService.HandleProcessPendingData());
         }
 
         [HttpPost]
@@ -161,5 +161,21 @@ namespace RDOS.BaseLine.Controllers
         {
             return Ok(await _blProcessService.ProcessCusPerDaily(baselineDate));
         }
+
+        [HttpPost]
+        [Route("ExecuteCronFromBLSetting")]
+        public async Task<IActionResult> HandleCronFromBLSetting(DateTime baselineDate)
+        {
+            return Ok(await _phattvBaseLineSettingService.HandleCronFromBLSetting());
+        }
+
+        [HttpPost]
+        [Route("HandleBaseLineProcess")]
+        public async Task<IActionResult> HandleBaseLineProcess()
+        {
+            return Ok(await _phattvBaseLineSettingService.HandleBaseLineProcess());
+        }
+
+
     }
 }

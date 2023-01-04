@@ -16,6 +16,7 @@ using SysAdmin.Web.Services.SystemUrl;
 using static SysAdmin.Models.StaticValue.CommonData;
 using RDOS.BaseLine.Services.Interface;
 using RDOS.BaseLine.Services;
+using nProx.Helpers.JWT;
 
 var builder = WebApplication.CreateBuilder(args);
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -23,13 +24,14 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 // Add services to the container.
 builder.Services.AddControllers();
 CoreDependency.InjectDependencies(builder.Services, builder);
-builder.Services.AddTransient<DbContext, RDOSContext>();
-builder.Services.AddTransient<IBaselineSettingService, BaselineSettingService>();
-builder.Services.AddTransient<IBaselineProcessService, BaselineProcessService>();
-builder.Services.AddTransient<IPhattvBLProcessService, PhattvBLProcessService>();
-builder.Services.AddTransient<IMySchedular, MySchedular>();
-builder.Services.AddTransient<IClientService, ClientService>();
-builder.Services.AddTransient<IConfirmPerformanceService, ConfirmPerformanceService>();
+builder.Services.AddScoped<DbContext, RDOSContext>();
+builder.Services.AddScoped<IBaselineSettingService, BaselineSettingService>();
+builder.Services.AddScoped<IBaselineProcessService, BaselineProcessService>();
+builder.Services.AddScoped<IPhattvBLProcessService, PhattvBLProcessService>();
+builder.Services.AddScoped<IMySchedular, MySchedular>();
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IConfirmPerformanceService, ConfirmPerformanceService>();
+builder.Services.AddScoped<IInitialService, InitialService>();
 
 var connectStrings = Environment.GetEnvironmentVariable("CONNECTION");
 
@@ -39,25 +41,27 @@ builder.Services.AddSwaggerGen();
 
 
 //Get all url from table service
-builder.Services.AddTransient<ISystemUrlService, SystemUrlService>();
+builder.Services.AddScoped<ISystemUrlService, SystemUrlService>();
 SystemUrlService systemUrlService = new();
 SystemUrl = systemUrlService.GetAllSystemUrl().Result.Items.ToList();
 
-builder.Services.AddSingleton<IJobFactory, MyJobFactory>();
-builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+
+
+builder.Services.AddTransient<IJobFactory, MyJobFactory>();
+builder.Services.AddTransient<ISchedulerFactory, StdSchedulerFactory>();
 #region Adding JobType
-builder.Services.AddSingleton<NotificationJob>();
-builder.Services.AddSingleton<LoggerJob>();
-builder.Services.AddSingleton<InitialJob>();
-builder.Services.AddSingleton<PendingDataProcessJob>();
-builder.Services.AddSingleton<BaseLineProcessJob>();
+builder.Services.AddTransient<NotificationJob>();
+builder.Services.AddTransient<LoggerJob>();
+builder.Services.AddTransient<InitialJob>();
+builder.Services.AddTransient<PendingDataProcessJob>();
+builder.Services.AddTransient<BaseLineProcessJob>();
 #endregion
 
 List<JobMetadata> jobMetadatas = new List<JobMetadata>();
 //Lấy thời gian hiện tại 
 //ra được expression +  1ps 
 // jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "00 07 21 ? * *", "DailyBaseLine"));
-jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "1 * * * * ?", "DailyBaseLine"));
+// jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "1 * * * * ?", "DailyBaseLine"));
 // jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(NotificationJob), "BLPendingProcess", "0/5 * * * * ?", "DailyBaseLine"));
 // jobMetadatas.Add(new JobMetadata(Guid.NewGuid(), typeof(LoggerJob), "BLProcess", "0/5 * * * * ?", "DailyBaseLine"));
 

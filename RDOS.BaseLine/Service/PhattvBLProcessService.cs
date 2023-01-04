@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
 using RDOS.BaseLine.Jobs;
 using RDOS.BaseLine.Models;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.VariantTypes;
-using Microsoft.EntityFrameworkCore;
 using nProx.Helpers.Services.Repository;
 using Quartz;
 using RDOS.BaseLine.Constants;
-using RDOS.BaseLine.Models.Request;
 using RDOS.BaseLine.RDOSInfratructure;
 using RDOS.BaseLine.Service.Interface;
 using static RDOS.BaseLine.Models.Results;
@@ -17,7 +13,6 @@ using SysAdmin.Models.StaticValue;
 using RestSharp;
 using RDOS.BaseLine.Models.Result;
 using static RDOS.BaseLine.Constants.Constants;
-using static Quartz.MisfireInstruction;
 
 namespace RDOS.BaseLine.Service
 {
@@ -224,7 +219,7 @@ namespace RDOS.BaseLine.Service
 
                 var pendingResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(PendingDataProcessJob), "PendingDataProcess", pptcron, "DailyBaseLine"), parseppt);
                 var processResult = await ReSchedular(new JobMetadata(Guid.NewGuid(), typeof(BaseLineProcessJob), "BaseLineProcessJob", ptcron, "DailyBaseLine"), parsept);
-                // var stopInitialJob = await DeleteJob(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "* * * ? * *", "DailyBaseLine"));
+                var stopInitialJob = await DeleteJob(new JobMetadata(Guid.NewGuid(), typeof(InitialJob), "InitialJob", "* * * ? * *", "DailyBaseLine"));
                 return new BaseResultModel
                 {
                     IsSuccess = true,
@@ -345,10 +340,12 @@ namespace RDOS.BaseLine.Service
 
         }
 
-        public async Task<BaseResultModel> HandleProcessPendingData(List<DateTime> listBaseLineDate)
+        public async Task<BaseResultModel> HandleProcessPendingData()
         {
             try
             {
+                var listBaseLineDate = await GetBaseLineDate();
+            
                 var setting = await _settingService.GetDetailBaselineSetting(null, true);
                 var processPendingSetting = setting.Data.ProcessPendings;
                 if (!setting.Data.BlBlsettingInformation.IsProcessPendingData.Value)
@@ -390,10 +387,11 @@ namespace RDOS.BaseLine.Service
         }
 
 
-        public async Task<BaseResultModel> HandleBaseLineProcess(List<DateTime> listBaseLineDate, string blType, string scope)
+        public async Task<BaseResultModel> HandleBaseLineProcess(string blType = BaselineType.DAILY, string scope = BLScopeConst.ALL)
         {
             try
             {
+                var listBaseLineDate = await GetBaseLineDate();
                 var startTime = DateTime.Now;
                 var setting = await _settingService.GetDetailBaselineSetting(null, true);
                 var blSettingProcess = setting.Data.BaseLineProcesses;
@@ -403,7 +401,7 @@ namespace RDOS.BaseLine.Service
 
                 foreach (var baseLineDate in listBaseLineDate)
                 {
-                    string blDate = baseLineDate.ToString("YYYY-MM-DD");
+                    string blDate = baseLineDate.ToString();
                     foreach (var sequentialProcess in listSequentialProcess)
                     {
                         switch (sequentialProcess.ProcessCode)
@@ -492,24 +490,5 @@ namespace RDOS.BaseLine.Service
                 };
             }
         }
-
-        // public async Task<BaseResultModel> AccumulateProcess(DateTime baseLineDate)
-        // {
-        //     try
-        //     {
-        //         var listRawSo = _blRawSo.Find(x => !x.IsDeleted &&
-        //             x.BaselineDate.Date == baseLineDate.Date &&
-        //             !string.IsNullOrWhiteSpace(x.OrderType) &&
-        //             x.OrderType.ToLower().Trim() == SO_SaleOrderTypeConst.SalesOrder.ToLower().Trim()).ToList();
-        //     }
-        //     catch (System.Exception ex)
-        //     {
-        //         return new BaseResultModel
-        //         {
-        //             IsSuccess = false,
-        //             Message = ex.InnerException?.Message ?? ex.Message
-        //         };
-        //     }
-        // }
     }
 }

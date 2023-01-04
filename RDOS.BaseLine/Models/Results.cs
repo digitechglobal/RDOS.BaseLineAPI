@@ -95,5 +95,24 @@
                 return new PagedList<T>(items, count, (skip / top) + 1, top);
             }
         }
+
+        public class UserInfoClaim
+    {
+        public Guid UserId { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDefault { get; set; }
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
+        public string UserRole { get; set; }
+        public DateTime? LastLogin { get; set; }
+        public string Token { get; set; }
+        public bool IsRememberMe { get; set; }
+        //public string TimeZone { get; set; }
+        public bool IsEco { get; set; }
+        public bool Is1SPrincipal { get; set; }
+    }
     }
 }

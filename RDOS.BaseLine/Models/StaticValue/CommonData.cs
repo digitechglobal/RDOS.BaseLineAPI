@@ -18,6 +18,8 @@ namespace SysAdmin.Models.StaticValue
             public const string RouteMngAPI = "RouteMngAPI";
             public const string SaleOrderAPI = "SaleOrderAPI";
             public const string PriceMngCode = "PriceMngAPI";
+            public const string StagingApi = "StagingApi";
+            public const string BaselineAPI = "BaselineAPI";
         }
     }
 }

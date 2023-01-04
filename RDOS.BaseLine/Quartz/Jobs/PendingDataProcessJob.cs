@@ -1,24 +1,19 @@
 ﻿using Quartz;
 using RDOS.BaseLine.Service.Interface;
+using RDOS.BaseLine.Services;
 
 namespace RDOS.BaseLine.Jobs
 {
     public class PendingDataProcessJob : IJob
     {
-        private readonly ILogger<PendingDataProcessJob> _logger;
-        private readonly IPhattvBLProcessService _phattvservice;
-        public PendingDataProcessJob(ILogger<PendingDataProcessJob> logger, IPhattvBLProcessService phattvservice)
+        public PendingDataProcessJob()
         {
-            this._logger = logger;
-            this._phattvservice = phattvservice;
+        
         }
         public async Task Execute(IJobExecutionContext context)
         {
-            var baseLineDate = _phattvservice.GetBaseLineDate().Result;
-            if (baseLineDate != null && baseLineDate.Count > 0)
-            {
-                await _phattvservice.HandleProcessPendingData(baseLineDate);
-            }
+            InitialService initialService = new();
+            var initialResult = initialService.ProcessPendingData().Result;
             return;
             // return Task.CompletedTask;
         }
