@@ -40,12 +40,14 @@ namespace SysAdmin.Web.Services.SystemUrl
                         if (item.Code == SystemUrlCode.SaleOrderAPI)
                         {
                             // add manual 
-                            item.Url = "http://localhost:9091/api/v1/";
+                            // item.Url = "http://localhost:9091/api/v1/";
+                            item.Url = "http://103.98.160.114:9091/api/v1";
                         }
                         if (item.Code == SystemUrlCode.BaselineAPI)
                         {
                             // add manual 
-                            item.Url = "http://localhost:9777/api/v1/";
+                            // item.Url = "http://localhost:9778/api/v1/";
+                            item.Url = "http://14.161.18.75:9778/api/v1";
                         }
                     }
                 }

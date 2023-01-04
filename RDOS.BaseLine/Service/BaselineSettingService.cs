@@ -72,7 +72,7 @@ namespace RDOS.BaseLine.Service
                 // Map data baseline setting
                 var createBaselineSetting = _mapper.Map<BlBlsettingInformation>(dataInput);
                 createBaselineSetting.SettingRef = settingRefNew;
-                createBaselineSetting.CreatedDate = DateTime.Now;
+                createBaselineSetting.CreatedDate = DateTime.UtcNow;
                 createBaselineSetting.CreatedBy = userLogin;
                 createBaselineSetting.Id = Guid.NewGuid();
 
@@ -83,7 +83,7 @@ namespace RDOS.BaseLine.Service
                 {
                     processPendingNew.Id = Guid.NewGuid();
                     processPendingNew.CreatedBy = userLogin;
-                    processPendingNew.CreatedDate = DateTime.Now;
+                    processPendingNew.CreatedDate = DateTime.UtcNow;
                     processPendingNew.BaselineSettingRef = settingRefNew;
                 }
                 _blSettingProcessPendingRepo.InsertMany(listProcessPendingNew);
@@ -95,7 +95,7 @@ namespace RDOS.BaseLine.Service
                 {
                     processNew.Id = Guid.NewGuid();
                     processNew.CreatedBy = userLogin;
-                    processNew.CreatedDate = DateTime.Now;
+                    processNew.CreatedDate = DateTime.UtcNow;
                     processNew.BaselineSettingRef = settingRefNew;
                 }
                 _blSettingProcessRepo.InsertMany(listSettingProcessNew);
@@ -106,7 +106,7 @@ namespace RDOS.BaseLine.Service
                     var settingEmailNew = _mapper.Map<BlBlsettingEmail>(dataInput.BaselineSettingEmail);
                     settingEmailNew.Id = Guid.NewGuid();
                     settingEmailNew.CreatedBy = userLogin;
-                    settingEmailNew.CreatedDate = DateTime.Now;
+                    settingEmailNew.CreatedDate = DateTime.UtcNow;
                     settingEmailNew.BaselineSettingRef = settingRefNew;
                     _blSettingEmailRepo.Insert(settingEmailNew);
                 }
@@ -245,7 +245,7 @@ namespace RDOS.BaseLine.Service
                 var settingInfo = new BlBlsettingInformation();
                 if (isCurrent)
                 {
-                    settingInfo = _blSettingInfoRepo.Find(x => !x.IsDeleted).OrderByDescending(x => x.CreatedDate).FirstOrDefault();
+                    settingInfo = _blSettingInfoRepo.Find(x => !x.IsDeleted).OrderByDescending(x => Int32.Parse(x.SettingRef.Split(PrefixRef.PREFIX_REF).Last())).FirstOrDefault();
                 }
                 else
                 {
