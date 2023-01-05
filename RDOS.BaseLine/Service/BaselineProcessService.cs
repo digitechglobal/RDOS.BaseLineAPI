@@ -370,6 +370,17 @@ namespace RDOS.BaseLine.Service
                 var listData3 = ((List<BlCloseStock>)_dapper.QueryWithParams<BlCloseStock>(query3, parameters3));
                 listDataConcat.AddRange(listData3);
 
+                // Get baseline date previous
+                var baselineDatePrevious = _blCloseQty.Find(x => x.BaselineDate.Date < baselineDateNew.Date).OrderByDescending(x => x.BaselineDate.Date).FirstOrDefault();
+
+                // Get list item in close qty of baseline date previous
+                if (baselineDatePrevious != null)
+                {
+                    var listDataInDb = _blCloseQty.Find(x => x.BaselineDate.Date == baselineDatePrevious.BaselineDate.Date).ToList();
+                    var dataInDbMaps = _mapper.Map<List<BlCloseStock>>(listDataInDb);
+                    listDataConcat.AddRange(dataInDbMaps);
+                }
+                
                 List<BlCloseStock> listDataFinal = new List<BlCloseStock>();
 
                 // Handle group item
@@ -380,8 +391,9 @@ namespace RDOS.BaseLine.Service
                                                       x.DistributorId == itemInv.DistributorId &&
                                                       x.WareHouseId == itemInv.WareHouseId &&
                                                       x.LocationId == itemInv.LocationId).OrderByDescending(x => x.UpdatedDate).ToList();
-
-                    listDataFinal.Add(listInvGroup.First());
+                    var dataCloseInsertNew = listInvGroup.First();
+                    dataCloseInsertNew.BaselineDate = baselineDateNew;
+                    listDataFinal.Add(dataCloseInsertNew);
                 }
 
 

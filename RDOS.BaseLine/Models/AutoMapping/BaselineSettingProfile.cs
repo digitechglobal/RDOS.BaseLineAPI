@@ -18,6 +18,8 @@ namespace RDOS.BaseLine.Models.AutoMapping
                 .ForMember(d => d.Id, o => o.MapFrom(x => Guid.NewGuid()));
             CreateMap<BlCusPerDailySkubuyedDetail, BlCustomerPerformanceDaily>().ReverseMap()
                 .ForMember(d => d.Id, o => o.MapFrom(x => Guid.NewGuid()));
+            CreateMap<BlCloseStock, BlCloseStock>().ReverseMap()
+                .ForMember(d => d.Id, o => o.MapFrom(x => Guid.NewGuid()));
         }
     }
 }
