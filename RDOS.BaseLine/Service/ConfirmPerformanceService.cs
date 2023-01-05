@@ -220,12 +220,12 @@ namespace RDOS.BaseLine.Service
 
                 if (parameters.FromDate.HasValue)
                 {
-                    res = res.Where(x => x.BaselineDate.Date >= parameters.FromDate.Value.Date);
+                    res = res.Where(x => x.TransactionDate.HasValue && x.TransactionDate.Value.Date >= parameters.FromDate.Value.Date);
                 }
 
                 if (parameters.ToDate.HasValue)
                 {
-                    res = res.Where(x => x.BaselineDate.Date <= parameters.ToDate.Value.Date.AddDays(1).AddTicks(-1));
+                    res = res.Where(x => x.TransactionDate.HasValue && x.TransactionDate.Value.Date <= parameters.ToDate.Value.Date.AddDays(1).AddTicks(-1));
                 }
 
                 res = res.ToList();

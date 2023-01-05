@@ -11,6 +11,7 @@ namespace RDOS.BaseLine.Models.AutoMapping
             CreateMap<BlBlsettingInformation, BaselineSettingModel>().ReverseMap();
             CreateMap<BlBlsettingProcessPending, ProcessPendingModel>().ReverseMap();
             CreateMap<BlBlsettingProcess, BaseLineProcessModel>().ReverseMap();
+            CreateMap<BlFreeProcess, BlFreeProcessModel>().ReverseMap();
             CreateMap<BlBlsettingEmail, BaselineSettingEmailModel>().ReverseMap();
             CreateMap<BlBlsettingProcessDetail, BlBlsettingProcess>().ReverseMap();
             CreateMap<BlCurrentCustomerPerformanceDaily, BlCustomerPerformanceDaily>().ReverseMap()

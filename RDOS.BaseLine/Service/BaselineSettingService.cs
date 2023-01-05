@@ -20,6 +20,7 @@ namespace RDOS.BaseLine.Service
         private readonly ILogger<BaselineSettingService> _logger;
         private readonly IBaseRepository<BlBlsettingInformation> _blSettingInfoRepo;
         private readonly IBaseRepository<BlBlsettingProcess> _blSettingProcessRepo;
+        private readonly IBaseRepository<BlFreeProcess> _blSettingProcessFreeRepo;
         private readonly IBaseRepository<BlBlsettingTransactionStatus> _blSettingTransactionStatusRepo;
         private readonly IBaseRepository<BlBlsettingProcessPending> _blSettingProcessPendingRepo;
         private readonly IBaseRepository<BlBlsettingEmail> _blSettingEmailRepo;
@@ -40,6 +41,7 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<BlBlsettingEmail> blSettingEmailRepo,
             IBaseRepository<BlBlprocess> blProcessRepo,
             IBaseRepository<BlRawPo> blRawPo,
+            IBaseRepository<BlFreeProcess> blSettingProcessFreeRepo,
             IMapper mapper,
             IDapperRepositories dapper,
             ISchedulerFactory schedulerFactory)
@@ -55,7 +57,7 @@ namespace RDOS.BaseLine.Service
             _dapper = dapper;
             _blRawPo = blRawPo;
             _schedulerFactory = schedulerFactory;
-
+            _blSettingProcessFreeRepo = blSettingProcessFreeRepo;
         }
 
         public async Task<BaseResultModel> ChangeSetting(BaselineSettingModel dataInput, string userLogin)
@@ -99,6 +101,18 @@ namespace RDOS.BaseLine.Service
                     processNew.BaselineSettingRef = settingRefNew;
                 }
                 _blSettingProcessRepo.InsertMany(listSettingProcessNew);
+
+                // Map list setting process free
+                var listSettingProcessFreeNew = _mapper.Map<List<BlFreeProcess>>(dataInput.BaseLineProcessFree);
+
+                foreach (var processFreeNew in listSettingProcessFreeNew)
+                {
+                    processFreeNew.Id = Guid.NewGuid();
+                    processFreeNew.CreatedBy = userLogin;
+                    processFreeNew.CreatedDate = DateTime.UtcNow;
+                    processFreeNew.BaselineSettingRef = settingRefNew;
+                }
+                _blSettingProcessFreeRepo.InsertMany(listSettingProcessFreeNew);
 
                 // Handle setting email
                 if (dataInput.BaselineSettingEmail != null)
@@ -272,12 +286,14 @@ namespace RDOS.BaseLine.Service
                     item.IsSequentialProcessing = process.IsSequentialProcessing.Value;
                     item.Priority = process.Priority;
                 }
+                var listProcessFree = _blSettingProcessFreeRepo.Find(x => x.BaselineSettingRef == settingInfo.SettingRef).ToList();
                 var settingEmail = _blSettingEmailRepo.Find(x => !x.IsDeleted && x.BaselineSettingRef == settingInfo.SettingRef).FirstOrDefault();
 
                 var dataResponse = new BaselineSettingDetailModel();
                 dataResponse.BlBlsettingInformation = settingInfo;
                 dataResponse.ProcessPendings = listProcessPending;
                 dataResponse.BaseLineProcesses = listProcessNew;
+                dataResponse.BaseLineProcesseFrees = listProcessFree;
                 dataResponse.BaselineSettingEmail = settingEmail;
 
                 return new ResultModelWithObject<BaselineSettingDetailModel>
@@ -299,57 +315,6 @@ namespace RDOS.BaseLine.Service
                 };
             }
         }
-
-        //public async Task<ResultModelWithObject<BaselineSettingDetailModel>> GetCurrentBaselineSetting()
-        //{
-        //    try
-        //    {
-        //        var settingInfo = _blSettingInfoRepo.Find(x => !x.IsDeleted).OrderByDescending(x => x.CreatedDate).FirstOrDefault();
-        //        if (settingInfo == null)
-        //        {
-        //            return new ResultModelWithObject<BaselineSettingDetailModel>
-        //            {
-        //                IsSuccess = false,
-        //                Code = 404,
-        //                Message = $"Cannot found baseline setting"
-        //            };
-        //        }
-        //        var listTransactionStatus = _blSettingTransactionStatusRepo.Find(x => x != null).ToList();
-        //        var listProcessPending = _blSettingProcessPendingRepo.Find(x => !x.IsDeleted && x.BaselineSettingRef == settingInfo.SettingRef).ToList();
-        //        var listProcess = _blSettingProcessRepo.Find(x => !x.IsDeleted && x.BaselineSettingRef == settingInfo.SettingRef).OrderBy(x => x.Priority).ToList();
-        //        var listProcessNew = _mapper.Map<List<BlBlsettingProcessDetail>>(listProcess);
-        //        foreach (var item in listProcessNew)
-        //        {
-        //            var process = _blProcessRepo.FirstOrDefault(x => x.ProcessCode == item.ProcessCode);
-        //            item.Process = process;
-        //        }
-        //        var settingEmail = _blSettingEmailRepo.Find(x => !x.IsDeleted && x.BaselineSettingRef == settingInfo.SettingRef).FirstOrDefault();
-
-        //        var dataResponse = new BaselineSettingDetailModel();
-        //        dataResponse.BlBlsettingInformation = settingInfo;
-        //        dataResponse.ProcessPendings = listProcessPending;
-        //        dataResponse.BaseLineProcesses = listProcessNew;
-        //        dataResponse.BaselineSettingEmail = settingEmail;
-
-        //        return new ResultModelWithObject<BaselineSettingDetailModel>
-        //        {
-        //            IsSuccess = true,
-        //            Code = 200,
-        //            Message = "Successfully",
-        //            Data = dataResponse
-        //        };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex.InnerException?.Message ?? ex.Message);
-        //        return new ResultModelWithObject<BaselineSettingDetailModel>
-        //        {
-        //            IsSuccess = false,
-        //            Code = 500,
-        //            Message = ex.InnerException?.Message ?? ex.Message
-        //        };
-        //    }
-        //}
 
         public async Task<ResultModelWithObject<ListBaselineSetting>> SearchBaselineSetting(BaselineSearch parameters)
         {

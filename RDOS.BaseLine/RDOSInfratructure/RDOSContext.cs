@@ -63,6 +63,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public virtual DbSet<BlCurrentCustomerPerformanceDaily> BlCurrentCustomerPerformanceDailys { get; set; } = null!;
         public virtual DbSet<BlCusPerDailySkubuyedDetail> BlCusPerDailySkubuyedDetails { get; set; } = null!;
         public virtual DbSet<BlCustomerPerformanceDaily> BlCustomerPerformanceDailys { get; set; } = null!;
+        public virtual DbSet<BlFreeProcess> BlFreeProcesses { get; set; } = null!;
         public virtual DbSet<BlHistory> BlHistories { get; set; } = null!;
         public virtual DbSet<BlIssueQty> BlIssueQtys { get; set; } = null!;
         public virtual DbSet<BlNormOfBussinessModel> BlNormOfBussinessModels { get; set; } = null!;
@@ -1978,6 +1979,29 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.WarehouseId).HasMaxLength(100);
 
                 entity.Property(e => e.WarehouseName).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<BlFreeProcess>(entity =>
+            {
+                entity.ToTable("BL_FreeProcess");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.Description).HasMaxLength(255);
+
+                entity.Property(e => e.LinkApi)
+                    .HasMaxLength(255)
+                    .HasColumnName("LinkAPI");
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(250);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
             });
 
             modelBuilder.Entity<BlHistory>(entity =>

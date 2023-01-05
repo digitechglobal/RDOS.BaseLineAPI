@@ -13,6 +13,7 @@ namespace RDOS.BaseLine.Models.Request
         public string ProcessTime { get; set; }
         public virtual List<ProcessPendingModel> ProcessPendings { get; set; }
         public virtual List<BaseLineProcessModel> BaseLineProcesses { get; set; }
+        public virtual List<BlFreeProcessModel> BaseLineProcessFree { get; set; }
         public BaselineSettingEmailModel? BaselineSettingEmail { get; set; }
     }
 
@@ -26,6 +27,12 @@ namespace RDOS.BaseLine.Models.Request
     public class BaseLineProcessModel
     {
         public string ProcessCode { get; set; }
+    }
+
+    public partial class BlFreeProcessModel
+    {
+        public string? Description { get; set; }
+        public string LinkApi { get; set; } = null!;
     }
 
     public class BaselineSettingEmailModel
@@ -50,6 +57,7 @@ namespace RDOS.BaseLine.Models.Request
         public BlBlsettingInformation BlBlsettingInformation { get; set; }
         public virtual List<BlBlsettingProcessPending> ProcessPendings { get; set; }
         public virtual List<BlBlsettingProcessDetail> BaseLineProcesses { get; set; }
+        public virtual List<BlFreeProcess> BaseLineProcesseFrees { get; set; }
         public BlBlsettingEmail? BaselineSettingEmail { get; set; }
     }
 
