@@ -19,25 +19,25 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? TmkprogramLevelId { get; set; }
         public string? TmkprogramLevelDesc { get; set; }
         public string? AccumulateType { get; set; }
-        public int AccuByProgTarget { get; set; }
-        public int AccuByProgActual { get; set; }
-        public int AccuByProgProgress { get; set; }
+        public decimal AccuByProgTarget { get; set; }
+        public decimal AccuByProgActual { get; set; }
+        public decimal AccuByProgProgress { get; set; }
         public string? ProductType { get; set; }
         public string? AccuProductId { get; set; }
         public string? AccuProductDesc { get; set; }
         public string? AccuByProdTarget { get; set; }
         public string? AccuByProdTargetUom { get; set; }
-        public int AccuByProdActual { get; set; }
+        public decimal AccuByProdActual { get; set; }
         public string? AccuByProdActualUom { get; set; }
-        public int AccuByProdProgress { get; set; }
+        public decimal AccuByProdProgress { get; set; }
         public string? AccuWeightType { get; set; }
         public string? AccuWeighProductId { get; set; }
         public string? AccuWeighProductDesc { get; set; }
-        public int AccuWeightByProgTarget { get; set; }
+        public decimal AccuWeightByProgTarget { get; set; }
         public string? AccuWeightByProgTargetUom { get; set; }
-        public int AccuWeightByProgActual { get; set; }
+        public decimal AccuWeightByProgActual { get; set; }
         public string? AccuWeightByProgActualUom { get; set; }
-        public int AccuWeightByProgProgress { get; set; }
+        public decimal AccuWeightByProgProgress { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? CreatedBy { get; set; }
