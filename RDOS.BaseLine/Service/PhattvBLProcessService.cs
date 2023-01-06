@@ -13,6 +13,8 @@ using SysAdmin.Models.StaticValue;
 using RestSharp;
 using RDOS.BaseLine.Models.Result;
 using static RDOS.BaseLine.Constants.Constants;
+using nProx.Helpers.Dapper;
+using Dapper;
 
 namespace RDOS.BaseLine.Service
 {
@@ -26,6 +28,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlBlsettingEmail> _blSettingEmailRepo;
         private readonly IBaseRepository<BlBlprocess> _blProcessRepo;
         private readonly IBaseRepository<BlHistory> _blHistoryRepo;
+        private readonly IBaseRepository<BlOutletAccumulate> _blOutletAccumulateRepo;
         private readonly IMapper _mapper;
 
         private readonly IBaselineSettingService _settingService;
@@ -39,6 +42,7 @@ namespace RDOS.BaseLine.Service
         private string _username;
         private readonly IBaseRepository<BlRawSo> _blRawSo;
         private readonly IBaseRepository<SaleCalendarGenerate> _saleCalendarGenerateRepo;
+        private readonly IDapperRepositories _dapper;
 
         public PhattvBLProcessService(
             ILogger<PhattvBLProcessService> logger,
@@ -58,7 +62,9 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<BlAuditLog> blAuditLogRepo,
             IBaseRepository<BlRawSo> blRawSo,
             IBaseRepository<BlHistory> blHistoryRepo,
-            IBaseRepository<SaleCalendarGenerate> saleCalendarGenerateRepo
+            IBaseRepository<SaleCalendarGenerate> saleCalendarGenerateRepo,
+            IBaseRepository<BlOutletAccumulate> blOutletAccumulateRepo,
+            IDapperRepositories dapper
             )
         {
             _logger = logger;
@@ -79,6 +85,8 @@ namespace RDOS.BaseLine.Service
             _blRawSo = blRawSo;
             _blHistoryRepo = blHistoryRepo;
             _saleCalendarGenerateRepo = saleCalendarGenerateRepo;
+            _blOutletAccumulateRepo = blOutletAccumulateRepo;
+            _dapper = dapper;
         }
 
         public async Task<List<DateTime>> GetBaseLineDate()
@@ -236,27 +244,6 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-
-        public async Task<BaseResultModel> BLProcessExcecution()
-        {
-            try
-            {
-                return new BaseResultModel
-                {
-                    IsSuccess = true,
-                    Message = "OK"
-                };
-            }
-            catch (System.Exception ex)
-            {
-                return new BaseResultModel
-                {
-                    IsSuccess = false,
-                    Message = ex.InnerException?.Message ?? ex.Message
-                };
-            }
-        }
-
         public ITrigger ReTriggered(ITrigger oldTrigger, string cronExpression)
         {
             var builder = oldTrigger.GetTriggerBuilder();
@@ -345,7 +332,7 @@ namespace RDOS.BaseLine.Service
             try
             {
                 var listBaseLineDate = await GetBaseLineDate();
-            
+
                 var setting = await _settingService.GetDetailBaselineSetting(null, true);
                 var processPendingSetting = setting.Data.ProcessPendings;
                 if (!setting.Data.BlBlsettingInformation.IsProcessPendingData.Value)
@@ -474,6 +461,49 @@ namespace RDOS.BaseLine.Service
                         UpdatedBy = null,
                     });
                 }
+
+                return new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Message = "OK"
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
+        }
+
+        public async Task<BaseResultModel> ProcessOutletAccumulate(DateTime baseLineDate)
+        {
+            try
+            {
+                // Function query
+                var query = @"SELECT * FROM collectoutletaccumulate(@baselinedate)";
+
+                // Handle parameter
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@baselinedate", baseLineDate);
+
+                // Excute query
+                var listData = ((List<BlOutletAccumulate>)_dapper.QueryWithParams<BlOutletAccumulate>(query, parameters));
+
+                foreach (var item in listData)
+                {
+                    if (item.AccumulateType.Trim().ToLower() == BLAccumulateConst.VOL.Trim().ToLower())
+                    {
+                        
+                    }
+                }
+
+
+
+
+
 
                 return new BaseResultModel
                 {

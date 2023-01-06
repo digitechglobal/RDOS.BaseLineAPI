@@ -49,5 +49,11 @@
             public const string ALL = "All";
         }
 
+         public static class BLAccumulateConst
+        {
+            public const string REV = "REV";
+            public const string VOL = "VOL";
+        }
+
     }
 }
