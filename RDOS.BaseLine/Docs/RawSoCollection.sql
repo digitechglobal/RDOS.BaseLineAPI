@@ -654,11 +654,11 @@ CREATE FUNCTION collectrawso(baselinedate VARCHAR, settingref VARCHAR, workingda
 		left join "SO_Reasons" as soReasonInfo on soReasonInfo."ReasonCode" = soOrderInfo."ReasonCode"
 		join "PrincipalProfile" as principalProfile on principalProfile."Code" = soOrderInfo."PrincipalID"
 		join "SC_SalesOrganizationStructures" as salesOrgInfo on salesOrgInfo."Code" = soOrderInfo."SalesOrgID"
-		left join "SC_TerritoryValues" as branchValue on branchValue."Key" = soOrderInfo."BranchId"
-		left join "SC_TerritoryValues" as regionValue on regionValue."Key" = soOrderInfo."RegionId"
-		left join "SC_TerritoryValues" as subRegionValue on subRegionValue."Key" = soOrderInfo."SubRegionId"
-		left join "SC_TerritoryValues" as areaValue on areaValue."Key" = soOrderInfo."AreaId"
-		left join "SC_TerritoryValues" as subAreaValue on subAreaValue."Key" = soOrderInfo."SubAreaId"
+		left join "SC_TerritoryValues" as branchValue on branchValue."Key" = concat('TL01-',soOrderInfo."BranchId")
+		left join "SC_TerritoryValues" as regionValue on regionValue."Key" = concat('TL02-',soOrderInfo."RegionId")
+		left join "SC_TerritoryValues" as subRegionValue on subRegionValue."Key" = concat('TL03-',soOrderInfo."SubRegionId")
+		left join "SC_TerritoryValues" as areaValue on areaValue."Key" = concat('TL04-',soOrderInfo."AreaId")
+		left join "SC_TerritoryValues" as subAreaValue on subAreaValue."Key" = concat('TL05-',soOrderInfo."SubAreaId")
 		join "DSA_DistributorSellingAreas" as dsaInfo on dsaInfo."Code" = soOrderInfo."DSAID"
 		join "Distributors" as distributorInfo on distributorInfo."Code" = soOrderInfo."DistributorCode"
 		join "DistributorShiptos" as wareHouseInfo on wareHouseInfo."ShiptoCode" = soOrderInfo."WareHouseID"
@@ -755,5 +755,5 @@ END $func$;
 SELECT
     *
 FROM
-    collectrawso('2022-11-14', 'BLS1', 'true')
+    collectrawso('2023-01-05', 'BLS1', 'true')
 LIMIT 100;
