@@ -1521,7 +1521,8 @@ namespace RDOS.BaseLine.Service
                                 var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALPC);
                                 value += Int32.Parse(valueCurrent.Value);
                             }
-                            dataInsert.Value = (value + listDataRawSoFilter.Count).ToString();
+                            int countSalesOrder = listDataRawSoFilter.GroupBy(x => x.OrderRefNumber).Select(x => x.First()).ToList().Count();
+                            dataInsert.Value = (value + countSalesOrder).ToString();
                             listCusPerDailyInsert.Add(dataInsert);
                             continue;
                         }
@@ -1536,7 +1537,7 @@ namespace RDOS.BaseLine.Service
                                 var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALPC);
                                 actualPC += Int32.Parse(valueCurrent.Value);
                             }
-                            actualPC = actualPC + listDataRawSoFilter.Count;
+                            actualPC = actualPC + listDataRawSoFilter.GroupBy(x => x.OrderRefNumber).Select(x => x.First()).ToList().Count;
 
                             // Calculate ActualLPPC
                             float value = 0;
