@@ -60,6 +60,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public virtual DbSet<BlConfirmPerformance> BlConfirmPerformances { get; set; } = null!;
         public virtual DbSet<BlConfirmPerformanceDetail> BlConfirmPerformanceDetails { get; set; } = null!;
         public virtual DbSet<BlConfirmPerformanceRawSo> BlConfirmPerformanceRawSos { get; set; } = null!;
+        public virtual DbSet<BlCurrentCusPerDailySkubuyedDetail> BlCurrentCusPerDailySkubuyedDetails { get; set; } = null!;
         public virtual DbSet<BlCurrentCustomerPerformanceDaily> BlCurrentCustomerPerformanceDailys { get; set; } = null!;
         public virtual DbSet<BlCusPerDailySkubuyedDetail> BlCusPerDailySkubuyedDetails { get; set; } = null!;
         public virtual DbSet<BlCustomerPerformanceDaily> BlCustomerPerformanceDailys { get; set; } = null!;
@@ -1664,6 +1665,111 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+            });
+
+            modelBuilder.Entity<BlCurrentCusPerDailySkubuyedDetail>(entity =>
+            {
+                entity.ToTable("BL_CurrentCusPerDailySKUBuyedDetails");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.AreaId).HasMaxLength(100);
+
+                entity.Property(e => e.AreaName).HasMaxLength(255);
+
+                entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.BranchId).HasMaxLength(100);
+
+                entity.Property(e => e.BranchName).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.CusShiptoAttributeDesc).HasMaxLength(255);
+
+                entity.Property(e => e.CusShiptoAttributeId).HasMaxLength(100);
+
+                entity.Property(e => e.CusShiptoAttributeName).HasMaxLength(255);
+
+                entity.Property(e => e.CusShiptoAttributeValueDesc).HasMaxLength(255);
+
+                entity.Property(e => e.CusShiptoAttributeValueId).HasMaxLength(100);
+
+                entity.Property(e => e.CustomerId).HasMaxLength(100);
+
+                entity.Property(e => e.CustomerName).HasMaxLength(255);
+
+                entity.Property(e => e.CustomerShiptoId).HasMaxLength(100);
+
+                entity.Property(e => e.CustomerShiptoName).HasMaxLength(255);
+
+                entity.Property(e => e.DistributorId).HasMaxLength(100);
+
+                entity.Property(e => e.DistributorName).HasMaxLength(255);
+
+                entity.Property(e => e.DistyBillToId).HasMaxLength(100);
+
+                entity.Property(e => e.Dsadesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("DSADesc");
+
+                entity.Property(e => e.Dsaid)
+                    .HasMaxLength(100)
+                    .HasColumnName("DSAId");
+
+                entity.Property(e => e.RegionId).HasMaxLength(100);
+
+                entity.Property(e => e.RegionName).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneDesc).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneId).HasMaxLength(100);
+
+                entity.Property(e => e.RouteZoneType).HasMaxLength(100);
+
+                entity.Property(e => e.RouteZonelocation).HasMaxLength(255);
+
+                entity.Property(e => e.SalesOrgDesc).HasMaxLength(255);
+
+                entity.Property(e => e.SalesOrgId).HasMaxLength(100);
+
+                entity.Property(e => e.SalesPeriod).HasMaxLength(100);
+
+                entity.Property(e => e.Sicdesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("SICDesc");
+
+                entity.Property(e => e.Sicid)
+                    .HasMaxLength(100)
+                    .HasColumnName("SICId");
+
+                entity.Property(e => e.Sidesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("SIDesc");
+
+                entity.Property(e => e.Siid)
+                    .HasMaxLength(100)
+                    .HasColumnName("SIId");
+
+                entity.Property(e => e.SubAreaId).HasMaxLength(100);
+
+                entity.Property(e => e.SubAreaName).HasMaxLength(255);
+
+                entity.Property(e => e.SubRegionId).HasMaxLength(100);
+
+                entity.Property(e => e.SubRegionName).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.Value).HasMaxLength(255);
+
+                entity.Property(e => e.WarehouseId).HasMaxLength(100);
+
+                entity.Property(e => e.WarehouseName).HasMaxLength(255);
             });
 
             modelBuilder.Entity<BlCurrentCustomerPerformanceDaily>(entity =>

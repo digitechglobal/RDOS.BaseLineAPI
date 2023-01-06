@@ -47,6 +47,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlSalesIndicator> _blSalesIndicatorRepo;
         private readonly IBaseRepository<SaleCalendarGenerate> _saleCalendarGenerateRepo;
         private readonly IBaseRepository<BlCusPerDailySkubuyedDetail> _blCusPerDailySkubuyedDetailRepo;
+        private readonly IBaseRepository<BlCurrentCusPerDailySkubuyedDetail> _blCurrentCusPerDailySkubuyedDetailRepo;
         private readonly IBaseRepository<VisitList> _visitListRepo;
         private readonly IBaseRepository<BlAuditLog> _blAuditLogRepo;
         private readonly IBaseRepository<BlNormOfBussinessModel> _blNormOfBussinessModelRepo;
@@ -79,6 +80,7 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<BlCustomerPerformanceDaily> blCusPerDailyRepo,
             IBaseRepository<BlCurrentCustomerPerformanceDaily> blCurrentCusPerDailyRepo,
             IBaseRepository<BlCusPerDailySkubuyedDetail> blCusPerDailySkubuyedDetailRepo,
+            IBaseRepository<BlCurrentCusPerDailySkubuyedDetail> blCurrentCusPerDailySkubuyedDetailRepo,
             IBaseRepository<BlSalesIndicator> blSalesIndicatorRepo,
             IBaseRepository<SaleCalendarGenerate> saleCalendarGenerateRepo,
             IBaseRepository<VisitList> visitListRepo,
@@ -118,6 +120,7 @@ namespace RDOS.BaseLine.Service
             _visitListRepo = visitListRepo;
             _blNormOfBussinessModelRepo = blNormOfBussinessModelRepo;
             _blAuditLogRepo = blAuditLogRepo;
+            _blCurrentCusPerDailySkubuyedDetailRepo = blCurrentCusPerDailySkubuyedDetailRepo;
         }
 
         public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef)
@@ -1662,6 +1665,7 @@ namespace RDOS.BaseLine.Service
 
                             // Handle flow sku buyed detail
                             _blCusPerDailySkubuyedDetailRepo.InsertMany(listSKUDaily);
+                            _blCurrentCusPerDailySkubuyedDetailRepo.InsertMany(_mapper.Map<List<BlCurrentCusPerDailySkubuyedDetail>>(listSKUDaily));
                             continue;
                         }
 
