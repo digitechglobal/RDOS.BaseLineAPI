@@ -25,7 +25,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? ProductType { get; set; }
         public string? AccuProductId { get; set; }
         public string? AccuProductDesc { get; set; }
-        public string? AccuByProdTarget { get; set; }
+        public decimal AccuByProdTarget { get; set; }
         public string? AccuByProdTargetUom { get; set; }
         public decimal AccuByProdActual { get; set; }
         public string? AccuByProdActualUom { get; set; }

@@ -2449,7 +2449,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasMaxLength(255)
                     .HasColumnName("AccuByProdActualUOM");
 
-                entity.Property(e => e.AccuByProdTarget).HasMaxLength(255);
+                // entity.Property(e => e.AccuByProdTarget).HasMaxLength(255);
 
                 entity.Property(e => e.AccuByProdTargetUom)
                     .HasMaxLength(255)

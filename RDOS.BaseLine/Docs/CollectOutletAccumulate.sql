@@ -20,7 +20,7 @@ CREATE FUNCTION collectoutletaccumulate(baselinedate VARCHAR) RETURNS TABLE (
     "ProductType" character varying(100),
     "AccuProductId" character varying(100),
     "AccuProductDesc" character varying(255),
-    "AccuByProdTarget" character varying(255),
+    "AccuByProdTarget" numeric,
     "AccuByProdTargetUOM" character varying(255),
     "AccuByProdActual" numeric,
     "AccuByProdActualUOM" character varying(255),
@@ -77,7 +77,7 @@ CREATE FUNCTION collectoutletaccumulate(baselinedate VARCHAR) RETURNS TABLE (
 	end::character varying(100), --"ProductType" 
     rawSo."ItemId"::character varying(100), --"AccuProductId" 
     rawSo."InventoryDescription"::character varying(255), --"AccuProductDesc" 
-    NULL::character varying(255), --"AccuByProdTarget"  Later
+    NULL::numeric, --"AccuByProdTarget"  Later
     NULL::character varying(255), --"AccuByProdTargetUOM" Later
     case 
 		when display."SalesOutput" = 1 then rawSo."ShippedExtendAmt" --doanh Số    
