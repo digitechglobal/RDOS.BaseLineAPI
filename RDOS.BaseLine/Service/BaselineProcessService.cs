@@ -1665,6 +1665,11 @@ namespace RDOS.BaseLine.Service
 
                             // Handle flow sku buyed detail
                             _blCusPerDailySkubuyedDetailRepo.InsertMany(listSKUDaily);
+                            var listSkuBuyedCurrent = _blCurrentCusPerDailySkubuyedDetailRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId && x.CustomerShiptoId == rawSoGroup.CustomerShiptoId).ToList();
+                            if (listSkuBuyedCurrent.Count > 0)
+                            {
+                                _blCurrentCusPerDailySkubuyedDetailRepo.DeleteMany(listSkuBuyedCurrent);
+                            }
                             _blCurrentCusPerDailySkubuyedDetailRepo.InsertMany(_mapper.Map<List<BlCurrentCusPerDailySkubuyedDetail>>(listSKUDaily));
                             continue;
                         }
