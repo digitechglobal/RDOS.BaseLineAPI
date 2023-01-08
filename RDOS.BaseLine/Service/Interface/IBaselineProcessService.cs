@@ -14,5 +14,6 @@ namespace RDOS.BaseLine.Service.Interface
         Task<BaseResultModel> ProcessCaculateKPI(DateTime baselineDate, string token);
         Task<BaseResultModel> ProcessSoKPI(DateTime baseLineDate, string token);
         Task<BaseResultModel> ProcessCusPerDaily(DateTime baselineDate);
+        Task<BaseResultModel> ProcessOutletAccumulate(DateTime baseLineDate);
     }
 }

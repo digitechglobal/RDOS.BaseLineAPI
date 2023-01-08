@@ -13,6 +13,7 @@
             public const string AVERATE_DAILY_RUNNING_SALE = "PROS07";
             public const string CAL_KPI = "PROS08";
             public const string CUS_PER_DAILY = "PROS09";
+            public const string OUTLET_ACCUMULATE = "PROS10";
         }
         public class SO_SaleOrderTypeConst
         {

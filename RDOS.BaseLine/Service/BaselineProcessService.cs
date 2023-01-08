@@ -51,6 +51,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<VisitList> _visitListRepo;
         private readonly IBaseRepository<BlAuditLog> _blAuditLogRepo;
         private readonly IBaseRepository<BlNormOfBussinessModel> _blNormOfBussinessModelRepo;
+        private readonly IBaseRepository<BlOutletAccumulate> _blOutletAccumulateRepo;
         private readonly IMapper _mapper;
         private readonly IDapperRepositories _dapper;
         public IRestClient _client;
@@ -87,7 +88,8 @@ namespace RDOS.BaseLine.Service
             IMapper mapper,
             IDapperRepositories dapper,
             IBaseRepository<BlAuditLog> blAuditLogRepo,
-            IBaseRepository<BlNormOfBussinessModel> blNormOfBussinessModelRepo)
+            IBaseRepository<BlNormOfBussinessModel> blNormOfBussinessModelRepo,
+            IBaseRepository<BlOutletAccumulate> blOutletAccumulateRepo)
         {
             _logger = logger;
             _blSettingInfoRepo = blSettingInfoRepo;
@@ -121,6 +123,7 @@ namespace RDOS.BaseLine.Service
             _blNormOfBussinessModelRepo = blNormOfBussinessModelRepo;
             _blAuditLogRepo = blAuditLogRepo;
             _blCurrentCusPerDailySkubuyedDetailRepo = blCurrentCusPerDailySkubuyedDetailRepo;
+            _blOutletAccumulateRepo = blOutletAccumulateRepo;
         }
 
         public async Task<BaseResultModel> ProcessPO(string baselineDate, string settingRef)
@@ -383,7 +386,7 @@ namespace RDOS.BaseLine.Service
                     var dataInDbMaps = _mapper.Map<List<BlCloseStock>>(listDataInDb);
                     listDataConcat.AddRange(dataInDbMaps);
                 }
-                
+
                 List<BlCloseStock> listDataFinal = new List<BlCloseStock>();
 
                 // Handle group item
@@ -1963,6 +1966,132 @@ namespace RDOS.BaseLine.Service
             }
         }
 
+        public async Task<BaseResultModel> ProcessOutletAccumulate(DateTime baseLineDate)
+        {
+            try
+            {
+                // Function query
+                var query = @"SELECT * FROM collectoutletaccumulate(@baselinedate)";
+
+                // Handle parameter
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@baselinedate", baseLineDate);
+
+                // Excute query
+                var listData = ((List<BlOutletAccumulate>)_dapper.QueryWithParams<BlOutletAccumulate>(query, parameters));
+                var groupedByprogram = listData.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId, x.TmkprogramId }).Select(x => new BlOutletAccumulate
+                {
+                    CustomerId = x.Key.CustomerId,
+                    CustomerShiptoId = x.Key.CustomerShiptoId,
+                    TmkprogramId = x.Key.TmkprogramId,
+                    AccuByProgActual = x.Sum(x => x.AccuByProdActual)
+                }).ToList();
+
+                listData = listData.GroupBy(x => new
+                {
+                    x.CustomerId,
+                    x.CustomerName,
+                    x.CustomerShiptoId,
+                    x.CustomerShiptoName,
+                    x.TmkprogramType,
+                    x.TmkprogramId,
+                    x.TmkprogramDesc,
+                    x.FrequencyType,
+                    x.FrequnecyValue,
+                    x.TmkprogramLevelId,
+                    x.TmkprogramLevelDesc,
+                    x.AccumulateType,
+                    x.AccuByProgTarget,
+                    x.ProductType,
+                    x.AccuProductId,
+                    x.AccuProductDesc,
+                    x.AccuByProdTarget,
+                    x.AccuByProdTargetUom,
+                    x.AccuWeightType,
+                    x.AccuWeighProductId,
+                    x.AccuWeighProductDesc,
+                    x.AccuWeightByProgTarget,
+                    x.AccuWeightByProgTargetUom,
+                }).Select(x => new BlOutletAccumulate
+                {
+                    Id = Guid.NewGuid(),
+                    BaselineDate = baseLineDate,
+                    CustomerId = x.Key.CustomerId,
+                    CustomerName = x.Key.CustomerName,
+                    CustomerShiptoId = x.Key.CustomerShiptoId,
+                    CustomerShiptoName = x.Key.CustomerShiptoName,
+                    TmkprogramType = x.Key.TmkprogramType,
+                    TmkprogramId = x.Key.TmkprogramId,
+                    TmkprogramDesc = x.Key.TmkprogramDesc,
+                    FrequencyType = x.Key.FrequencyType,
+                    FrequnecyValue = x.Key.FrequnecyValue,
+                    TmkprogramLevelId = x.Key.TmkprogramLevelId,
+                    TmkprogramLevelDesc = x.Key.TmkprogramLevelDesc,
+                    AccumulateType = x.Key.AccumulateType,
+                    AccuByProgTarget = x.Key.AccuByProgTarget,
+                    AccuByProgActual = groupedByprogram.Where(y => y.CustomerId == x.Key.CustomerId && y.CustomerShiptoId == x.Key.CustomerShiptoId && y.TmkprogramId == x.Key.TmkprogramId).Select(x => x.AccuByProgActual).FirstOrDefault(),
+                    AccuByProgProgress = 0,
+                    ProductType = x.Key.ProductType,
+                    AccuProductId = x.Key.AccuProductId,
+                    AccuProductDesc = x.Key.AccuProductDesc,
+                    AccuByProdTarget = x.Key.AccuByProdTarget,
+                    AccuByProdTargetUom = x.Key.AccuByProdTargetUom,
+                    AccuByProdActual = x.Sum(x => x.AccuByProdActual),
+                    AccuByProdActualUom = x.Select(x => x.AccuByProdActualUom).FirstOrDefault(),
+                    AccuByProdProgress = 0,
+                    AccuWeightType = x.Key.AccuWeightType,
+                    AccuWeighProductId = x.Key.AccuWeighProductId,
+                    AccuWeighProductDesc = x.Key.AccuWeighProductDesc,
+                    AccuWeightByProgTarget = x.Key.AccuWeightByProgTarget,
+                    AccuWeightByProgTargetUom = x.Key.AccuWeightByProgTargetUom,
+                    AccuWeightByProgActual = x.Sum(x => x.AccuWeightByProgActual),
+                    AccuWeightByProgActualUom = x.Select(x => x.AccuWeightByProgActualUom).FirstOrDefault(),
+                    AccuWeightByProgProgress = 0,
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = null,
+                    CreatedBy = null,
+                    UpdatedBy = null,
+                    IsDeleted = false,
+                }).ToList();
+
+                foreach (var item in listData)
+                {
+                    var previousRecord = _blOutletAccumulateRepo.Find(x => x.CustomerId == item.CustomerId &&
+                        x.CustomerShiptoId == item.CustomerShiptoId &&
+                        x.TmkprogramType == item.TmkprogramType &&
+                        x.TmkprogramId == item.TmkprogramId &&
+                        x.TmkprogramLevelId == item.TmkprogramLevelId &&
+                        x.ProductType == item.ProductType &&
+                        x.AccuProductId == item.AccuProductId).FirstOrDefault();
+                    if (previousRecord != null)
+                    {
+                        //Cộng dồn vào 
+                        // item.AccuByProgActual += previousRecord.AccuByProgActual;
+                        item.AccuByProgProgress = item.AccuByProgActual * 100 / item.AccuByProgTarget;
+                        item.AccuByProdActual += previousRecord.AccuByProdActual;
+                        item.AccuByProdProgress = item.AccuByProdActual * 100 / item.AccuByProdTarget;
+                        // item.AccuWeightByProgActual = ;
+                        // item.AccuWeightByProgProgress = ;   
+                    }
+                }
+
+                _blOutletAccumulateRepo.InsertMany(listData);
+
+                return await CreateAuditLog(new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Message = "OK"
+                }, baseLineDate, null, BlProcessConst.OUTLET_ACCUMULATE);
+            }
+            catch (System.Exception ex)
+            {
+                return await CreateAuditLog(new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                }, baseLineDate, null, BlProcessConst.OUTLET_ACCUMULATE);
+            }
+        }
 
         #region AuditLog
         private async Task<BaseResultModel> CreateAuditLog(BaseResultModel resultLog, DateTime baseLineDate, string settingRef, string processCode)
