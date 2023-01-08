@@ -491,6 +491,13 @@ namespace RDOS.BaseLine.Service
 
                 // Excute query
                 var listData = ((List<BlOutletAccumulate>)_dapper.QueryWithParams<BlOutletAccumulate>(query, parameters));
+                var groupedByprogram = listData.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId, x.TmkprogramId }).Select(x => new BlOutletAccumulate
+                {
+                    CustomerId = x.Key.CustomerId,
+                    CustomerShiptoId = x.Key.CustomerShiptoId,
+                    TmkprogramId = x.Key.TmkprogramId,
+                    AccuByProgActual = x.Sum(x => x.AccuByProdActual)
+                }).ToList();
 
                 listData = listData.GroupBy(x => new
                 {
@@ -534,7 +541,7 @@ namespace RDOS.BaseLine.Service
                     TmkprogramLevelDesc = x.Key.TmkprogramLevelDesc,
                     AccumulateType = x.Key.AccumulateType,
                     AccuByProgTarget = x.Key.AccuByProgTarget,
-                    AccuByProgActual = 0,
+                    AccuByProgActual = groupedByprogram.Where(y => y.CustomerId == x.Key.CustomerId && y.CustomerShiptoId == x.Key.CustomerShiptoId && y.TmkprogramId == x.Key.TmkprogramId).Select(x => x.AccuByProgActual).FirstOrDefault(),
                     AccuByProgProgress = 0,
                     ProductType = x.Key.ProductType,
                     AccuProductId = x.Key.AccuProductId,
@@ -571,10 +578,10 @@ namespace RDOS.BaseLine.Service
                     if (previousRecord != null)
                     {
                         //Cộng dồn vào 
-                        item.AccuByProgActual += previousRecord.AccuByProgActual;
+                        // item.AccuByProgActual += previousRecord.AccuByProgActual;
                         item.AccuByProgProgress = item.AccuByProgActual * 100 / item.AccuByProgTarget;
                         item.AccuByProdActual += previousRecord.AccuByProdActual;
-                        item.AccuByProdProgress = item.AccuByProdActual * 100 / item.AccuByProdTarget ;
+                        item.AccuByProdProgress = item.AccuByProdActual * 100 / item.AccuByProdTarget;
                         // item.AccuWeightByProgActual = ;
                         // item.AccuWeightByProgProgress = ;   
                     }
