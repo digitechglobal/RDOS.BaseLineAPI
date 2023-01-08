@@ -25,7 +25,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? ProductType { get; set; }
         public string? AccuProductId { get; set; }
         public string? AccuProductDesc { get; set; }
-        public decimal AccuByProdTarget { get; set; }
         public string? AccuByProdTargetUom { get; set; }
         public decimal AccuByProdActual { get; set; }
         public string? AccuByProdActualUom { get; set; }
@@ -43,5 +42,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
         public bool? IsDeleted { get; set; }
+        public decimal AccuByProdTarget { get; set; }
     }
 }
