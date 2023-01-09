@@ -1,5 +1,4 @@
 -- Adjustment
-
 DROP FUNCTION collectreceiptadjustment(baselinedate VARCHAR, settingref VARCHAR, typedata VARCHAR);
 CREATE FUNCTION collectreceiptadjustment(baselinedate VARCHAR, settingref VARCHAR, typedata VARCHAR) RETURNS TABLE (
     "Id" uuid,
@@ -133,7 +132,23 @@ CREATE FUNCTION collectreceiptadjustment(baselinedate VARCHAR, settingref VARCHA
     "UpdatedDate" timestamp,
     "CreatedBy" character varying(250),
     "UpdatedBy" character varying(250),
-    "IsDeleted" boolean
+    "IsDeleted" boolean,
+    "SalesOrgId" varchar(100),
+    "SalesOrgDesc" varchar(255),
+    "BranchId" varchar(100),
+    "BranchName" varchar(255),
+    "RegionId" varchar(100),
+    "RegionName" varchar(255),
+    "SubRegionId" varchar(100),
+    "SubRegionName" varchar(255),
+    "AreaId" varchar(100),
+    "AreaName" varchar(255),
+    "SubAreaId" varchar(100),
+    "SubAreaName" varchar(255),
+    "DSAId" varchar(100),
+    "DSADesc" varchar(255),
+	"RouteZoneId" varchar(100),
+    "RouteZoneDesc" varchar(255)
 ) LANGUAGE plpgsql AS $func$ BEGIN
     RETURN QUERY
     Select
@@ -268,7 +283,23 @@ CREATE FUNCTION collectreceiptadjustment(baselinedate VARCHAR, settingref VARCHA
         invtransaction."UpdatedDate" :: timestamp, --as "UpdatedDate",
         invtransaction."CreatedBy" :: character varying(250), --as "CreatedBy",
         NULL :: character varying(250), --as "UpdatedBy",
-        invtransaction."IsDeleted" :: boolean -- as "IsDeleted"
+        invtransaction."IsDeleted" :: boolean, -- as "IsDeleted"
+        salesOrgInfo."Code" :: varchar(100),
+        salesOrgInfo."Description" :: varchar(255),
+        case when branchValue."TerritoryValueKey" IS NOT NULL then branchValue."TerritoryValueKey" else null end :: varchar(100),
+        case when branchValue."Name" IS NOT NULL then branchValue."Name" else null end :: varchar(255),
+        case when regionValue."TerritoryValueKey" IS NOT NULL then regionValue."TerritoryValueKey" else null end :: varchar(100),
+        case when regionValue."Name" IS NOT NULL then regionValue."Name" else null end :: varchar(255),
+        case when subRegionValue."TerritoryValueKey" IS NOT NULL then subRegionValue."TerritoryValueKey" else null end :: varchar(100),
+        case when subRegionValue."Name" IS NOT NULL then subRegionValue."Name" else null end :: varchar(255),
+        case when areaValue."TerritoryValueKey" IS NOT NULL then areaValue."TerritoryValueKey" else null end :: varchar(100),
+        case when areaValue."Name" IS NOT NULL then areaValue."Name" else null end :: varchar(255),
+        case when subAreaValue."TerritoryValueKey" IS NOT NULL then subAreaValue."TerritoryValueKey" else null end :: varchar(100),
+        case when subAreaValue."Name" IS NOT NULL then subAreaValue."Name" else null end :: varchar(255),
+        dsaInfo."Code" :: varchar(100),
+        dsaInfo."Description" :: varchar(255),
+		case when routezoneInfo."RouteZoneCode" IS NOT NULL then routezoneInfo."RouteZoneCode" else null end :: varchar(100),
+        case when routezoneInfo."Description" IS NOT NULL then routezoneInfo."Description" else null end :: varchar(255)
     From 
         "INV_AdjustmentDetails" as invtransaction
         join "InventoryItems" as inventoryItem on inventoryItem."InventoryItemId" = invtransaction."ItemCode"
@@ -318,6 +349,25 @@ CREATE FUNCTION collectreceiptadjustment(baselinedate VARCHAR, settingref VARCHA
         left join "ItemSettings" as itemSetting9 on itemSetting9."AttributeId" = itemAttribute9."ItemAttributeMaster"
         left join "ItemAttributes" as itemAttribute10 on itemAttribute10."Id" = inventoryItem."Attribute10"
         left join "ItemSettings" as itemSetting10 on itemSetting10."AttributeId" = itemAttribute10."ItemAttributeMaster"
+        join "DSA_Deliveries" as dsaDistributor on dsaDistributor."DistributorCode" = invtransaction."DistributorCode"
+		join "DSA_DistributorSellingAreas" as dsaInfo on dsaInfo."Code" = dsaDistributor."DSACode"
+		join "SC_SalesOrganizationStructures" as salesOrgInfo on salesOrgInfo."Code" = dsaInfo."SOStructureCode"
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as branchValue on branchValue."TerritoryLevelCode" = 'TL01'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as regionValue on regionValue."TerritoryLevelCode" = 'TL02'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as subRegionValue on subRegionValue."TerritoryLevelCode" = 'TL03'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as areaValue on areaValue."TerritoryLevelCode" = 'TL04'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as subAreaValue on subAreaValue."TerritoryLevelCode" = 'TL05'
+		left join "RZ_RouteZoneInfomations" as routezoneInfo on routezoneInfo."Id" = (select routezoneInfo1."Id"
+																					from "RZ_RouteZoneInfomations" as routezoneInfo1
+																					where routezoneInfo1."DSACode" = dsaInfo."Code" 
+																					and routezoneInfo1."Status" = 'Active'
+																					and (CAST(routezoneInfo1."EffectiveDate" as DATE) <= CAST(baselinedate AS DATE)
+																					and CAST(baselinedate AS DATE) <= CASE WHEN routezoneInfo1."ValidUntil" IS NOT NULL 
+																						 							THEN CAST(routezoneInfo1."ValidUntil" AS DATE)
+																													ELSE CAST(now() AS DATE)
+																													END)
+																					order by routezoneInfo1."EffectiveDate" desc
+																					LIMIT 1)
     where 
         invtransaction."IsDeleted" = false
         and invtransaction."ItemKey" IS NOT NULL
@@ -465,7 +515,23 @@ CREATE FUNCTION collectreceipttransfer(baselinedate VARCHAR, settingref VARCHAR,
     "UpdatedDate" timestamp,
     "CreatedBy" character varying(250),
     "UpdatedBy" character varying(250),
-    "IsDeleted" boolean
+    "IsDeleted" boolean,
+    "SalesOrgId" varchar(100),
+    "SalesOrgDesc" varchar(255),
+    "BranchId" varchar(100),
+    "BranchName" varchar(255),
+    "RegionId" varchar(100),
+    "RegionName" varchar(255),
+    "SubRegionId" varchar(100),
+    "SubRegionName" varchar(255),
+    "AreaId" varchar(100),
+    "AreaName" varchar(255),
+    "SubAreaId" varchar(100),
+    "SubAreaName" varchar(255),
+    "DSAId" varchar(100),
+    "DSADesc" varchar(255),
+	"RouteZoneId" varchar(100),
+    "RouteZoneDesc" varchar(255)
 ) LANGUAGE plpgsql AS $func$ BEGIN
     RETURN QUERY
     Select
@@ -600,7 +666,23 @@ CREATE FUNCTION collectreceipttransfer(baselinedate VARCHAR, settingref VARCHAR,
         invtransaction."UpdatedDate" :: timestamp, --as "UpdatedDate",
         invtransaction."CreatedBy" :: character varying(250), --as "CreatedBy",
         NULL :: character varying(250), --as "UpdatedBy",
-        invtransaction."IsDeleted" :: boolean -- as "IsDeleted"
+        invtransaction."IsDeleted" :: boolean, -- as "IsDeleted"
+        salesOrgInfo."Code" :: varchar(100),
+        salesOrgInfo."Description" :: varchar(255),
+        case when branchValue."TerritoryValueKey" IS NOT NULL then branchValue."TerritoryValueKey" else null end :: varchar(100),
+        case when branchValue."Name" IS NOT NULL then branchValue."Name" else null end :: varchar(255),
+        case when regionValue."TerritoryValueKey" IS NOT NULL then regionValue."TerritoryValueKey" else null end :: varchar(100),
+        case when regionValue."Name" IS NOT NULL then regionValue."Name" else null end :: varchar(255),
+        case when subRegionValue."TerritoryValueKey" IS NOT NULL then subRegionValue."TerritoryValueKey" else null end :: varchar(100),
+        case when subRegionValue."Name" IS NOT NULL then subRegionValue."Name" else null end :: varchar(255),
+        case when areaValue."TerritoryValueKey" IS NOT NULL then areaValue."TerritoryValueKey" else null end :: varchar(100),
+        case when areaValue."Name" IS NOT NULL then areaValue."Name" else null end :: varchar(255),
+        case when subAreaValue."TerritoryValueKey" IS NOT NULL then subAreaValue."TerritoryValueKey" else null end :: varchar(100),
+        case when subAreaValue."Name" IS NOT NULL then subAreaValue."Name" else null end :: varchar(255),
+        dsaInfo."Code" :: varchar(100),
+        dsaInfo."Description" :: varchar(255),
+		case when routezoneInfo."RouteZoneCode" IS NOT NULL then routezoneInfo."RouteZoneCode" else null end :: varchar(100),
+        case when routezoneInfo."Description" IS NOT NULL then routezoneInfo."Description" else null end :: varchar(255)
     From 
         "INV_WhTransferDetails" as invtransaction
         join "InventoryItems" as inventoryItem on inventoryItem."InventoryItemId" = invtransaction."ItemCode"
@@ -650,6 +732,25 @@ CREATE FUNCTION collectreceipttransfer(baselinedate VARCHAR, settingref VARCHAR,
         left join "ItemSettings" as itemSetting9 on itemSetting9."AttributeId" = itemAttribute9."ItemAttributeMaster"
         left join "ItemAttributes" as itemAttribute10 on itemAttribute10."Id" = inventoryItem."Attribute10"
         left join "ItemSettings" as itemSetting10 on itemSetting10."AttributeId" = itemAttribute10."ItemAttributeMaster"
+        join "DSA_Deliveries" as dsaDistributor on dsaDistributor."DistributorCode" = invtransaction."DistributorCode"
+		join "DSA_DistributorSellingAreas" as dsaInfo on dsaInfo."Code" = dsaDistributor."DSACode"
+		join "SC_SalesOrganizationStructures" as salesOrgInfo on salesOrgInfo."Code" = dsaInfo."SOStructureCode"
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as branchValue on branchValue."TerritoryLevelCode" = 'TL01'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as regionValue on regionValue."TerritoryLevelCode" = 'TL02'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as subRegionValue on subRegionValue."TerritoryLevelCode" = 'TL03'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as areaValue on areaValue."TerritoryLevelCode" = 'TL04'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as subAreaValue on subAreaValue."TerritoryLevelCode" = 'TL05'
+		left join "RZ_RouteZoneInfomations" as routezoneInfo on routezoneInfo."Id" = (select routezoneInfo1."Id"
+																					from "RZ_RouteZoneInfomations" as routezoneInfo1
+																					where routezoneInfo1."DSACode" = dsaInfo."Code" 
+																					and routezoneInfo1."Status" = 'Active'
+																					and (CAST(routezoneInfo1."EffectiveDate" as DATE) <= CAST(baselinedate AS DATE)
+																					and CAST(baselinedate AS DATE) <= CASE WHEN routezoneInfo1."ValidUntil" IS NOT NULL 
+																						 							THEN CAST(routezoneInfo1."ValidUntil" AS DATE)
+																													ELSE CAST(now() AS DATE)
+																													END)
+																					order by routezoneInfo1."EffectiveDate" desc
+																					LIMIT 1)
     where 
         invtransaction."IsDeleted" = false
         and invtransaction."ItemKey" IS NOT NULL
@@ -797,7 +898,23 @@ CREATE FUNCTION collectreceiptinv(baselinedate VARCHAR, settingref VARCHAR, type
     "UpdatedDate" timestamp,
     "CreatedBy" character varying(250),
     "UpdatedBy" character varying(250),
-    "IsDeleted" boolean
+    "IsDeleted" boolean,
+    "SalesOrgId" varchar(100),
+    "SalesOrgDesc" varchar(255),
+    "BranchId" varchar(100),
+    "BranchName" varchar(255),
+    "RegionId" varchar(100),
+    "RegionName" varchar(255),
+    "SubRegionId" varchar(100),
+    "SubRegionName" varchar(255),
+    "AreaId" varchar(100),
+    "AreaName" varchar(255),
+    "SubAreaId" varchar(100),
+    "SubAreaName" varchar(255),
+    "DSAId" varchar(100),
+    "DSADesc" varchar(255),
+	"RouteZoneId" varchar(100),
+    "RouteZoneDesc" varchar(255)
 ) LANGUAGE plpgsql AS $func$ BEGIN
     RETURN QUERY
     Select
@@ -932,7 +1049,23 @@ CREATE FUNCTION collectreceiptinv(baselinedate VARCHAR, settingref VARCHAR, type
         invtransaction."UpdatedDate" :: timestamp, --as "UpdatedDate",
         invtransaction."CreatedBy" :: character varying(250), --as "CreatedBy",
         NULL :: character varying(250), --as "UpdatedBy",
-        invtransaction."IsDeleted" :: boolean -- as "IsDeleted"
+        invtransaction."IsDeleted" :: boolean, -- as "IsDeleted"
+        salesOrgInfo."Code" :: varchar(100),
+        salesOrgInfo."Description" :: varchar(255),
+        case when branchValue."TerritoryValueKey" IS NOT NULL then branchValue."TerritoryValueKey" else null end :: varchar(100),
+        case when branchValue."Name" IS NOT NULL then branchValue."Name" else null end :: varchar(255),
+        case when regionValue."TerritoryValueKey" IS NOT NULL then regionValue."TerritoryValueKey" else null end :: varchar(100),
+        case when regionValue."Name" IS NOT NULL then regionValue."Name" else null end :: varchar(255),
+        case when subRegionValue."TerritoryValueKey" IS NOT NULL then subRegionValue."TerritoryValueKey" else null end :: varchar(100),
+        case when subRegionValue."Name" IS NOT NULL then subRegionValue."Name" else null end :: varchar(255),
+        case when areaValue."TerritoryValueKey" IS NOT NULL then areaValue."TerritoryValueKey" else null end :: varchar(100),
+        case when areaValue."Name" IS NOT NULL then areaValue."Name" else null end :: varchar(255),
+        case when subAreaValue."TerritoryValueKey" IS NOT NULL then subAreaValue."TerritoryValueKey" else null end :: varchar(100),
+        case when subAreaValue."Name" IS NOT NULL then subAreaValue."Name" else null end :: varchar(255),
+        dsaInfo."Code" :: varchar(100),
+        dsaInfo."Description" :: varchar(255),
+		case when routezoneInfo."RouteZoneCode" IS NOT NULL then routezoneInfo."RouteZoneCode" else null end :: varchar(100),
+        case when routezoneInfo."Description" IS NOT NULL then routezoneInfo."Description" else null end :: varchar(255)
     From 
         "INV_InventoryTransactions" as invtransaction
         join "InventoryItems" as inventoryItem on inventoryItem."InventoryItemId" = invtransaction."ItemCode"
@@ -982,6 +1115,25 @@ CREATE FUNCTION collectreceiptinv(baselinedate VARCHAR, settingref VARCHAR, type
         left join "ItemSettings" as itemSetting9 on itemSetting9."AttributeId" = itemAttribute9."ItemAttributeMaster"
         left join "ItemAttributes" as itemAttribute10 on itemAttribute10."Id" = inventoryItem."Attribute10"
         left join "ItemSettings" as itemSetting10 on itemSetting10."AttributeId" = itemAttribute10."ItemAttributeMaster"
+        join "DSA_Deliveries" as dsaDistributor on dsaDistributor."DistributorCode" = invtransaction."DistributorCode"
+		join "DSA_DistributorSellingAreas" as dsaInfo on dsaInfo."Code" = dsaDistributor."DSACode"
+		join "SC_SalesOrganizationStructures" as salesOrgInfo on salesOrgInfo."Code" = dsaInfo."SOStructureCode"
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as branchValue on branchValue."TerritoryLevelCode" = 'TL01'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as regionValue on regionValue."TerritoryLevelCode" = 'TL02'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as subRegionValue on subRegionValue."TerritoryLevelCode" = 'TL03'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as areaValue on areaValue."TerritoryLevelCode" = 'TL04'
+		left join lateral (select * from handleterritoryvalue(dsaInfo."MappingNode")) as subAreaValue on subAreaValue."TerritoryLevelCode" = 'TL05'
+		left join "RZ_RouteZoneInfomations" as routezoneInfo on routezoneInfo."Id" = (select routezoneInfo1."Id"
+																					from "RZ_RouteZoneInfomations" as routezoneInfo1
+																					where routezoneInfo1."DSACode" = dsaInfo."Code" 
+																					and routezoneInfo1."Status" = 'Active'
+																					and (CAST(routezoneInfo1."EffectiveDate" as DATE) <= CAST(baselinedate AS DATE)
+																					and CAST(baselinedate AS DATE) <= CASE WHEN routezoneInfo1."ValidUntil" IS NOT NULL 
+																						 							THEN CAST(routezoneInfo1."ValidUntil" AS DATE)
+																													ELSE CAST(now() AS DATE)
+																													END)
+																					order by routezoneInfo1."EffectiveDate" desc
+																					LIMIT 1)
     where 
         invtransaction."IsDeleted" = false
         and CAST(baselinedate as DATE) = CAST(invtransaction."TransactionDate" as DATE)

@@ -102,6 +102,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? SubAreaName { get; set; }
         public string? Dsaid { get; set; }
         public string? Dsadesc { get; set; }
+        public string? RouteZoneId { get; set; }
+        public string? RouteZoneDesc { get; set; }
         public string? InventoryAttributeId1 { get; set; }
         public string? InventoryAttributeName1 { get; set; }
         public string? InventoryAttributeDesc1 { get; set; }

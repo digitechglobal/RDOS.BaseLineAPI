@@ -15,6 +15,7 @@ using RDOS.BaseLine.Models.Result;
 using static RDOS.BaseLine.Constants.Constants;
 using nProx.Helpers.Dapper;
 using Dapper;
+using RDOS.BaseLine.Models.Request;
 
 namespace RDOS.BaseLine.Service
 {
@@ -385,10 +386,18 @@ namespace RDOS.BaseLine.Service
                 var blSettingInfo = setting.Data.BlBlsettingInformation;
                 var listSequentialProcess = blSettingProcess.Where(x => x.IsSequentialProcessing == true).OrderBy(x => x.Priority).ToList();
                 var listAsynchronousProcess = blSettingProcess.Where(x => x.IsSequentialProcessing == false).ToList();
-
+                
                 foreach (var baseLineDate in listBaseLineDate)
                 {
                     string blDate = baseLineDate.ToString();
+                    var dataReq = new ProcessRequest()
+                    {
+                        BaselineDate = blDate,
+                        SettingRef = blSettingInfo.SettingRef,
+                        Type = null,
+                        ValueCodes = null,
+                        SalesOrgCode = null
+                    };
                     foreach (var sequentialProcess in listSequentialProcess)
                     {
                         switch (sequentialProcess.ProcessCode)
@@ -397,22 +406,22 @@ namespace RDOS.BaseLine.Service
                                 await _blProcessService.ProcessSO(blDate, blSettingInfo.SettingRef);
                                 break;
                             case BlProcessConst.POPROCESS:
-                                await _blProcessService.ProcessPO(blDate, blSettingInfo.SettingRef);
+                                await _blProcessService.ProcessPO(dataReq);
                                 break;
                             case BlProcessConst.IN_ISSUE:
-                                await _blProcessService.ProcessInvIssue(blDate, blSettingInfo.SettingRef, BaselineType.DAILY);
+                                await _blProcessService.ProcessInvIssue(dataReq, BaselineType.DAILY);
                                 break;
                             case BlProcessConst.IN_RECEIPT:
-                                await _blProcessService.ProcessInvReceipt(blDate, blSettingInfo.SettingRef, BaselineType.DAILY);
+                                await _blProcessService.ProcessInvReceipt(dataReq, BaselineType.DAILY);
                                 break;
                             case BlProcessConst.BL_CLOSE_QTY:
-                                await _blProcessService.ProcessInvCloseQty(blDate, blSettingInfo.SettingRef);
+                                await _blProcessService.ProcessInvCloseQty(dataReq);
                                 break;
                             case BlProcessConst.BL_SAFE_STOCK_ACESSMENT:
-                                await _blProcessService.ProcessSafetyStockAssessment(blDate);
+                                await _blProcessService.ProcessSafetyStockAssessment(dataReq);
                                 break;
                             case BlProcessConst.AVERATE_DAILY_RUNNING_SALE:
-                                await _blProcessService.ProcessRunningSales(blDate);
+                                await _blProcessService.ProcessRunningSales(dataReq);
                                 break;
                             case BlProcessConst.CAL_KPI:
                                 // await _blProcessService.ProcessCaculateKPI(); --token ?
@@ -428,6 +437,7 @@ namespace RDOS.BaseLine.Service
                         }
                     }
 
+                    
                     foreach (var asynchronousProcess in listAsynchronousProcess)
                     {
                         switch (asynchronousProcess.ProcessCode)
@@ -436,22 +446,23 @@ namespace RDOS.BaseLine.Service
                                 _blProcessService.ProcessSO(blDate, blSettingInfo.SettingRef);
                                 break;
                             case BlProcessConst.POPROCESS:
-                                _blProcessService.ProcessPO(blDate, blSettingInfo.SettingRef);
+                                
+                                _blProcessService.ProcessPO(dataReq);
                                 break;
                             case BlProcessConst.IN_ISSUE:
-                                _blProcessService.ProcessInvIssue(blDate, blSettingInfo.SettingRef, BaselineType.DAILY);
+                                _blProcessService.ProcessInvIssue(dataReq, BaselineType.DAILY);
                                 break;
                             case BlProcessConst.IN_RECEIPT:
-                                _blProcessService.ProcessInvReceipt(blDate, blSettingInfo.SettingRef, BaselineType.DAILY);
+                                _blProcessService.ProcessInvReceipt(dataReq, BaselineType.DAILY);
                                 break;
                             case BlProcessConst.BL_CLOSE_QTY:
-                                _blProcessService.ProcessInvCloseQty(blDate, blSettingInfo.SettingRef);
+                                _blProcessService.ProcessInvCloseQty(dataReq);
                                 break;
                             case BlProcessConst.BL_SAFE_STOCK_ACESSMENT:
-                                _blProcessService.ProcessSafetyStockAssessment(blDate);
+                                _blProcessService.ProcessSafetyStockAssessment(dataReq);
                                 break;
                             case BlProcessConst.AVERATE_DAILY_RUNNING_SALE:
-                                _blProcessService.ProcessRunningSales(blDate);
+                                _blProcessService.ProcessRunningSales(dataReq);
                                 break;
                             case BlProcessConst.CAL_KPI:
                                 //  _blProcessService.ProcessCaculateKPI(); --token ?

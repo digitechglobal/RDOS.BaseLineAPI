@@ -1,4 +1,4 @@
-DROP FUNCTION collectrunningsales(baselinedate VARCHAR, username VARCHAR);
+DROP FUNCTION collectrunningsales(baselinedate VARCHAR);
 CREATE FUNCTION collectrunningsales(baselinedate VARCHAR) RETURNS TABLE (
     "Id" uuid,
     "BaselineDate" timestamp,
@@ -89,7 +89,9 @@ CREATE FUNCTION collectrunningsales(baselinedate VARCHAR) RETURNS TABLE (
     "SubAreaId" varchar(100),
     "SubAreaName" varchar(255),
     "DSAId" varchar(100),
-    "DSADesc" varchar(255)
+    "DSADesc" varchar(255),
+    "RouteZoneId" varchar(100),
+    "RouteZoneDesc" varchar(255)
 ) LANGUAGE plpgsql AS $func$ BEGIN
 	RETURN QUERY
     Select
@@ -182,7 +184,9 @@ CREATE FUNCTION collectrunningsales(baselinedate VARCHAR) RETURNS TABLE (
         rawSOInfo."SubAreaId" :: varchar(100), --as "SubAreaId",
         rawSOInfo."SubAreaName" :: varchar(255), --as "SubAreaName",
         rawSOInfo."DSAId" :: varchar(100), --as "DSAId",
-        rawSOInfo."DSADesc" :: varchar(255) --as "DSADesc"
+        rawSOInfo."DSADesc" :: varchar(255), --as "DSADesc",
+        rawSOInfo."RouteZoneId" :: varchar(100),
+        rawSOInfo."RouteZoneDesc" :: varchar(255)
     From 
         "BL_RawSOs" as rawSOInfo
         join "InventoryItems" as inventoryItem on inventoryItem."InventoryItemId" = rawSOInfo."ItemId"

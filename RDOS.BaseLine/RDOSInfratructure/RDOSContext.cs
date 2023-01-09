@@ -1339,9 +1339,17 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.AreaId).HasMaxLength(100);
+
+                entity.Property(e => e.AreaName).HasMaxLength(255);
+
                 entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
+
+                entity.Property(e => e.BranchId).HasMaxLength(100);
+
+                entity.Property(e => e.BranchName).HasMaxLength(255);
 
                 entity.Property(e => e.ClosePurchaseUom)
                     .HasMaxLength(100)
@@ -1459,6 +1467,14 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasMaxLength(100)
                     .HasColumnName("DMSCode");
 
+                entity.Property(e => e.Dsadesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("DSADesc");
+
+                entity.Property(e => e.Dsaid)
+                    .HasMaxLength(100)
+                    .HasColumnName("DSAId");
+
                 entity.Property(e => e.InventoryAttributeDesc1).HasMaxLength(255);
 
                 entity.Property(e => e.InventoryAttributeDesc10).HasMaxLength(255);
@@ -1575,11 +1591,31 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.PrincipalLinkedCode).HasMaxLength(100);
 
+                entity.Property(e => e.RegionId).HasMaxLength(100);
+
+                entity.Property(e => e.RegionName).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneDesc).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneId).HasMaxLength(100);
+
+                entity.Property(e => e.SalesOrgDesc).HasMaxLength(255);
+
+                entity.Property(e => e.SalesOrgId).HasMaxLength(100);
+
                 entity.Property(e => e.ShiptoCodeOnErp)
                     .HasMaxLength(100)
                     .HasColumnName("ShiptoCodeOnERP");
 
                 entity.Property(e => e.ShiptoName).HasMaxLength(255);
+
+                entity.Property(e => e.SubAreaId).HasMaxLength(100);
+
+                entity.Property(e => e.SubAreaName).HasMaxLength(255);
+
+                entity.Property(e => e.SubRegionId).HasMaxLength(100);
+
+                entity.Property(e => e.SubRegionName).HasMaxLength(255);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(250);
 
@@ -2145,11 +2181,19 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.AreaId).HasMaxLength(100);
+
+                entity.Property(e => e.AreaName).HasMaxLength(255);
+
                 entity.Property(e => e.BaseLineType).HasMaxLength(50);
 
                 entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
+
+                entity.Property(e => e.BranchId).HasMaxLength(100);
+
+                entity.Property(e => e.BranchName).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(250);
 
@@ -2254,6 +2298,14 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.Dmscode)
                     .HasMaxLength(100)
                     .HasColumnName("DMSCode");
+
+                entity.Property(e => e.Dsadesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("DSADesc");
+
+                entity.Property(e => e.Dsaid)
+                    .HasMaxLength(100)
+                    .HasColumnName("DSAId");
 
                 entity.Property(e => e.InventoryAttributeDesc1).HasMaxLength(255);
 
@@ -2391,6 +2443,18 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.PrincipalLinkedCode).HasMaxLength(100);
 
+                entity.Property(e => e.RegionId).HasMaxLength(100);
+
+                entity.Property(e => e.RegionName).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneDesc).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneId).HasMaxLength(100);
+
+                entity.Property(e => e.SalesOrgDesc).HasMaxLength(255);
+
+                entity.Property(e => e.SalesOrgId).HasMaxLength(100);
+
                 entity.Property(e => e.SalesPeriod).HasMaxLength(100);
 
                 entity.Property(e => e.ShiptoCodeOnErp)
@@ -2398,6 +2462,14 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasColumnName("ShiptoCodeOnERP");
 
                 entity.Property(e => e.ShiptoName).HasMaxLength(255);
+
+                entity.Property(e => e.SubAreaId).HasMaxLength(100);
+
+                entity.Property(e => e.SubAreaName).HasMaxLength(255);
+
+                entity.Property(e => e.SubRegionId).HasMaxLength(100);
+
+                entity.Property(e => e.SubRegionName).HasMaxLength(255);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(250);
 
@@ -2524,9 +2596,17 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.AreaId).HasMaxLength(100);
+
+                entity.Property(e => e.AreaName).HasMaxLength(255);
+
                 entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
+
+                entity.Property(e => e.BranchId).HasMaxLength(100);
+
+                entity.Property(e => e.BranchName).HasMaxLength(255);
 
                 entity.Property(e => e.Channels).HasMaxLength(255);
 
@@ -2635,6 +2715,14 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.Dmscode)
                     .HasMaxLength(50)
                     .HasColumnName("DMSCode");
+
+                entity.Property(e => e.Dsadesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("DSADesc");
+
+                entity.Property(e => e.Dsaid)
+                    .HasMaxLength(100)
+                    .HasColumnName("DSAId");
 
                 entity.Property(e => e.Erpid)
                     .HasMaxLength(50)
@@ -2810,6 +2898,18 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasMaxLength(50)
                     .HasColumnName("ReceiptUOM");
 
+                entity.Property(e => e.RegionId).HasMaxLength(100);
+
+                entity.Property(e => e.RegionName).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneDesc).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneId).HasMaxLength(100);
+
+                entity.Property(e => e.SalesOrgDesc).HasMaxLength(255);
+
+                entity.Property(e => e.SalesOrgId).HasMaxLength(100);
+
                 entity.Property(e => e.ShiptoCodeOnErp)
                     .HasMaxLength(100)
                     .HasColumnName("ShiptoCodeOnERP");
@@ -2820,7 +2920,15 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Status).HasMaxLength(50);
 
+                entity.Property(e => e.SubAreaId).HasMaxLength(100);
+
+                entity.Property(e => e.SubAreaName).HasMaxLength(255);
+
                 entity.Property(e => e.SubChanels).HasMaxLength(255);
+
+                entity.Property(e => e.SubRegionId).HasMaxLength(100);
+
+                entity.Property(e => e.SubRegionName).HasMaxLength(255);
 
                 entity.Property(e => e.TransactionDate).HasColumnType("timestamp without time zone");
 
@@ -3404,11 +3512,19 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.AreaId).HasMaxLength(100);
+
+                entity.Property(e => e.AreaName).HasMaxLength(255);
+
                 entity.Property(e => e.BaseLineType).HasMaxLength(50);
 
                 entity.Property(e => e.BaselineDate).HasColumnType("timestamp without time zone");
 
                 entity.Property(e => e.BaselineSettingRef).HasMaxLength(50);
+
+                entity.Property(e => e.BranchId).HasMaxLength(100);
+
+                entity.Property(e => e.BranchName).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(250);
 
@@ -3513,6 +3629,14 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.Dmscode)
                     .HasMaxLength(100)
                     .HasColumnName("DMSCode");
+
+                entity.Property(e => e.Dsadesc)
+                    .HasMaxLength(255)
+                    .HasColumnName("DSADesc");
+
+                entity.Property(e => e.Dsaid)
+                    .HasMaxLength(100)
+                    .HasColumnName("DSAId");
 
                 entity.Property(e => e.InBaseUom)
                     .HasMaxLength(255)
@@ -3650,6 +3774,18 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.PrincipalLinkedCode).HasMaxLength(100);
 
+                entity.Property(e => e.RegionId).HasMaxLength(100);
+
+                entity.Property(e => e.RegionName).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneDesc).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneId).HasMaxLength(100);
+
+                entity.Property(e => e.SalesOrgDesc).HasMaxLength(255);
+
+                entity.Property(e => e.SalesOrgId).HasMaxLength(100);
+
                 entity.Property(e => e.SalesPeriod).HasMaxLength(100);
 
                 entity.Property(e => e.ShiptoCodeOnErp)
@@ -3657,6 +3793,14 @@ namespace RDOS.BaseLine.RDOSInfratructure
                     .HasColumnName("ShiptoCodeOnERP");
 
                 entity.Property(e => e.ShiptoName).HasMaxLength(255);
+
+                entity.Property(e => e.SubAreaId).HasMaxLength(100);
+
+                entity.Property(e => e.SubAreaName).HasMaxLength(255);
+
+                entity.Property(e => e.SubRegionId).HasMaxLength(100);
+
+                entity.Property(e => e.SubRegionName).HasMaxLength(255);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(250);
 
@@ -3810,6 +3954,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.RegionId).HasMaxLength(100);
 
                 entity.Property(e => e.RegionName).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneDesc).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneId).HasMaxLength(100);
 
                 entity.Property(e => e.RunningSalesBaseUom)
                     .HasMaxLength(255)
@@ -4107,6 +4255,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.RegionId).HasMaxLength(100);
 
                 entity.Property(e => e.RegionName).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneDesc).HasMaxLength(255);
+
+                entity.Property(e => e.RouteZoneId).HasMaxLength(100);
 
                 entity.Property(e => e.RunningSalesBaseUom)
                     .HasMaxLength(100)

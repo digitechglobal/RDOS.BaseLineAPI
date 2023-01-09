@@ -155,6 +155,22 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? InventoryAttributeValueId10 { get; set; }
         public string? InventoryAttributeValueDesc10 { get; set; }
         public Guid? Hierarchy { get; set; }
+        public string? SalesOrgId { get; set; }
+        public string? SalesOrgDesc { get; set; }
+        public string? BranchId { get; set; }
+        public string? BranchName { get; set; }
+        public string? RegionId { get; set; }
+        public string? RegionName { get; set; }
+        public string? SubRegionId { get; set; }
+        public string? SubRegionName { get; set; }
+        public string? AreaId { get; set; }
+        public string? AreaName { get; set; }
+        public string? SubAreaId { get; set; }
+        public string? SubAreaName { get; set; }
+        public string? Dsaid { get; set; }
+        public string? Dsadesc { get; set; }
+        public string? RouteZoneId { get; set; }
+        public string? RouteZoneDesc { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? CreatedBy { get; set; }
