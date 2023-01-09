@@ -44,12 +44,6 @@
             public const string QUATERVISITED = "QuaterVisited";
             public const string YEARVISITED = "YearVisited";
         }
-
-        public static class BLScopeConst
-        {
-            public const string ALL = "All";
-        }
-
          public static class BLAccumulateConst
         {
             public const string REV = "REV";

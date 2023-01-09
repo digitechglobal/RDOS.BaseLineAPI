@@ -15,6 +15,6 @@ namespace RDOS.BaseLine.Service.Interface
         // Task<BaseResultModel> HandleBaseLineProcess(List<DateTime> listBaseLineDate);
         Task<List<DateTime>> GetBaseLineDate();
         Task<bool> DeleteJob(JobMetadata jobMetadata);
-        Task<BaseResultModel> HandleBaseLineProcess(string blType = BaselineType.DAILY, string scope = BLScopeConst.ALL);
+        Task<BaseResultModel> HandleBaseLineProcess(BaselineProcessRequest dataRequest);
     }
 }

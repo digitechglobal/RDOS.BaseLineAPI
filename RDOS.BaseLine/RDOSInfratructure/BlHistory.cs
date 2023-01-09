@@ -20,5 +20,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? UpdatedBy { get; set; }
         public string? SalesOrgId { get; set; }
         public string? SalesOrgDesc { get; set; }
+        public string? RefNumber { get; set; }
     }
 }

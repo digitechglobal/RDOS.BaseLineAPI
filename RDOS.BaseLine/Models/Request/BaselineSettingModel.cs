@@ -1,4 +1,6 @@
-﻿using RDOS.BaseLine.RDOSInfratructure;
+﻿using RDOS.BaseLine.Constants;
+using RDOS.BaseLine.RDOSInfratructure;
+using static RDOS.BaseLine.Constants.Constants;
 using static RDOS.BaseLine.Models.Results;
 
 namespace RDOS.BaseLine.Models.Request
@@ -79,6 +81,7 @@ namespace RDOS.BaseLine.Models.Request
         public string? Type { get; set; }
         public string? SalesOrgCode { get; set; }
         public List<string>? ValueCodes { get; set; }
+        public string? HistoryRefNumber { get; set; }
     }
 
     public class POCollection
@@ -236,5 +239,36 @@ namespace RDOS.BaseLine.Models.Request
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
+    }
+
+    public class BaselineProcessRequest
+    {
+        public string Type { get; set; } = BaselineType.DAILY;
+        public string Scope { get; set; } = ScopeTypeConst.ALL;
+        public DateTime BaselineDate { get; set; }
+        public string? SalesOrgCode { get; set; }
+        public List<string>? ValueCodes { get; set; }
+    }
+
+    public class FilterHistoryModel : EcoParameters
+    {
+        public DateTime BaslineDate { get; set; }
+    }
+
+    public class ListHistoryResponse
+    {
+        public List<BlHistory> Items { get; set; }
+        public MetaData MetaData { get; set; }
+    }
+
+    public class HistoryDetailModel
+    {
+        public BlHistory HistoryInfo { get; set; } = new BlHistory();
+        public List<AuditlogDetailModel> listAuditlog { get; set; } = new List<AuditlogDetailModel>(); 
+    }
+
+    public class AuditlogDetailModel : BlAuditLog
+    {
+        public BlBlprocess ProcessInfo { get; set; }
     }
 }

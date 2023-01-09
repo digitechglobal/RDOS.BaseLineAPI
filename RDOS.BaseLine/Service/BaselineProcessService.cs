@@ -54,6 +54,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlAuditLog> _blAuditLogRepo;
         private readonly IBaseRepository<BlNormOfBussinessModel> _blNormOfBussinessModelRepo;
         private readonly IBaseRepository<BlOutletAccumulate> _blOutletAccumulateRepo;
+        private readonly IBaseRepository<BlHistory> _blHistoryRepo;
         private readonly IMapper _mapper;
         private readonly IDapperRepositories _dapper;
         public IRestClient _client;
@@ -91,7 +92,8 @@ namespace RDOS.BaseLine.Service
             IDapperRepositories dapper,
             IBaseRepository<BlAuditLog> blAuditLogRepo,
             IBaseRepository<BlNormOfBussinessModel> blNormOfBussinessModelRepo,
-            IBaseRepository<BlOutletAccumulate> blOutletAccumulateRepo)
+            IBaseRepository<BlOutletAccumulate> blOutletAccumulateRepo,
+            IBaseRepository<BlHistory> blHistoryRepo)
         {
             _logger = logger;
             _blSettingInfoRepo = blSettingInfoRepo;
@@ -126,6 +128,7 @@ namespace RDOS.BaseLine.Service
             _blAuditLogRepo = blAuditLogRepo;
             _blCurrentCusPerDailySkubuyedDetailRepo = blCurrentCusPerDailySkubuyedDetailRepo;
             _blOutletAccumulateRepo = blOutletAccumulateRepo;
+            _blHistoryRepo = blHistoryRepo;
         }
 
         public async Task<BaseResultModel> ProcessPO(ProcessRequest dataRequest)
@@ -165,47 +168,47 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS, dataRequest.HistoryRefNumber);
                 }
                 else
                 {
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -218,49 +221,49 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS, dataRequest.HistoryRefNumber);
                     }
 
                     // List record po by baseline date
                     var listRawPo = _blRawPo.Find(x => x.BaselineDate.Date == baselineDateNew.Date);
 
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listRawPo = listRawPo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listRawPo = listRawPo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listRawPo = listRawPo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listRawPo = listRawPo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listRawPo = listRawPo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listRawPo = listRawPo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listRawPo = listRawPo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -273,7 +276,7 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS, dataRequest.HistoryRefNumber);
                     }
 
                     listRawPo = listRawPo.ToList();
@@ -295,7 +298,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS, dataRequest.HistoryRefNumber);
                 }
             }
             catch (Exception ex)
@@ -306,7 +309,7 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS);
+                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS, dataRequest.HistoryRefNumber);
             }
         }
 
@@ -379,47 +382,47 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_ISSUE);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_ISSUE, dataRequest.HistoryRefNumber);
                 }
                 else
                 {
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -432,49 +435,49 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_ISSUE);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_ISSUE, dataRequest.HistoryRefNumber);
                     }
 
                     // List record by baseline date
                     var listRawIssueQty = _blIssueQty.Find(x => x.BaselineDate.Date == baselineDateNew.Date);
 
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listRawIssueQty = listRawIssueQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listRawIssueQty = listRawIssueQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listRawIssueQty = listRawIssueQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listRawIssueQty = listRawIssueQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listRawIssueQty = listRawIssueQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listRawIssueQty = listRawIssueQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listRawIssueQty = listRawIssueQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -487,7 +490,7 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_ISSUE);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_ISSUE, dataRequest.HistoryRefNumber);
                     }
 
                     listRawIssueQty = listRawIssueQty.ToList();
@@ -509,7 +512,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_ISSUE);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_ISSUE, dataRequest.HistoryRefNumber);
                 }
             }
             catch (Exception ex)
@@ -520,7 +523,7 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_ISSUE);
+                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_ISSUE, dataRequest.HistoryRefNumber);
             }
         }
 
@@ -592,47 +595,47 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT, dataRequest.HistoryRefNumber);
                 }
                 else
                 {
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -645,49 +648,49 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT, dataRequest.HistoryRefNumber);
                     }
 
                     // List record by baseline date
                     var listRawReceiptQty = _blReceiptyQty.Find(x => x.BaselineDate.Date == baselineDateNew.Date);
 
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listRawReceiptQty = listRawReceiptQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listRawReceiptQty = listRawReceiptQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listRawReceiptQty = listRawReceiptQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listRawReceiptQty = listRawReceiptQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listRawReceiptQty = listRawReceiptQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listRawReceiptQty = listRawReceiptQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listRawReceiptQty = listRawReceiptQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -700,7 +703,7 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT, dataRequest.HistoryRefNumber);
                     }
 
                     listRawReceiptQty = listRawReceiptQty.ToList();
@@ -722,7 +725,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT, dataRequest.HistoryRefNumber);
                 }
             }
             catch (Exception ex)
@@ -733,7 +736,7 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT);
+                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT, dataRequest.HistoryRefNumber);
             }
         }
 
@@ -827,47 +830,47 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.BL_CLOSE_QTY);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.BL_CLOSE_QTY, dataRequest.HistoryRefNumber);
                 }
                 else
                 {
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listDataConcat = listDataConcat.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listDataConcat = listDataConcat.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listDataConcat = listDataConcat.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listDataConcat = listDataConcat.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listDataConcat = listDataConcat.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listDataConcat = listDataConcat.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listDataConcat = listDataConcat.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -880,7 +883,7 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.BL_CLOSE_QTY);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.BL_CLOSE_QTY, dataRequest.HistoryRefNumber);
                     }
 
                     // Get list item in close qty of baseline date previous
@@ -910,49 +913,49 @@ namespace RDOS.BaseLine.Service
                     // List record po by baseline date
                     var listRawCloseQty = _blCloseQty.Find(x => x.BaselineDate.Date == baselineDateNew.Date);
 
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listRawCloseQty = listRawCloseQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode) &&
                         (!x.IsPrevious)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listRawCloseQty = listRawCloseQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode) &&
                         (!x.IsPrevious)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listRawCloseQty = listRawCloseQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode) &&
                         (!x.IsPrevious)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listRawCloseQty = listRawCloseQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode) &&
                         (!x.IsPrevious)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listRawCloseQty = listRawCloseQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode) &&
                         (!x.IsPrevious)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listRawCloseQty = listRawCloseQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode) &&
                         (!x.IsPrevious)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listRawCloseQty = listRawCloseQty.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -966,7 +969,7 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT, dataRequest.HistoryRefNumber);
                     }
 
                     listRawCloseQty = listRawCloseQty.ToList();
@@ -988,7 +991,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.BL_CLOSE_QTY);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.BL_CLOSE_QTY, dataRequest.HistoryRefNumber);
                 }
             }
             catch (Exception ex)
@@ -999,7 +1002,7 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.BL_CLOSE_QTY);
+                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.BL_CLOSE_QTY, dataRequest.HistoryRefNumber);
             }
         }
 
@@ -1016,7 +1019,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales calendar"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS, dataRequest.HistoryRefNumber);
 
                 }
 
@@ -1076,47 +1079,47 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS, dataRequest.HistoryRefNumber);
                 }
                 else
                 {
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -1129,49 +1132,49 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS, dataRequest.HistoryRefNumber);
                     }
 
                     // List record so by baseline date
                     var listRawSo = _blRawSo.Find(x => x.BaselineDate.Date == baselineDateNew.Date);
 
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listRawSo = listRawSo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listRawSo = listRawSo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listRawSo = listRawSo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listRawSo = listRawSo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listRawSo = listRawSo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listRawSo = listRawSo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listRawSo = listRawSo.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -1184,7 +1187,7 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS, dataRequest.HistoryRefNumber);
                     }
 
                     listRawSo = listRawSo.ToList();
@@ -1203,7 +1206,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS, dataRequest.HistoryRefNumber);
                 }
 
                 
@@ -1216,7 +1219,7 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
+                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS, dataRequest.HistoryRefNumber);
             }
         }
 
@@ -1234,7 +1237,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found rpo parameter"
-                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
+                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE, dataRequest.HistoryRefNumber);
 
                 }
 
@@ -1248,7 +1251,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales calendar"
-                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
+                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE, dataRequest.HistoryRefNumber);
                 }
 
                 // Handle holiday
@@ -1275,7 +1278,7 @@ namespace RDOS.BaseLine.Service
                         Code = 404,
                         IsSuccess = false,
                         Message = "Cannot found day number"
-                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
+                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE, dataRequest.HistoryRefNumber);
                 }
 
                 List<DateTime> listDateFinal = new List<DateTime>();
@@ -1378,47 +1381,47 @@ namespace RDOS.BaseLine.Service
                         Code = 200,
                         IsSuccess = true,
                         Message = "Successfully"
-                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
+                    }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE, dataRequest.HistoryRefNumber);
                 }
                 else
                 {
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listDataFinal = listDataFinal.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -1431,7 +1434,7 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.AVERATE_DAILY_RUNNING_SALE, dataRequest.HistoryRefNumber);
                     }
 
                     var dataFinalGroup = listDataFinal.GroupBy(x => new { x.ItemId, x.DistributorId, x.DistributorShiptoId }).Select(x => x.First()).ToList();
@@ -1459,43 +1462,43 @@ namespace RDOS.BaseLine.Service
                     // List record runningsales by baseline date
                     var listRawRunningSales = _runningSalesRepo.Find(x => x.BaselineDate.Date == baselineDateNew.Date).ToList();
 
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listRawRunningSales = listRawRunningSales.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listRawRunningSales = listRawRunningSales.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listRawRunningSales = listRawRunningSales.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listRawRunningSales = listRawRunningSales.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listRawRunningSales = listRawRunningSales.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listRawRunningSales = listRawRunningSales.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listRawRunningSales = listRawRunningSales.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -1508,7 +1511,7 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.AVERATE_DAILY_RUNNING_SALE, dataRequest.HistoryRefNumber);
                     }
 
                     listRawRunningSales = listRawRunningSales.ToList();
@@ -1530,7 +1533,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = true,
                         Code = 200,
                         Message = "Successfully"
-                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.AVERATE_DAILY_RUNNING_SALE, dataRequest.HistoryRefNumber);
                 }
             }
             catch (Exception ex)
@@ -1541,7 +1544,7 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE);
+                }, baselineDateNew, null, BlProcessConst.AVERATE_DAILY_RUNNING_SALE, dataRequest.HistoryRefNumber);
             }
         }
 
@@ -1582,7 +1585,7 @@ namespace RDOS.BaseLine.Service
                                     Code = resultStockKeepingDay.Code,
                                     IsSuccess = resultStockKeepingDay.IsSuccess,
                                     Message = resultStockKeepingDay.Message
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -1604,7 +1607,7 @@ namespace RDOS.BaseLine.Service
                                     Code = resultStockKeepingDay.Code,
                                     IsSuccess = resultStockKeepingDay.IsSuccess,
                                     Message = resultStockKeepingDay.Message
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -1626,7 +1629,7 @@ namespace RDOS.BaseLine.Service
                                     Code = resultStockKeepingDay.Code,
                                     IsSuccess = resultStockKeepingDay.IsSuccess,
                                     Message = resultStockKeepingDay.Message
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -1648,7 +1651,7 @@ namespace RDOS.BaseLine.Service
                                     Code = resultStockKeepingDay.Code,
                                     IsSuccess = resultStockKeepingDay.IsSuccess,
                                     Message = resultStockKeepingDay.Message
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -1670,7 +1673,7 @@ namespace RDOS.BaseLine.Service
                                     Code = resultStockKeepingDay.Code,
                                     IsSuccess = resultStockKeepingDay.IsSuccess,
                                     Message = resultStockKeepingDay.Message
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -1693,14 +1696,14 @@ namespace RDOS.BaseLine.Service
                                     Code = 404,
                                     IsSuccess = false,
                                     Message = "Cannot found item group"
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
 
                             BaseResultModel resultStockKeepingDayNumber = await CalStockKeepingDay(stockeepingDayInDb, itemHierachyInDb);
                             if (!resultStockKeepingDayNumber.IsSuccess)
                             {
-                                return await CreateAuditLog(resultStockKeepingDayNumber, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                return await CreateAuditLog(resultStockKeepingDayNumber, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockKeepingDayNumber = (int)resultStockKeepingDayNumber.Data;
@@ -1752,47 +1755,47 @@ namespace RDOS.BaseLine.Service
                         Code = 200,
                         IsSuccess = true,
                         Message = "Successfully"
-                    }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                    }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                 }
                 else
                 {
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listData = listData.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -1805,7 +1808,7 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.IN_RECEIPT, dataRequest.HistoryRefNumber);
                     }
 
                     foreach (var data in listData)
@@ -1825,7 +1828,7 @@ namespace RDOS.BaseLine.Service
                                     Code = resultStockKeepingDay.Code,
                                     IsSuccess = resultStockKeepingDay.IsSuccess,
                                     Message = resultStockKeepingDay.Message
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -1847,7 +1850,7 @@ namespace RDOS.BaseLine.Service
                                     Code = resultStockKeepingDay.Code,
                                     IsSuccess = resultStockKeepingDay.IsSuccess,
                                     Message = resultStockKeepingDay.Message
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -1869,7 +1872,7 @@ namespace RDOS.BaseLine.Service
                                     Code = resultStockKeepingDay.Code,
                                     IsSuccess = resultStockKeepingDay.IsSuccess,
                                     Message = resultStockKeepingDay.Message
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -1891,7 +1894,7 @@ namespace RDOS.BaseLine.Service
                                     Code = resultStockKeepingDay.Code,
                                     IsSuccess = resultStockKeepingDay.IsSuccess,
                                     Message = resultStockKeepingDay.Message
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -1913,7 +1916,7 @@ namespace RDOS.BaseLine.Service
                                     Code = resultStockKeepingDay.Code,
                                     IsSuccess = resultStockKeepingDay.IsSuccess,
                                     Message = resultStockKeepingDay.Message
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockeepingDayInDb = resultStockKeepingDay.Data;
@@ -1936,14 +1939,14 @@ namespace RDOS.BaseLine.Service
                                     Code = 404,
                                     IsSuccess = false,
                                     Message = "Cannot found item group"
-                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
 
                             BaseResultModel resultStockKeepingDayNumber = await CalStockKeepingDay(stockeepingDayInDb, itemHierachyInDb);
                             if (!resultStockKeepingDayNumber.IsSuccess)
                             {
-                                return await CreateAuditLog(resultStockKeepingDayNumber, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                                return await CreateAuditLog(resultStockKeepingDayNumber, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                             }
 
                             stockKeepingDayNumber = (int)resultStockKeepingDayNumber.Data;
@@ -1981,43 +1984,43 @@ namespace RDOS.BaseLine.Service
                     // List record runningsales by baseline date
                     var listRawSafetyStock = _blSafetyStockAssessmentRepo.Find(x => x.AssessmentDate.Date == baselineDateNew.Date);
 
-                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (dataRequest.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         listRawSafetyStock = listRawSafetyStock.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         listRawSafetyStock = listRawSafetyStock.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         listRawSafetyStock = listRawSafetyStock.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         listRawSafetyStock = listRawSafetyStock.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         listRawSafetyStock = listRawSafetyStock.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         listRawSafetyStock = listRawSafetyStock.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
                     }
-                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (dataRequest.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         listRawSafetyStock = listRawSafetyStock.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
@@ -2030,7 +2033,7 @@ namespace RDOS.BaseLine.Service
                             IsSuccess = false,
                             Code = 400,
                             Message = "Type is incorrect"
-                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                     }
 
                     listRawSafetyStock = listRawSafetyStock.ToList();
@@ -2050,7 +2053,7 @@ namespace RDOS.BaseLine.Service
                         Code = 200,
                         IsSuccess = true,
                         Message = "Successfully"
-                    }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                    }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
                 }
             }
             catch (Exception ex)
@@ -2061,7 +2064,7 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT);
+                }, baselineDateNew, null, BlProcessConst.BL_SAFE_STOCK_ACESSMENT, dataRequest.HistoryRefNumber);
             }
         }
 
@@ -2399,22 +2402,23 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<BaseResultModel> ProcessCaculateKPI(DateTime baselineDate, string token)
+        public async Task<BaseResultModel> ProcessCaculateKPI(ProcessRequest dataRequest, string token)
         {
+            DateTime baselineDateNew = DateTime.Parse(dataRequest.BaselineDate);
             try
             {
-                var _kpiPO = await ProcessPoKPI(baselineDate, token);
-                if (!_kpiPO.IsSuccess) return await CreateAuditLog(_kpiPO, baselineDate, null, BlProcessConst.CAL_KPI);
+                var _kpiPO = await ProcessPoKPI(baselineDateNew, token);
+                if (!_kpiPO.IsSuccess) return await CreateAuditLog(_kpiPO, baselineDateNew, null, BlProcessConst.CAL_KPI, dataRequest.HistoryRefNumber);
 
-                var _kpiSO = await ProcessSoKPI(baselineDate, token);
-                if (!_kpiSO.IsSuccess) return await CreateAuditLog(_kpiSO, baselineDate, null, BlProcessConst.CAL_KPI);
+                var _kpiSO = await ProcessSoKPI(baselineDateNew, token);
+                if (!_kpiSO.IsSuccess) return await CreateAuditLog(_kpiSO, baselineDateNew, null, BlProcessConst.CAL_KPI, dataRequest.HistoryRefNumber);
 
                 return await CreateAuditLog(new BaseResultModel
                 {
                     Code = 200,
                     IsSuccess = true,
                     Message = "Successfully"
-                }, baselineDate, null, BlProcessConst.CAL_KPI);
+                }, baselineDateNew, null, BlProcessConst.CAL_KPI, dataRequest.HistoryRefNumber);
             }
             catch (Exception ex)
             {
@@ -2424,7 +2428,7 @@ namespace RDOS.BaseLine.Service
                     Code = 500,
                     IsSuccess = true,
                     Message = ex.InnerException?.Message ?? ex.Message
-                }, baselineDate, null, BlProcessConst.CAL_KPI);
+                }, baselineDateNew, null, BlProcessConst.CAL_KPI, dataRequest.HistoryRefNumber);
             }
         }
 
@@ -2529,13 +2533,14 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<BaseResultModel> ProcessCusPerDaily(DateTime baselineDate)
+        public async Task<BaseResultModel> ProcessCusPerDaily(ProcessRequest dataRequest)
         {
+            DateTime baselineDateNew = DateTime.Parse(dataRequest.BaselineDate);
             try
             {
                 var userLogin = _blSettingInfoRepo.Find(x => !x.IsDeleted).OrderByDescending(x => x.CreatedDate).First().CreatedBy;
                 // Get sales calendar
-                var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baselineDate.Year);
+                var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baselineDateNew.Year);
                 if (salesCalendar == null)
                 {
                     return await CreateAuditLog(new BaseResultModel
@@ -2543,14 +2548,14 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales calendar"
-                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                 }
 
                 // Get sales period
                 var salesPeriod = _saleCalendarGenerateRepo.FirstOrDefault(x => x.SaleCalendarId == salesCalendar.Id &&
                                                                  x.Type == CalendarConstant.MONTH &&
-                                                                 x.StartDate.Value.Date <= baselineDate.Date &&
-                                                                 x.EndDate.Value.Date >= baselineDate.Date);
+                                                                 x.StartDate.Value.Date <= baselineDateNew.Date &&
+                                                                 x.EndDate.Value.Date >= baselineDateNew.Date);
 
                 if (salesPeriod == null)
                 {
@@ -2559,7 +2564,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales period"
-                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                 }
 
                 // Get week
@@ -2572,10 +2577,10 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found calendar generate"
-                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                 }
 
-                var listRawSo = _blRawSo.Find(x => x.BaselineDate.Date == baselineDate.Date &&
+                var listRawSo = _blRawSo.Find(x => x.BaselineDate.Date == baselineDateNew.Date &&
                                              x.CusShiptoAttributeValueId4 != null &&
                                             (x.Status == StatusSOConst.PARTIALDELIVERED ||
                                             x.Status == StatusSOConst.DELIVERED)).ToList();
@@ -2599,7 +2604,7 @@ namespace RDOS.BaseLine.Service
                         {
                             // Common
                             dataInsert.SalesPeriod = salesPeriod.Code;
-                            dataInsert.BaselineDate = baselineDate.Date;
+                            dataInsert.BaselineDate = baselineDateNew.Date;
                             dataInsert.CustomerId = rawSoGroup.CustomerId;
                             dataInsert.CustomerName = rawSoGroup.CustomerName;
                             dataInsert.CustomerShiptoId = rawSoGroup.CustomerShiptoId;
@@ -2784,7 +2789,7 @@ namespace RDOS.BaseLine.Service
                                 // Common
                                 var dataSkuInsert = new BlCustomerPerformanceDaily();
                                 dataSkuInsert.SalesPeriod = salesPeriod.Code;
-                                dataSkuInsert.BaselineDate = baselineDate.Date;
+                                dataSkuInsert.BaselineDate = baselineDateNew.Date;
                                 dataSkuInsert.CustomerId = rawSoGroup.CustomerId;
                                 dataSkuInsert.CustomerName = rawSoGroup.CustomerName;
                                 dataSkuInsert.CustomerShiptoId = rawSoGroup.CustomerShiptoId;
@@ -2848,7 +2853,7 @@ namespace RDOS.BaseLine.Service
                             if (listCusPerCurrentFilter.Count > 0)
                             {
                                 // Get week current
-                                var weekCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, baselineDate.Date, false);
+                                var weekCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, baselineDateNew.Date, false);
                                 if (!weekCurrentInfo.IsSuccess)
                                 {
                                     return await CreateAuditLog(new BaseResultModel
@@ -2856,7 +2861,7 @@ namespace RDOS.BaseLine.Service
                                         IsSuccess = false,
                                         Code = weekCurrentInfo.Code,
                                         Message = weekCurrentInfo.Message
-                                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                                 }
 
                                 // Week current in Database
@@ -2869,7 +2874,7 @@ namespace RDOS.BaseLine.Service
                                         IsSuccess = false,
                                         Code = weekCurrentInDb.Code,
                                         Message = weekCurrentInDb.Message
-                                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                                 }
 
                                 if (weekCurrentInDb.Data.Code != weekCurrentInfo.Data.Code)
@@ -2890,7 +2895,7 @@ namespace RDOS.BaseLine.Service
                             var visitListInDb = _visitListRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
                                                                     x.CusShiptoId == rawSoGroup.CustomerShiptoId &&
                                                                     x.RzId == rawSoGroup.RouteZoneId &&
-                                                                    x.VisitDate.Value.Date == baselineDate.Date &&
+                                                                    x.VisitDate.Value.Date == baselineDateNew.Date &&
                                                                     !(bool)x.RemoteVisit).ToList();
 
                             if (visitListInDb.Count > 0)
@@ -2908,7 +2913,7 @@ namespace RDOS.BaseLine.Service
                             int value = 0;
                             value += visited;
 
-                            var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDate.Date, false);
+                            var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDateNew.Date, false);
 
                             if (!spCurrentInfo.IsSuccess)
                             {
@@ -2917,7 +2922,7 @@ namespace RDOS.BaseLine.Service
                                     IsSuccess = false,
                                     Code = spCurrentInfo.Code,
                                     Message = spCurrentInfo.Message
-                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                             }
 
                             if (listCusPerCurrentFilter.Count > 0)
@@ -2932,7 +2937,7 @@ namespace RDOS.BaseLine.Service
                                         IsSuccess = false,
                                         Code = spCurrentInDbInfo.Code,
                                         Message = spCurrentInDbInfo.Message
-                                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                                 }
 
                                 if (spCurrentInfo.Code == spCurrentInDbInfo.Code)
@@ -2952,7 +2957,7 @@ namespace RDOS.BaseLine.Service
                             int value = 0;
                             value += visited;
 
-                            var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.QUARTER, baselineDate.Date, false);
+                            var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.QUARTER, baselineDateNew.Date, false);
 
                             if (!spCurrentInfo.IsSuccess)
                             {
@@ -2961,7 +2966,7 @@ namespace RDOS.BaseLine.Service
                                     IsSuccess = false,
                                     Code = spCurrentInfo.Code,
                                     Message = spCurrentInfo.Message
-                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                             }
 
                             if (listCusPerCurrentFilter.Count > 0)
@@ -2976,7 +2981,7 @@ namespace RDOS.BaseLine.Service
                                         IsSuccess = false,
                                         Code = spCurrentInDbInfo.Code,
                                         Message = spCurrentInDbInfo.Message
-                                    }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                                 }
 
                                 if (spCurrentInfo.Code == spCurrentInDbInfo.Code)
@@ -2995,7 +3000,7 @@ namespace RDOS.BaseLine.Service
                         {
                             int value = 0;
                             value += visited;
-                            int year = baselineDate.Year;
+                            int year = baselineDateNew.Year;
 
                             if (listCusPerCurrentFilter.Count > 0)
                             {
@@ -3022,10 +3027,10 @@ namespace RDOS.BaseLine.Service
                                     IsSuccess = false,
                                     Code = 404,
                                     Message = "Cannot found Actual volume"
-                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                             }
 
-                            var salePeriodVPO = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDate.Date, true);
+                            var salePeriodVPO = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDateNew.Date, true);
                             if (!salePeriodVPO.IsSuccess)
                             {
                                 return await CreateAuditLog(new BaseResultModel
@@ -3033,7 +3038,7 @@ namespace RDOS.BaseLine.Service
                                     IsSuccess = false,
                                     Code = salePeriodVPO.Code,
                                     Message = salePeriodVPO.Message
-                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                             }
                             var normVPO = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId &&
                                                                                     x.SalesPeriod == salePeriodVPO.Data.Code &&
@@ -3067,10 +3072,10 @@ namespace RDOS.BaseLine.Service
                                     IsSuccess = false,
                                     Code = 404,
                                     Message = "Cannot found Actual LPPC"
-                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                             }
 
-                            var salePeriodLPPC = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDate.Date, true);
+                            var salePeriodLPPC = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDateNew.Date, true);
                             if (!salePeriodLPPC.IsSuccess)
                             {
                                 return await CreateAuditLog(new BaseResultModel
@@ -3078,7 +3083,7 @@ namespace RDOS.BaseLine.Service
                                     IsSuccess = false,
                                     Code = salePeriodLPPC.Code,
                                     Message = salePeriodLPPC.Message
-                                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                             }
                             var normLPPC = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId &&
                                                                                     x.SalesPeriod == salePeriodLPPC.Data.Code &&
@@ -3115,7 +3120,7 @@ namespace RDOS.BaseLine.Service
                     Code = 200,
                     IsSuccess = true,
                     Message = "Successfully"
-                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
             }
             catch (Exception ex)
             {
@@ -3126,12 +3131,13 @@ namespace RDOS.BaseLine.Service
                     Code = 500,
                     IsSuccess = false,
                     Message = ex.InnerException?.Message ?? ex.Message
-                }, baselineDate, null, BlProcessConst.CUS_PER_DAILY);
+                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
             }
         }
 
-        public async Task<BaseResultModel> ProcessOutletAccumulate(DateTime baseLineDate)
+        public async Task<BaseResultModel> ProcessOutletAccumulate(ProcessRequest dataRequest)
         {
+            DateTime baselineDateNew = DateTime.Parse(dataRequest.BaselineDate);
             try
             {
                 // Function query
@@ -3139,7 +3145,7 @@ namespace RDOS.BaseLine.Service
 
                 // Handle parameter
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@baselinedate", baseLineDate);
+                parameters.Add("@baselinedate", dataRequest.BaselineDate);
 
                 // Excute query
                 var listData = ((List<BlOutletAccumulate>)_dapper.QueryWithParams<BlOutletAccumulate>(query, parameters));
@@ -3179,7 +3185,7 @@ namespace RDOS.BaseLine.Service
                 }).Select(x => new BlOutletAccumulate
                 {
                     Id = Guid.NewGuid(),
-                    BaselineDate = baseLineDate,
+                    BaselineDate = baselineDateNew,
                     CustomerId = x.Key.CustomerId,
                     CustomerName = x.Key.CustomerName,
                     CustomerShiptoId = x.Key.CustomerShiptoId,
@@ -3244,8 +3250,8 @@ namespace RDOS.BaseLine.Service
                 return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = true,
-                    Message = "OK"
-                }, baseLineDate, null, BlProcessConst.OUTLET_ACCUMULATE);
+                    Message = "Successfully"
+                }, baselineDateNew, null, BlProcessConst.OUTLET_ACCUMULATE, dataRequest.HistoryRefNumber);
             }
             catch (System.Exception ex)
             {
@@ -3253,12 +3259,12 @@ namespace RDOS.BaseLine.Service
                 {
                     IsSuccess = false,
                     Message = ex.InnerException?.Message ?? ex.Message
-                }, baseLineDate, null, BlProcessConst.OUTLET_ACCUMULATE);
+                }, baselineDateNew, null, BlProcessConst.OUTLET_ACCUMULATE, dataRequest.HistoryRefNumber);
             }
         }
 
         #region AuditLog
-        private async Task<BaseResultModel> CreateAuditLog(BaseResultModel resultLog, DateTime baseLineDate, string settingRef, string processCode)
+        private async Task<BaseResultModel> CreateAuditLog(BaseResultModel resultLog, DateTime baseLineDate, string settingRef, string processCode, string? historyRefNumber)
         {
             if (settingRef == null)
             {
@@ -3276,8 +3282,8 @@ namespace RDOS.BaseLine.Service
                 IsSuccess = resultLog.IsSuccess,
                 Description = resultLog.Message,
                 FinishTime = DateTime.Now,
-                UpdatedBy = null
-
+                UpdatedBy = null,
+                RefNumber = historyRefNumber
             });
             return resultLog;
         }
@@ -3345,5 +3351,124 @@ namespace RDOS.BaseLine.Service
         }
         #endregion
 
+        public async Task<ResultModelWithObject<ListHistoryResponse>> GetListHistoryByBaselineDate(FilterHistoryModel parameters)
+        {
+            try
+            {
+                var res = _blHistoryRepo.Find(x => x.BaselineDate.Date == parameters.BaslineDate.Date && (!string.IsNullOrWhiteSpace(x.Type) && x.Type != BaselineType.MONTHLY));
+
+                if (!string.IsNullOrWhiteSpace(parameters.SearchValue))
+                {
+                    res = res.Where(x =>
+                    (!string.IsNullOrWhiteSpace(x.RefNumber) && x.RefNumber.ToLower().Contains(parameters.SearchValue.ToLower()))).ToList();
+                }
+
+                if (parameters.FromDate.HasValue)
+                {
+                    res = res.Where(x => x.CreatedDate.Date >= parameters.FromDate.Value.Date);
+                }
+
+                if (parameters.ToDate.HasValue)
+                {
+                    res = res.Where(x => x.CreatedDate.Date <= parameters.ToDate.Value.Date.AddDays(1).AddTicks(-1));
+                }
+
+                res = res.ToList();
+                var items = res.ToList();
+
+                if (parameters.IsDropdown)
+                {
+                    var reponse = new ListHistoryResponse { Items = items };
+
+                    return new ResultModelWithObject<ListHistoryResponse>
+                    {
+                        IsSuccess = true,
+                        Code = 200,
+                        Message = "Success",
+                        Data = reponse
+                    };
+                }
+                else
+                {
+                    var historyTempPagged = PagedList<BlHistory>.ToPagedList(items, (parameters.PageNumber - 1) * parameters.PageSize, parameters.PageSize);
+                    var repsonse = new ListHistoryResponse { Items = historyTempPagged, MetaData = historyTempPagged.MetaData };
+
+                    //return metadata
+                    return new ResultModelWithObject<ListHistoryResponse>
+                    {
+                        IsSuccess = true,
+                        Code = 200,
+                        Message = "Success",
+                        Data = repsonse
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new ResultModelWithObject<ListHistoryResponse>
+                {
+                    IsSuccess = false,
+                    Code = 500,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
+
+        public async Task<BaseResultModel> GetDetailHistory(string refNumber)
+        {
+            try
+            {
+                var historyInDb = _blHistoryRepo.FirstOrDefault(x => x.RefNumber == refNumber);
+                if (historyInDb == null)
+                {
+                    return new BaseResultModel
+                    {
+                        IsSuccess = false,
+                        Code = 404,
+                        Message = "Cannot found history"
+                    };
+                }
+
+                var listAuditlogInDb = _blAuditLogRepo.Find(x => x.RefNumber == refNumber).ToList();
+                var listAuditLogMap = _mapper.Map<List<AuditlogDetailModel>>(listAuditlogInDb);
+                foreach (var item in listAuditLogMap)
+                {
+                    var processInDb = _blProcessRepo.FirstOrDefault(x => x.ProcessCode == item.ProcessCode);
+                    if (processInDb == null)
+                    {
+                        return new BaseResultModel
+                        {
+                            IsSuccess = false,
+                            Code = 404,
+                            Message = $"Cannot found process {item.ProcessCode}"
+                        };
+                    }
+                    item.ProcessInfo = processInDb;
+                }
+
+                var dataRes = new HistoryDetailModel();
+                dataRes.HistoryInfo = historyInDb;
+                dataRes.listAuditlog = listAuditLogMap;
+
+                return new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Code = 200,
+                    Message = "Get detail successfully",
+                    Data = dataRes
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Code = 500,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
     }
 }

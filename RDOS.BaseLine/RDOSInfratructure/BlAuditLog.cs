@@ -15,5 +15,6 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public string? Description { get; set; }
         public DateTime? FinishTime { get; set; }
         public string? UpdatedBy { get; set; }
+        public string? RefNumber { get; set; }
     }
 }

@@ -16,6 +16,7 @@ using static RDOS.BaseLine.Constants.Constants;
 using nProx.Helpers.Dapper;
 using Dapper;
 using RDOS.BaseLine.Models.Request;
+using RestSharp.Extensions;
 
 namespace RDOS.BaseLine.Service
 {
@@ -44,6 +45,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlRawSo> _blRawSo;
         private readonly IBaseRepository<SaleCalendarGenerate> _saleCalendarGenerateRepo;
         private readonly IDapperRepositories _dapper;
+        private readonly IBaseRepository<ScSalesOrganizationStructure> _salesOrgRepo;
 
         public PhattvBLProcessService(
             ILogger<PhattvBLProcessService> logger,
@@ -65,7 +67,8 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<BlHistory> blHistoryRepo,
             IBaseRepository<SaleCalendarGenerate> saleCalendarGenerateRepo,
             IBaseRepository<BlOutletAccumulate> blOutletAccumulateRepo,
-            IDapperRepositories dapper
+            IDapperRepositories dapper,
+            IBaseRepository<ScSalesOrganizationStructure> salesOrgRepo
             )
         {
             _logger = logger;
@@ -88,6 +91,7 @@ namespace RDOS.BaseLine.Service
             _saleCalendarGenerateRepo = saleCalendarGenerateRepo;
             _blOutletAccumulateRepo = blOutletAccumulateRepo;
             _dapper = dapper;
+            _salesOrgRepo = salesOrgRepo;
         }
 
         public async Task<List<DateTime>> GetBaseLineDate()
@@ -375,11 +379,20 @@ namespace RDOS.BaseLine.Service
         }
 
 
-        public async Task<BaseResultModel> HandleBaseLineProcess(string blType = BaselineType.DAILY, string scope = BLScopeConst.ALL)
+        public async Task<BaseResultModel> HandleBaseLineProcess(BaselineProcessRequest dataRequest)
         {
             try
             {
-                var listBaseLineDate = await GetBaseLineDate();
+                var historyRefNumber = await GenRefNumber();
+                List<DateTime>? listBaseLineDate = new List<DateTime>();
+                if (dataRequest.Scope.ToLower() == ScopeTypeConst.ALL.ToLower() && dataRequest.Type.ToLower() == BaselineType.DAILY.ToLower())
+                {
+                    listBaseLineDate = await GetBaseLineDate();
+                }
+                else
+                {
+                    listBaseLineDate.Add(dataRequest.BaselineDate);
+                }
                 var startTime = DateTime.Now;
                 var setting = await _settingService.GetDetailBaselineSetting(null, true);
                 var blSettingProcess = setting.Data.BaseLineProcesses;
@@ -389,14 +402,15 @@ namespace RDOS.BaseLine.Service
                 
                 foreach (var baseLineDate in listBaseLineDate)
                 {
-                    string blDate = baseLineDate.ToString();
+                    string blDate = baseLineDate.ToString("yyyy-MM-dd");
                     var dataReq = new ProcessRequest()
                     {
                         BaselineDate = blDate,
                         SettingRef = blSettingInfo.SettingRef,
-                        Type = null,
-                        ValueCodes = null,
-                        SalesOrgCode = null
+                        Type = dataRequest.Scope.ToLower() == ScopeTypeConst.ALL.ToLower() ? null : dataRequest.Scope,
+                        ValueCodes = dataRequest.Scope.ToLower() == ScopeTypeConst.ALL.ToLower() ? null : dataRequest.ValueCodes,
+                        SalesOrgCode = dataRequest.Scope.ToLower() == ScopeTypeConst.ALL.ToLower() ? null : dataRequest.SalesOrgCode,
+                        HistoryRefNumber = historyRefNumber
                     };
                     foreach (var sequentialProcess in listSequentialProcess)
                     {
@@ -427,10 +441,10 @@ namespace RDOS.BaseLine.Service
                                 // await _blProcessService.ProcessCaculateKPI(); --token ?
                                 break;
                             case BlProcessConst.CUS_PER_DAILY:
-                                await _blProcessService.ProcessCusPerDaily(baseLineDate);
+                                await _blProcessService.ProcessCusPerDaily(dataReq);
                                 break;
                             case BlProcessConst.OUTLET_ACCUMULATE:
-                                await _blProcessService.ProcessOutletAccumulate(baseLineDate);
+                                await _blProcessService.ProcessOutletAccumulate(dataReq);
                                 break;
                             default:
                                 break;
@@ -468,10 +482,10 @@ namespace RDOS.BaseLine.Service
                                 //  _blProcessService.ProcessCaculateKPI(); --token ?
                                 break;
                             case BlProcessConst.CUS_PER_DAILY:
-                                _blProcessService.ProcessCusPerDaily(baseLineDate);
+                                _blProcessService.ProcessCusPerDaily(dataReq);
                                 break;
                             case BlProcessConst.OUTLET_ACCUMULATE:
-                                _blProcessService.ProcessOutletAccumulate(baseLineDate);
+                                _blProcessService.ProcessOutletAccumulate(dataReq);
                                 break;
                             default:
                                 break;
@@ -479,12 +493,19 @@ namespace RDOS.BaseLine.Service
                     }
 
                     //History
-                    var listAuditLog = _blAuditLogRepo.Find(x => x.BaselineDate.Value.Date == baseLineDate.Date);
+                    var listAuditLog = _blAuditLogRepo.Find(x => x.BaselineDate.Value.Date == baseLineDate.Date && x.RefNumber == historyRefNumber);
                     var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baseLineDate.Year);
                     var salesPeriod = _saleCalendarGenerateRepo.FirstOrDefault(x => x.SaleCalendarId == salesCalendar.Id &&
                                                                  x.Type == CalendarConstant.MONTH &&
                                                                  x.StartDate.Value.Date <= baseLineDate.Date &&
                                                                  x.EndDate.Value.Date >= baseLineDate.Date);
+
+                    ScSalesOrganizationStructure? salesOrgInfo = null;
+                    if (!string.IsNullOrWhiteSpace(dataRequest.SalesOrgCode))
+                    {
+                        salesOrgInfo = _salesOrgRepo.FirstOrDefault(x => x.Code == dataRequest.SalesOrgCode && !x.IsDeleted);
+                    }
+                    
                     _blHistoryRepo.Insert(new BlHistory
                     {
                         Id = Guid.NewGuid(),
@@ -494,19 +515,22 @@ namespace RDOS.BaseLine.Service
                         StartTimeDate = startTime,
                         EndTimeDate = DateTime.Now,
                         IsCompleted = listAuditLog.Any(x => !x.IsSuccess.Value) ? false : true,
-                        Type = blType,
-                        Scope = scope,
+                        Type = dataRequest.Type,
+                        Scope = dataRequest.Scope,
+                        SalesOrgId = dataRequest.SalesOrgCode,
+                        SalesOrgDesc = salesOrgInfo != null ? salesOrgInfo.Description : null,
                         CreatedDate = DateTime.Now,
                         UpdatedDate = null,
                         CreatedBy = null,
                         UpdatedBy = null,
+                        RefNumber = historyRefNumber
                     });
                 }
 
                 return new BaseResultModel
                 {
                     IsSuccess = true,
-                    Message = "OK"
+                    Message = "Successfully"
                 };
             }
             catch (System.Exception ex)
@@ -516,6 +540,26 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = false,
                     Message = ex.InnerException?.Message ?? ex.Message
                 };
+            }
+        }
+
+        private async Task<string> GenRefNumber()
+        {
+            var listData = _blHistoryRepo.GetAll();
+            return GenRefNumber(listData.Count(), listData);
+            string GenRefNumber(int number, IEnumerable<BlHistory> listData)
+            {
+                var refNew = PrefixRef.PREFIX_HISTORY + number;
+                var checkExist = listData.FirstOrDefault(x => x.RefNumber == refNew);
+                if (checkExist != null)
+                {
+                    number++;
+                    return GenRefNumber(number, listData);
+                }
+                else
+                {
+                    return refNew;
+                }
             }
         }
     }

@@ -150,16 +150,16 @@ namespace RDOS.BaseLine.Controllers
 
         [HttpPost]
         [Route("ProcessCalculateKPI/{baselineDate}")]
-        public async Task<IActionResult> ProcessCalculateKPI(DateTime baselineDate)
+        public async Task<IActionResult> ProcessCalculateKPI(ProcessRequest input)
         {
-            return Ok(await _blProcessService.ProcessCaculateKPI(baselineDate, _token));
+            return Ok(await _blProcessService.ProcessCaculateKPI(input, _token));
         }
 
         [HttpPost]
-        [Route("ProcessCustomerPerformance/{baselineDate}")]
-        public async Task<IActionResult> ProcessCustomerPerformance(DateTime baselineDate)
+        [Route("ProcessCustomerPerformance")]
+        public async Task<IActionResult> ProcessCustomerPerformance(ProcessRequest input)
         {
-            return Ok(await _blProcessService.ProcessCusPerDaily(baselineDate));
+            return Ok(await _blProcessService.ProcessCusPerDaily(input));
         }
 
         [HttpPost]
@@ -171,9 +171,9 @@ namespace RDOS.BaseLine.Controllers
 
         [HttpPost]
         [Route("HandleBaseLineProcess")]
-        public async Task<IActionResult> HandleBaseLineProcess()
+        public async Task<IActionResult> HandleBaseLineProcess(BaselineProcessRequest dataRequest)
         {
-            return Ok(await _phattvBaseLineSettingService.HandleBaseLineProcess());
+            return Ok(await _phattvBaseLineSettingService.HandleBaseLineProcess(dataRequest));
         }
 
 

@@ -9,6 +9,8 @@ using nProx.Helpers.Models;
 using static SysAdmin.Models.StaticValue.CommonData;
 using SysAdmin.Models.StaticValue;
 using static RDOS.BaseLine.Models.Results;
+using RDOS.BaseLine.Models.Request;
+using RDOS.BaseLine.Constants;
 
 namespace RDOS.BaseLine.Services
 {
@@ -98,6 +100,15 @@ namespace RDOS.BaseLine.Services
                 _client = new RestClient(CommonData.SystemUrl.Where(x => x.Code == SystemUrlCode.BaselineAPI).Select(x => x.Url).FirstOrDefault());
                 _client.Authenticator = new JwtAuthenticator($"Rdos {adminClaims.Token}");
                 var req = new RestRequest($"baselinesetting/HandleBaseLineProcess", Method.POST, DataFormat.Json);
+
+                var reqBody = new BaselineProcessRequest();
+                reqBody.Type = BaselineType.DAILY;
+                reqBody.Scope = ScopeTypeConst.ALL;
+                reqBody.BaselineDate = DateTime.Now;
+                reqBody.SalesOrgCode = null;
+                reqBody.ValueCodes = null;
+
+                req.AddJsonBody(reqBody);
                 var res = _client.Execute(req);
                 // var result = JsonConvert.DeserializeObject<T>(JsonConvert.DeserializeObject(res.Content).ToString());
 

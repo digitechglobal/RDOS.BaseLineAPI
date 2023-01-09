@@ -165,43 +165,43 @@ namespace RDOS.BaseLine.Service
                     !string.IsNullOrWhiteSpace(parameters.Type) &&
                     parameters.ValueCode.Count > 0)
                 {
-                    if (parameters.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    if (parameters.Type.ToLower() == ScopeTypeConst.BRANCH.ToLower())
                     {
                         res = res.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.BranchId) && parameters.ValueCode.Contains(x.BranchId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
-                    else if (parameters.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    else if (parameters.Type.ToLower() == ScopeTypeConst.REGION.ToLower())
                     {
                         res = res.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RegionId) && parameters.ValueCode.Contains(x.RegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
-                    else if (parameters.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    else if (parameters.Type.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
                     {
                         res = res.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubRegionId) && parameters.ValueCode.Contains(x.SubRegionId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
-                    else if (parameters.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    else if (parameters.Type.ToLower() == ScopeTypeConst.AREA.ToLower())
                     {
                         res = res.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.AreaId) && parameters.ValueCode.Contains(x.AreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
-                    else if (parameters.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    else if (parameters.Type.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
                     {
                         res = res.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.SubAreaId) && parameters.ValueCode.Contains(x.SubAreaId)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
-                    else if (parameters.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    else if (parameters.Type.ToLower() == ScopeTypeConst.DSA.ToLower())
                     {
                         res = res.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.Dsaid) && parameters.ValueCode.Contains(x.Dsaid)) &&
                         (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
                     }
-                    else if (parameters.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    else if (parameters.Type.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
                     {
                         res = res.Where(x =>
                         (!string.IsNullOrWhiteSpace(x.RouteZoneId) && parameters.ValueCode.Contains(x.RouteZoneId)) &&
@@ -274,13 +274,13 @@ namespace RDOS.BaseLine.Service
         {
             try
             {
-                if (dataInput.Type.ToLower() != ConfirmPerformanceType.BRANCH.ToLower() &&
-                    dataInput.Type.ToLower() != ConfirmPerformanceType.REGION.ToLower() &&
-                    dataInput.Type.ToLower() != ConfirmPerformanceType.SUBREGION.ToLower() &&
-                    dataInput.Type.ToLower() != ConfirmPerformanceType.AREA.ToLower() &&
-                    dataInput.Type.ToLower() != ConfirmPerformanceType.SUBAREA.ToLower() &&
-                    dataInput.Type.ToLower() != ConfirmPerformanceType.ROUTEZONE.ToLower() &&
-                    dataInput.Type.ToLower() != ConfirmPerformanceType.DSA.ToLower())
+                if (dataInput.Type.ToLower() != ScopeTypeConst.BRANCH.ToLower() &&
+                    dataInput.Type.ToLower() != ScopeTypeConst.REGION.ToLower() &&
+                    dataInput.Type.ToLower() != ScopeTypeConst.SUBREGION.ToLower() &&
+                    dataInput.Type.ToLower() != ScopeTypeConst.AREA.ToLower() &&
+                    dataInput.Type.ToLower() != ScopeTypeConst.SUBAREA.ToLower() &&
+                    dataInput.Type.ToLower() != ScopeTypeConst.ROUTEZONE.ToLower() &&
+                    dataInput.Type.ToLower() != ScopeTypeConst.DSA.ToLower())
                 {
                     return new BaseResultModel
                     {

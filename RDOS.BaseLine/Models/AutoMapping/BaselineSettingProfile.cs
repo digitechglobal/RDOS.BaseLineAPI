@@ -23,6 +23,9 @@ namespace RDOS.BaseLine.Models.AutoMapping
                 .ForMember(d => d.IsPrevious, o => o.MapFrom(x => true));
             CreateMap<BlCurrentCusPerDailySkubuyedDetail, BlCusPerDailySkubuyedDetail>().ReverseMap()
                 .ForMember(d => d.Id, o => o.MapFrom(x => Guid.NewGuid()));
+
+            CreateMap<BlHistory, BlHistory>().ReverseMap();
+            CreateMap<AuditlogDetailModel, BlAuditLog>().ReverseMap();
         }
     }
 }

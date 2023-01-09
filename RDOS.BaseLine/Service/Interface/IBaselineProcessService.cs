@@ -12,9 +12,11 @@ namespace RDOS.BaseLine.Service.Interface
         Task<BaseResultModel> ProcessSO(ProcessRequest dataRequset);
         Task<BaseResultModel> ProcessRunningSales(ProcessRequest dataRequest);
         Task<BaseResultModel> ProcessSafetyStockAssessment(ProcessRequest dataRequest);
-        Task<BaseResultModel> ProcessCaculateKPI(DateTime baselineDate, string token);
+        Task<BaseResultModel> ProcessCaculateKPI(ProcessRequest dataRequest, string token);
         Task<BaseResultModel> ProcessSoKPI(DateTime baseLineDate, string token);
-        Task<BaseResultModel> ProcessCusPerDaily(DateTime baselineDate);
-        Task<BaseResultModel> ProcessOutletAccumulate(DateTime baseLineDate);
+        Task<BaseResultModel> ProcessCusPerDaily(ProcessRequest dataRequest);
+        Task<BaseResultModel> ProcessOutletAccumulate(ProcessRequest dataRequest);
+        Task<ResultModelWithObject<ListHistoryResponse>> GetListHistoryByBaselineDate(FilterHistoryModel parameters);
+        Task<BaseResultModel> GetDetailHistory(string refNumber);
     }
 }
