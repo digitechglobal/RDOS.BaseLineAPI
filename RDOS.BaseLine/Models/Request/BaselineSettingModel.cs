@@ -75,8 +75,12 @@ namespace RDOS.BaseLine.Models.Request
     public class ProcessRequest
     {
         public string BaselineDate { get; set; }
-        public string SettingRef { get; set; }
+        public string? SettingRef { get; set; }
+        public string? Type { get; set; }
+        public string? SalesOrgCode { get; set; }
+        public List<string>? ValueCodes { get; set; }
     }
+
     public class POCollection
     {
         public Guid Id { get; set; }

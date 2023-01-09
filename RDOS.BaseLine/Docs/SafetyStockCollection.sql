@@ -96,7 +96,9 @@ CREATE FUNCTION collectsafetystock(baselinedate VARCHAR) RETURNS TABLE (
     "SubAreaId" varchar(100), 
     "SubAreaName" varchar(255), 
     "DSAId" varchar(100), 
-    "DSADesc" varchar(255), 
+    "DSADesc" varchar(255),
+    "RouteZoneId" varchar(100),
+    "RouteZoneDesc" varchar(255),
     "InventoryAttributeId1" varchar(100), 
     "InventoryAttributeName1" varchar(255), 
     "InventoryAttributeDesc1" varchar(255), 
@@ -247,7 +249,9 @@ CREATE FUNCTION collectsafetystock(baselinedate VARCHAR) RETURNS TABLE (
         runningSalesInfo."SubAreaId" :: varchar(100), --"SubAreaId"
         runningSalesInfo."SubAreaName" :: varchar(255), --"SubAreaName"
         runningSalesInfo."DSAId" :: varchar(100), --"DSAId"
-        runningSalesInfo."DSADesc" :: varchar(255), --"DSADesc"
+        runningSalesInfo."DSADesc" :: varchar(255), --"DSAId"
+        runningSalesInfo."RouteZoneId" :: varchar(100), 
+        runningSalesInfo."RouteZoneDesc" :: varchar(255),
         itemSetting1."AttributeId" :: varchar(100), --"InventoryAttributeId1"
         itemSetting1."AttributeName" :: varchar(255), --"InventoryAttributeName1"
         itemSetting1."Description" :: varchar(255), --"InventoryAttributeDesc1"

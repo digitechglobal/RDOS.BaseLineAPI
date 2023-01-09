@@ -89,28 +89,28 @@ namespace RDOS.BaseLine.Controllers
         [Route("ProcessPO")]
         public async Task<IActionResult> ProcessPO(ProcessRequest input)
         {
-            return Ok(await _blProcessService.ProcessPO(input.BaselineDate, input.SettingRef));
+            return Ok(await _blProcessService.ProcessPO(input));
         }
 
         [HttpPost]
         [Route("ProcessInvIssue")]
         public async Task<IActionResult> ProcessInvIssue(ProcessRequest input)
         {
-            return Ok(await _blProcessService.ProcessInvIssue(input.BaselineDate, input.SettingRef, BaselineType.DAILY));
+            return Ok(await _blProcessService.ProcessInvIssue(input, BaselineType.DAILY));
         }
 
         [HttpPost]
         [Route("ProcessInvReceipt")]
         public async Task<IActionResult> ProcessInvReceipt(ProcessRequest input)
         {
-            return Ok(await _blProcessService.ProcessInvReceipt(input.BaselineDate, input.SettingRef, BaselineType.DAILY));
+            return Ok(await _blProcessService.ProcessInvReceipt(input, BaselineType.DAILY));
         }
 
         [HttpPost]
         [Route("ProcessInvClose")]
         public async Task<IActionResult> ProcessInvClose(ProcessRequest input)
         {
-            return Ok(await _blProcessService.ProcessInvCloseQty(input.BaselineDate, input.SettingRef));
+            return Ok(await _blProcessService.ProcessInvCloseQty(input));
         }
 
         [HttpPost]
@@ -124,14 +124,14 @@ namespace RDOS.BaseLine.Controllers
         [Route("ProcessRunningSales")]
         public async Task<IActionResult> ProcessRunningSales(ProcessRequest input)
         {
-            return Ok(await _blProcessService.ProcessRunningSales(input.BaselineDate));
+            return Ok(await _blProcessService.ProcessRunningSales(input));
         }
 
         [HttpPost]
         [Route("ProcessSafetyStockAssessment")]
         public async Task<IActionResult> ProcessSafetyStockAssessment(ProcessRequest input)
         {
-            return Ok(await _blProcessService.ProcessSafetyStockAssessment(input.BaselineDate));
+            return Ok(await _blProcessService.ProcessSafetyStockAssessment(input));
         }
 
         [HttpPost]
