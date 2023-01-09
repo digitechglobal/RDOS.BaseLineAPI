@@ -117,7 +117,7 @@ namespace RDOS.BaseLine.Controllers
         [Route("ProcessSO")]
         public async Task<IActionResult> ProcessSO(ProcessRequest input)
         {
-            return Ok(await _blProcessService.ProcessSO(input.BaselineDate, input.SettingRef));
+            return Ok(await _blProcessService.ProcessSO(input));
         }
 
         [HttpPost]

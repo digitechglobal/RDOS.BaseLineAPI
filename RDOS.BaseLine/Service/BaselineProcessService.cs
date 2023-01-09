@@ -1003,9 +1003,9 @@ namespace RDOS.BaseLine.Service
             }
         }
 
-        public async Task<BaseResultModel> ProcessSO(string baselineDate, string settingRef)
+        public async Task<BaseResultModel> ProcessSO(ProcessRequest dataRequest)
         {
-            DateTime baselineDateNew = DateTime.Parse(baselineDate);
+            DateTime baselineDateNew = DateTime.Parse(dataRequest.BaselineDate);
             try
             {
                 var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baselineDateNew.Year);
@@ -1016,7 +1016,7 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales calendar"
-                    }, baselineDateNew, settingRef, BlProcessConst.SOPROCESS);
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
 
                 }
 
@@ -1048,30 +1048,165 @@ namespace RDOS.BaseLine.Service
 
                 // Handle parameter
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@baselinedate", baselineDate);
-                parameters.Add("@settingref", settingRef);
+                parameters.Add("@baselinedate", dataRequest.BaselineDate);
+                parameters.Add("@settingref", dataRequest.SettingRef);
                 parameters.Add("@workingday", workingday);
 
                 // Excute query
                 var listData = ((List<BlRawSo>)_dapper.QueryWithParams<BlRawSo>(query, parameters));
 
-                // List record so by baseline date
-                var listRawSo = _blRawSo.Find(x => x.BaselineDate.Date == baselineDateNew.Date).ToList();
-
-                // Remove record by baseline date
-                if (listRawSo != null && listRawSo.Count > 0)
+                if (string.IsNullOrWhiteSpace(dataRequest.Type) ||
+                    string.IsNullOrWhiteSpace(dataRequest.SalesOrgCode) ||
+                    dataRequest.ValueCodes == null ||
+                    (dataRequest.ValueCodes != null && dataRequest.ValueCodes.Count == 0))
                 {
-                    _blRawSo.DeleteMany(listRawSo);
+                    // List record so by baseline date
+                    var listRawSo = _blRawSo.Find(x => x.BaselineDate.Date == baselineDateNew.Date).ToList();
+
+                    // Remove record by baseline date
+                    if (listRawSo != null && listRawSo.Count > 0)
+                    {
+                        _blRawSo.DeleteMany(listRawSo);
+                    }
+
+                    // Insert to database
+                    _blRawSo.InsertMany(listData);
+                    return await CreateAuditLog(new BaseResultModel
+                    {
+                        IsSuccess = true,
+                        Code = 200,
+                        Message = "Successfully"
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
+                }
+                else
+                {
+                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    {
+                        listData = listData.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    {
+                        listData = listData.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    {
+                        listData = listData.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    {
+                        listData = listData.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    {
+                        listData = listData.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    {
+                        listData = listData.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    {
+                        listData = listData.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else
+                    {
+                        return await CreateAuditLog(new BaseResultModel
+                        {
+                            IsSuccess = false,
+                            Code = 400,
+                            Message = "Type is incorrect"
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
+                    }
+
+                    // List record so by baseline date
+                    var listRawSo = _blRawSo.Find(x => x.BaselineDate.Date == baselineDateNew.Date);
+
+                    if (dataRequest.Type.ToLower() == ConfirmPerformanceType.BRANCH.ToLower())
+                    {
+                        listRawSo = listRawSo.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.BranchId) && dataRequest.ValueCodes.Contains(x.BranchId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.REGION.ToLower())
+                    {
+                        listRawSo = listRawSo.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.RegionId) && dataRequest.ValueCodes.Contains(x.RegionId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBREGION.ToLower())
+                    {
+                        listRawSo = listRawSo.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.SubRegionId) && dataRequest.ValueCodes.Contains(x.SubRegionId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.AREA.ToLower())
+                    {
+                        listRawSo = listRawSo.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.AreaId) && dataRequest.ValueCodes.Contains(x.AreaId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.SUBAREA.ToLower())
+                    {
+                        listRawSo = listRawSo.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.SubAreaId) && dataRequest.ValueCodes.Contains(x.SubAreaId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.DSA.ToLower())
+                    {
+                        listRawSo = listRawSo.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.Dsaid) && dataRequest.ValueCodes.Contains(x.Dsaid)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else if (dataRequest.Type.ToLower() == ConfirmPerformanceType.ROUTEZONE.ToLower())
+                    {
+                        listRawSo = listRawSo.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.RouteZoneId) && dataRequest.ValueCodes.Contains(x.RouteZoneId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == dataRequest.SalesOrgCode)).ToList();
+                    }
+                    else
+                    {
+                        return await CreateAuditLog(new BaseResultModel
+                        {
+                            IsSuccess = false,
+                            Code = 400,
+                            Message = "Type is incorrect"
+                        }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
+                    }
+
+                    listRawSo = listRawSo.ToList();
+                    var itemRemoves = listRawSo.ToList();
+
+                    // Remove record by baseline date
+                    if (itemRemoves != null && itemRemoves.Count > 0)
+                    {
+                        _blRawSo.DeleteMany(itemRemoves);
+                    }
+
+                    // Insert to database
+                    _blRawSo.InsertMany(listData);
+                    return await CreateAuditLog(new BaseResultModel
+                    {
+                        IsSuccess = true,
+                        Code = 200,
+                        Message = "Successfully"
+                    }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
                 }
 
-                // Insert to database
-                _blRawSo.InsertMany(listData);
-                return await CreateAuditLog(new BaseResultModel
-                {
-                    IsSuccess = true,
-                    Code = 200,
-                    Message = "Successfully"
-                }, baselineDateNew, settingRef, BlProcessConst.SOPROCESS);
+                
             }
             catch (Exception ex)
             {
@@ -1081,7 +1216,7 @@ namespace RDOS.BaseLine.Service
                     IsSuccess = false,
                     Code = 500,
                     Message = ex.InnerException?.Message ?? ex.Message,
-                }, baselineDateNew, settingRef, BlProcessConst.SOPROCESS);
+                }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS);
             }
         }
 

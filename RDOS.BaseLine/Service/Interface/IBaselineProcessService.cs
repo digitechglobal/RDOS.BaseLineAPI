@@ -9,7 +9,7 @@ namespace RDOS.BaseLine.Service.Interface
         Task<BaseResultModel> ProcessInvIssue(ProcessRequest dataRequest, string typeData);
         Task<BaseResultModel> ProcessInvReceipt(ProcessRequest dataRequest, string typeData);
         Task<BaseResultModel> ProcessInvCloseQty(ProcessRequest dataRequest);
-        Task<BaseResultModel> ProcessSO(string baselineDate, string settingRef);
+        Task<BaseResultModel> ProcessSO(ProcessRequest dataRequset);
         Task<BaseResultModel> ProcessRunningSales(ProcessRequest dataRequest);
         Task<BaseResultModel> ProcessSafetyStockAssessment(ProcessRequest dataRequest);
         Task<BaseResultModel> ProcessCaculateKPI(DateTime baselineDate, string token);

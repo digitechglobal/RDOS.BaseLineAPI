@@ -403,7 +403,7 @@ namespace RDOS.BaseLine.Service
                         switch (sequentialProcess.ProcessCode)
                         {
                             case BlProcessConst.SOPROCESS:
-                                await _blProcessService.ProcessSO(blDate, blSettingInfo.SettingRef);
+                                await _blProcessService.ProcessSO(dataReq);
                                 break;
                             case BlProcessConst.POPROCESS:
                                 await _blProcessService.ProcessPO(dataReq);
@@ -443,7 +443,7 @@ namespace RDOS.BaseLine.Service
                         switch (asynchronousProcess.ProcessCode)
                         {
                             case BlProcessConst.SOPROCESS:
-                                _blProcessService.ProcessSO(blDate, blSettingInfo.SettingRef);
+                                _blProcessService.ProcessSO(dataReq);
                                 break;
                             case BlProcessConst.POPROCESS:
                                 
