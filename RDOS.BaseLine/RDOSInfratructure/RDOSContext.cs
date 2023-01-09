@@ -2162,6 +2162,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.EndTimeDate).HasColumnType("timestamp without time zone");
 
+                entity.Property(e => e.SalesOrgDesc).HasMaxLength(255);
+
+                entity.Property(e => e.SalesOrgId).HasMaxLength(100);
+
                 entity.Property(e => e.SalesPeriod).HasMaxLength(100);
 
                 entity.Property(e => e.Scope).HasMaxLength(50);

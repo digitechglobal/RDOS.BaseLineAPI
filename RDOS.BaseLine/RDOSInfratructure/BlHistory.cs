@@ -18,5 +18,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public DateTime? UpdatedDate { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
+        public string? SalesOrgId { get; set; }
+        public string? SalesOrgDesc { get; set; }
     }
 }
