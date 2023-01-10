@@ -1137,7 +1137,6 @@ namespace RDOS.BaseLine.Service
                 var queryvol = @"SELECT * FROM collectoutletpnmbyvol(@salesperiod, @saleorgid))";
                 var queryrev = @"SELECT * FROM collectoutletpnmbyrev(@salesperiod, @saleorgid))";
 
-
                 var listVolData = new List<BlPnM>();
                 var listRevData = new List<BlPnM>();
 
@@ -1159,6 +1158,8 @@ namespace RDOS.BaseLine.Service
                     {
                         listRevData.AddRange(listRev);
                     }
+
+
                 }
 
                 var groupeVoldData = listVolData.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => new BlPnM
@@ -1194,9 +1195,10 @@ namespace RDOS.BaseLine.Service
                     CreatedBy = null,
                     UpdatedBy = null,
                 }).ToList();
+
+
                 #endregion
-
-
+                
 
 
 
@@ -1220,5 +1222,9 @@ namespace RDOS.BaseLine.Service
                 };
             }
         }
+
+
+
+
     }
 }

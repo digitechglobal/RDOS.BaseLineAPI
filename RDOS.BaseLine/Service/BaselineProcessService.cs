@@ -10,16 +10,9 @@ using RDOS.BaseLine.Service.Interface;
 using RestSharp.Authenticators;
 using RestSharp;
 using static RDOS.BaseLine.Models.Results;
-using RDOS.BaseLine.Models.Result;
-using Microsoft.AspNetCore.Http;
-using System.Globalization;
 using SysAdmin.Models.StaticValue;
-using RestSharp.Extensions;
 using Newtonsoft.Json;
 using static RDOS.BaseLine.Constants.Constants;
-using Quartz.Util;
-using nProx.Helpers.Helpers;
-using System.Security.Cryptography;
 
 namespace RDOS.BaseLine.Service
 {

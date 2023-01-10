@@ -1,18 +1,18 @@
-DROP TABLE IF EXISTS "BL_PnM";
-CREATE TABLE "public"."BL_PnM" (
+DROP TABLE IF EXISTS "BL_NormOfBussinessModels";
+CREATE TABLE "public"."BL_NormOfBussinessModels" (
+
 "Id" uuid NOT NULL, --uuId
 "SalesPeriod" varchar(255),
-"CustomerId" varchar(255),
-"CustomerName" varchar(255),
-"CustomerShiptoId" varchar(255),
-"CustomerShiptoName" varchar(255),
-"ValueType" varchar(255),
-"Value" numeric,
+"BusinessModelId" varchar(255),
+"BusinessModelDesr" varchar(255),
+"SIId" varchar(255),
+"SIDesc" varchar(255),
+"Value" varchar(255),
 "CreatedDate" timestamp NOT NULL, --datetime
 "UpdatedDate" timestamp , --datetime
 "CreatedBy" varchar(255) , --varchar(255)
 "UpdatedBy" varchar(255) , --varchar(255)
-    CONSTRAINT "PK_BL_PnM" PRIMARY KEY ("Id")
+    CONSTRAINT "PK_BL_NormOfBussinessModels" PRIMARY KEY ("Id")
 ) WITH (oids = false);
 
 
