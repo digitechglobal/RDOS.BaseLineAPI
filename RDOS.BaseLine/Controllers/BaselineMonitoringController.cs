@@ -7,6 +7,7 @@ using RDOS.BaseLine.Constants;
 using RDOS.BaseLine.Models.Request;
 using RDOS.BaseLine.RDOSInfratructure;
 using RDOS.BaseLine.Service.Interface;
+using System.Security.Cryptography;
 using static RDOS.BaseLine.Models.Results;
 
 namespace RDOS.BaseLine.Controllers
@@ -42,46 +43,13 @@ namespace RDOS.BaseLine.Controllers
         }
         [HttpPost]
         [Route("HandleRebaseline")]
-        public async Task<BaseResultModel> HandleReBaseline(BaselineProcessRequest dataInput)
+        public async Task<IActionResult> HandleReBaseline(BaselineProcessRequest dataInput)
         {
-            if (string.IsNullOrWhiteSpace(dataInput.SalesOrgCode))
-            {
-                return new BaseResultModel
-                {
-                    IsSuccess = false,
-                    Code = 400,
-                    Message = "Sales org code cannot null"
-                };
-            }
-
-            if (dataInput.Scope.ToLower() != ScopeTypeConst.BRANCH.ToLower() &&
-                    dataInput.Scope.ToLower() != ScopeTypeConst.REGION.ToLower() &&
-                    dataInput.Scope.ToLower() != ScopeTypeConst.SUBREGION.ToLower() &&
-                    dataInput.Scope.ToLower() != ScopeTypeConst.AREA.ToLower() &&
-                    dataInput.Scope.ToLower() != ScopeTypeConst.SUBAREA.ToLower() &&
-                    dataInput.Scope.ToLower() != ScopeTypeConst.ROUTEZONE.ToLower() &&
-                    dataInput.Scope.ToLower() != ScopeTypeConst.DSA.ToLower())
-            {
-                return new BaseResultModel
-                {
-                    IsSuccess = false,
-                    Code = 400,
-                    Message = "Scope is incorrect"
-                };
-            }
-
-            if (dataInput.ValueCodes == null || dataInput.ValueCodes != null && dataInput.ValueCodes.Count == 0)
-            {
-                return new BaseResultModel
-                {
-                    IsSuccess = false,
-                    Code = 400,
-                    Message = "List value code cannot null"
-                };
-            }
+            var validateResult = await _phattvBaseLineSettingService.ValidateRebaseline(dataInput);
+            if (!validateResult.IsSuccess) return Ok(validateResult);
 
             dataInput.Type = BaselineType.REBASELINE;
-            return await _phattvBaseLineSettingService.HandleBaseLineProcess(dataInput);
+            return Ok(await _phattvBaseLineSettingService.HandleBaseLineProcess(dataInput));
         }
     }
 }

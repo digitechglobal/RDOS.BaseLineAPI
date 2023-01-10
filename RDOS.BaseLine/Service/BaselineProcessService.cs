@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using static RDOS.BaseLine.Constants.Constants;
 using Quartz.Util;
 using nProx.Helpers.Helpers;
+using System.Security.Cryptography;
 
 namespace RDOS.BaseLine.Service
 {
@@ -3287,7 +3288,6 @@ namespace RDOS.BaseLine.Service
             });
             return resultLog;
         }
-
         private async Task<ResultModelWithObject<BaselineSettingDetailModel>> GetDetailBaselineSetting(string? settingRef, bool isCurrent)
         {
             try
@@ -3374,11 +3374,41 @@ namespace RDOS.BaseLine.Service
                 }
 
                 res = res.ToList();
-                var items = res.ToList();
+                var listHistory = res.ToList();
+
+                var listProcessInDb = _blProcessRepo.GetAll();
+
+                var listDataRes = new List<HistoryDetailModel>();
+
+                foreach (var item in listHistory)
+                {
+                    var dataRes = new HistoryDetailModel();
+                    dataRes.HistoryInfo = item;
+                    var listAuditlogInDb = _blAuditLogRepo.Find(x => x.RefNumber == item.RefNumber).ToList();
+                    var listAuditLogMap = _mapper.Map<List<AuditlogDetailModel>>(listAuditlogInDb);
+                    foreach (var auditLog in listAuditLogMap)
+                    {
+                        var processInDb = listProcessInDb.FirstOrDefault(x => x.ProcessCode == auditLog.ProcessCode);
+                        if (processInDb == null)
+                        {
+                            return new ResultModelWithObject<ListHistoryResponse>
+                            {
+                                IsSuccess = false,
+                                Code = 404,
+                                Message = $"Cannot found process {auditLog.ProcessCode}"
+                            };
+                        }
+                        auditLog.ProcessInfo = processInDb;
+                    }
+                    dataRes.listAuditlog = listAuditLogMap;
+                    listDataRes.Add(dataRes);
+                }
+
+                listDataRes = listDataRes.OrderByDescending(x => x.HistoryInfo.CreatedDate).ToList();
 
                 if (parameters.IsDropdown)
                 {
-                    var reponse = new ListHistoryResponse { Items = items };
+                    var reponse = new ListHistoryResponse { Items = listDataRes };
 
                     return new ResultModelWithObject<ListHistoryResponse>
                     {
@@ -3390,7 +3420,7 @@ namespace RDOS.BaseLine.Service
                 }
                 else
                 {
-                    var historyTempPagged = PagedList<BlHistory>.ToPagedList(items, (parameters.PageNumber - 1) * parameters.PageSize, parameters.PageSize);
+                    var historyTempPagged = PagedList<HistoryDetailModel>.ToPagedList(listDataRes, (parameters.PageNumber - 1) * parameters.PageSize, parameters.PageSize);
                     var repsonse = new ListHistoryResponse { Items = historyTempPagged, MetaData = historyTempPagged.MetaData };
 
                     //return metadata

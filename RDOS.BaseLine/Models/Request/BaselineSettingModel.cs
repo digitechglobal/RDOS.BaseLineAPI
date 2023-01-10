@@ -257,7 +257,7 @@ namespace RDOS.BaseLine.Models.Request
 
     public class ListHistoryResponse
     {
-        public List<BlHistory> Items { get; set; }
+        public List<HistoryDetailModel> Items { get; set; }
         public MetaData MetaData { get; set; }
     }
 

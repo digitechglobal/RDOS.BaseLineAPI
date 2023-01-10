@@ -16,5 +16,6 @@ namespace RDOS.BaseLine.Service.Interface
         Task<List<DateTime>> GetBaseLineDate();
         Task<bool> DeleteJob(JobMetadata jobMetadata);
         Task<BaseResultModel> HandleBaseLineProcess(BaselineProcessRequest dataRequest);
+        Task<BaseResultModel> ValidateRebaseline(BaselineProcessRequest dataInput);
     }
 }

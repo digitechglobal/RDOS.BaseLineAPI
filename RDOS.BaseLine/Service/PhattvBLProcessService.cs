@@ -381,6 +381,64 @@ namespace RDOS.BaseLine.Service
             }
         }
 
+        public async Task<BaseResultModel> ValidateRebaseline(BaselineProcessRequest dataInput)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(dataInput.SalesOrgCode))
+                {
+                    return new BaseResultModel
+                    {
+                        IsSuccess = false,
+                        Code = 400,
+                        Message = "Sales org code cannot null"
+                    };
+                }
+
+                if (dataInput.Scope.ToLower() != ScopeTypeConst.BRANCH.ToLower() &&
+                    dataInput.Scope.ToLower() != ScopeTypeConst.REGION.ToLower() &&
+                    dataInput.Scope.ToLower() != ScopeTypeConst.SUBREGION.ToLower() &&
+                    dataInput.Scope.ToLower() != ScopeTypeConst.AREA.ToLower() &&
+                    dataInput.Scope.ToLower() != ScopeTypeConst.SUBAREA.ToLower() &&
+                    dataInput.Scope.ToLower() != ScopeTypeConst.ROUTEZONE.ToLower() &&
+                    dataInput.Scope.ToLower() != ScopeTypeConst.DSA.ToLower())
+                {
+                    return new BaseResultModel
+                    {
+                        IsSuccess = false,
+                        Code = 400,
+                        Message = "Scope is incorrect"
+                    };
+                }
+
+                if (dataInput.ValueCodes == null || dataInput.ValueCodes != null && dataInput.ValueCodes.Count == 0)
+                {
+                    return new BaseResultModel
+                    {
+                        IsSuccess = false,
+                        Code = 400,
+                        Message = "List value code cannot null"
+                    };
+                }
+
+                return new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Code = 200,
+                    Message = "Validated"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Code = 500,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
 
         public async Task<BaseResultModel> HandleBaseLineProcess(BaselineProcessRequest dataRequest)
         {
