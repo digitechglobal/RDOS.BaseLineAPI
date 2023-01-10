@@ -12,11 +12,11 @@ using static RDOS.BaseLine.Models.Results;
 namespace RDOS.BaseLine.Controllers
 {
     [Authorize]
-    public class RebaselineController : NormalController<HistoryDetailModel>
+    public class BaselineMonitoringController : NormalController<HistoryDetailModel>
     {
         private readonly IBaselineProcessService _blProcessService;
         private readonly IPhattvBLProcessService _phattvBaseLineSettingService;
-        public RebaselineController(
+        public BaselineMonitoringController(
             IBaseService<HistoryDetailModel> service,
             IBaselineProcessService blProcessService,
             IPhattvBLProcessService phattvBaseLineSettingService) : base(service)
@@ -41,7 +41,7 @@ namespace RDOS.BaseLine.Controllers
             return Ok(await _blProcessService.GetDetailHistory(refNumber));
         }
         [HttpPost]
-        [Route("HandleReBaseline")]
+        [Route("HandleRebaseline")]
         public async Task<BaseResultModel> HandleReBaseline(BaselineProcessRequest dataInput)
         {
             if (string.IsNullOrWhiteSpace(dataInput.SalesOrgCode))
