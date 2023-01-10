@@ -248,6 +248,7 @@ namespace RDOS.BaseLine.Models.Request
         public DateTime BaselineDate { get; set; }
         public string? SalesOrgCode { get; set; }
         public List<string>? ValueCodes { get; set; }
+        public string? ByUser { get; set; }
     }
 
     public class FilterHistoryModel : EcoParameters

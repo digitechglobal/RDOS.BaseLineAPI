@@ -582,7 +582,7 @@ namespace RDOS.BaseLine.Service
                         SalesOrgDesc = salesOrgInfo != null ? salesOrgInfo.Description : null,
                         CreatedDate = DateTime.Now,
                         UpdatedDate = null,
-                        CreatedBy = null,
+                        CreatedBy = dataRequest.ByUser,
                         UpdatedBy = null,
                         RefNumber = historyRefNumber
                     });

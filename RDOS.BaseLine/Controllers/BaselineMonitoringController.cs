@@ -17,13 +17,18 @@ namespace RDOS.BaseLine.Controllers
     {
         private readonly IBaselineProcessService _blProcessService;
         private readonly IPhattvBLProcessService _phattvBaseLineSettingService;
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly string _token;
         public BaselineMonitoringController(
             IBaseService<HistoryDetailModel> service,
             IBaselineProcessService blProcessService,
-            IPhattvBLProcessService phattvBaseLineSettingService) : base(service)
+            IPhattvBLProcessService phattvBaseLineSettingService,
+            IHttpContextAccessor contextAccessor) : base(service)
         {
             _blProcessService = blProcessService;
             _phattvBaseLineSettingService = phattvBaseLineSettingService;
+            _contextAccessor = contextAccessor;
+            _token = _contextAccessor.HttpContext.Request.Headers["Authorization"];
         }
 
 
@@ -45,10 +50,12 @@ namespace RDOS.BaseLine.Controllers
         [Route("HandleRebaseline")]
         public async Task<IActionResult> HandleReBaseline(BaselineProcessRequest dataInput)
         {
+            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
             var validateResult = await _phattvBaseLineSettingService.ValidateRebaseline(dataInput);
             if (!validateResult.IsSuccess) return Ok(validateResult);
 
             dataInput.Type = BaselineType.REBASELINE;
+            dataInput.ByUser = username;
             return Ok(await _phattvBaseLineSettingService.HandleBaseLineProcess(dataInput));
         }
     }
