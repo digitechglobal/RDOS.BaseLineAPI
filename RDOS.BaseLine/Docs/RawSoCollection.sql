@@ -750,6 +750,7 @@ CREATE FUNCTION collectrawso(baselinedate VARCHAR, settingref VARCHAR, workingda
 		or soOrderInfo."Status" = 'SO_ST_FAILED' 
 		or soOrderInfo."Status" = 'SO_ST_DELIVERED'
 		or soOrderInfo."Status" = 'SO_ST_PARTIALDELIVERED')
+		
 ;
 END $func$;
 SELECT

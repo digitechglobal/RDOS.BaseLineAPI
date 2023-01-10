@@ -44,6 +44,7 @@ namespace RDOS.BaseLine.Service
         private string _username;
         private readonly IBaseRepository<BlRawSo> _blRawSo;
         private readonly IBaseRepository<SaleCalendarGenerate> _saleCalendarGenerateRepo;
+        private readonly IBaseRepository<Kpisetting> _kpiSettingRepo;
         private readonly IDapperRepositories _dapper;
         private readonly IBaseRepository<ScSalesOrganizationStructure> _salesOrgRepo;
 
@@ -68,7 +69,8 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<SaleCalendarGenerate> saleCalendarGenerateRepo,
             IBaseRepository<BlOutletAccumulate> blOutletAccumulateRepo,
             IDapperRepositories dapper,
-            IBaseRepository<ScSalesOrganizationStructure> salesOrgRepo
+            IBaseRepository<ScSalesOrganizationStructure> salesOrgRepo,
+            IBaseRepository<Kpisetting> kpiSettingRepo
             )
         {
             _logger = logger;
@@ -92,6 +94,7 @@ namespace RDOS.BaseLine.Service
             _blOutletAccumulateRepo = blOutletAccumulateRepo;
             _dapper = dapper;
             _salesOrgRepo = salesOrgRepo;
+            _kpiSettingRepo = kpiSettingRepo;
         }
 
         public async Task<List<DateTime>> GetBaseLineDate()
@@ -399,7 +402,7 @@ namespace RDOS.BaseLine.Service
                 var blSettingInfo = setting.Data.BlBlsettingInformation;
                 var listSequentialProcess = blSettingProcess.Where(x => x.IsSequentialProcessing == true).OrderBy(x => x.Priority).ToList();
                 var listAsynchronousProcess = blSettingProcess.Where(x => x.IsSequentialProcessing == false).ToList();
-                
+
                 foreach (var baseLineDate in listBaseLineDate)
                 {
                     string blDate = baseLineDate.ToString("yyyy-MM-dd");
@@ -451,7 +454,7 @@ namespace RDOS.BaseLine.Service
                         }
                     }
 
-                    
+
                     foreach (var asynchronousProcess in listAsynchronousProcess)
                     {
                         switch (asynchronousProcess.ProcessCode)
@@ -460,7 +463,7 @@ namespace RDOS.BaseLine.Service
                                 _blProcessService.ProcessSO(dataReq);
                                 break;
                             case BlProcessConst.POPROCESS:
-                                
+
                                 _blProcessService.ProcessPO(dataReq);
                                 break;
                             case BlProcessConst.IN_ISSUE:
@@ -505,7 +508,7 @@ namespace RDOS.BaseLine.Service
                     {
                         salesOrgInfo = _salesOrgRepo.FirstOrDefault(x => x.Code == dataRequest.SalesOrgCode && !x.IsDeleted);
                     }
-                    
+
                     _blHistoryRepo.Insert(new BlHistory
                     {
                         Id = Guid.NewGuid(),
@@ -560,6 +563,603 @@ namespace RDOS.BaseLine.Service
                 {
                     return refNew;
                 }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<BaseResultModel> HandleMonthlyBaseLine(int salesYear, string salesPeriod, int ordinal, string saleOrgId)
+        {
+            try
+            {
+                #region PnM
+                List<BlPnM> insertPnMList = new();
+                var kpiSetting = _kpiSettingRepo.Find(x => x.SaleYear == DateTime.Now.Year).FirstOrDefault();
+                int n = 0;
+                if (kpiSetting != null)
+                {
+                    n = kpiSetting.BasedPastMonths;
+                }
+                var saleCalendar = _salesCalendarRepo.Find(x => x.SaleYear == salesYear).FirstOrDefault();
+                var calendarGenerates = _saleCalendarGenerateRepo.Find(x => x.Type == CalendarConstant.MONTH && x.SaleCalendarId == saleCalendar.Id && x.Ordinal <= ordinal && x.Ordinal > ordinal - n).ToList();
+                List<string> salePeriodList = new List<string> { salesPeriod };
+                if (calendarGenerates != null && calendarGenerates.Count > 0)
+                {
+                    salePeriodList.AddRange(calendarGenerates.Select(x => x.Code).ToList());
+                }
+
+
+                // Function query
+                var queryvol = @"SELECT * FROM collectoutletpnmbyvol(@salesperiod, @saleorgid))";
+                var queryrev = @"SELECT * FROM collectoutletpnmbyrev(@salesperiod, @saleorgid))";
+
+
+                var listVolData = new List<BlPnM>();
+                var listRevData = new List<BlPnM>();
+
+                //Vol
+                // Excute query
+                foreach (var item in salePeriodList)
+                {
+                    // Handle parameter
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("@salesperiod", salesPeriod);
+                    parameters.Add("@saleorgid", saleOrgId);
+                    var listVol = ((List<BlPnM>)_dapper.QueryWithParams<BlPnM>(queryvol, parameters));
+                    if (listVol != null && listVol.Count > 0)
+                    {
+                        listVolData.AddRange(listVol);
+                    }
+                    var listRev = ((List<BlPnM>)_dapper.QueryWithParams<BlPnM>(queryrev, parameters));
+                    if (listRev != null && listRev.Count > 0)
+                    {
+                        listRevData.AddRange(listRev);
+                    }
+                }
+
+                var groupeVoldData = listVolData.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => new BlPnM
+                {
+                    Id = Guid.NewGuid(),
+                    SalesPeriod = salesPeriod,
+                    CustomerId = x.Key.CustomerId,
+                    CustomerName = x.Select(x => x.CustomerName).FirstOrDefault(),
+                    CustomerShiptoId = x.Key.CustomerShiptoId,
+                    CustomerShiptoName = x.Select(x => x.CustomerShiptoName).FirstOrDefault(),
+                    ValueType = BLAccumulateConst.VOL, //số lượng
+                    Value = x.Sum(a => a.Value) / x.GroupBy(x => x.SalesPeriod).Select(x => x.FirstOrDefault()).Count(),
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = null,
+                    CreatedBy = null,
+                    UpdatedBy = null,
+                }).ToList();
+
+
+                // Rev
+                var groupeRevdData = listRevData.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => new BlPnM
+                {
+                    Id = Guid.NewGuid(),
+                    SalesPeriod = salesPeriod,
+                    CustomerId = x.Key.CustomerId,
+                    CustomerName = x.Select(x => x.CustomerName).FirstOrDefault(),
+                    CustomerShiptoId = x.Key.CustomerShiptoId,
+                    CustomerShiptoName = x.Select(x => x.CustomerShiptoName).FirstOrDefault(),
+                    ValueType = BLAccumulateConst.REV, //số lượng
+                    Value = x.Sum(a => a.Value) / x.GroupBy(x => x.SalesPeriod).Select(x => x.FirstOrDefault()).Count(),
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = null,
+                    CreatedBy = null,
+                    UpdatedBy = null,
+                }).ToList();
+                #endregion
+
+
+
+
+
+
+
+
+                return new BaseResultModel
+                {
+                    IsSuccess = true,
+                    Code = 200,
+                    Message = "Successfully",
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new BaseResultModel
+                {
+                    IsSuccess = false,
+                    Code = 500,
+                    Message = ex.InnerException?.Message ?? ex.Message + Environment.NewLine + ex.InnerException?.StackTrace ?? ex.StackTrace,
+                };
             }
         }
     }

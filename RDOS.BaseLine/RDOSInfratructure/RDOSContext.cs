@@ -69,6 +69,7 @@ namespace RDOS.BaseLine.RDOSInfratructure
         public virtual DbSet<BlIssueQty> BlIssueQtys { get; set; } = null!;
         public virtual DbSet<BlNormOfBussinessModel> BlNormOfBussinessModels { get; set; } = null!;
         public virtual DbSet<BlOutletAccumulate> BlOutletAccumulates { get; set; } = null!;
+        public virtual DbSet<BlPnM> BlPnMs { get; set; } = null!;
         public virtual DbSet<BlRawPo> BlRawPos { get; set; } = null!;
         public virtual DbSet<BlRawSo> BlRawSos { get; set; } = null!;
         public virtual DbSet<BlReceiptQty> BlReceiptQtys { get; set; } = null!;
@@ -2596,6 +2597,33 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.UpdatedBy).HasMaxLength(255);
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+            });
+
+            modelBuilder.Entity<BlPnM>(entity =>
+            {
+                entity.ToTable("BL_PnM");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.CustomerId).HasMaxLength(255);
+
+                entity.Property(e => e.CustomerName).HasMaxLength(255);
+
+                entity.Property(e => e.CustomerShiptoId).HasMaxLength(255);
+
+                entity.Property(e => e.CustomerShiptoName).HasMaxLength(255);
+
+                entity.Property(e => e.SalesPeriod).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.ValueType).HasMaxLength(255);
             });
 
             modelBuilder.Entity<BlRawPo>(entity =>

@@ -90,4 +90,12 @@ namespace RDOS.BaseLine.Models.Request
         public string? SalesOrgId { get; set; }
         public DateTime BaselineDate { get; set; }
     }
+
+
+    public class GroupedRawSOByOutlet
+    {
+        public string CustomerId { get; set; }
+        public string CustomerShiptoId { get; set; }
+        public List<BlRawSo> listRawSo { get; set; }
+    }
 }
