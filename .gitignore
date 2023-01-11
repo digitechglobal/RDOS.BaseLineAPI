@@ -2,3 +2,4 @@
 .vs/
 RDOS.BaseLine/obj/
 RDOS.BaseLine/bin/
+*.zip
