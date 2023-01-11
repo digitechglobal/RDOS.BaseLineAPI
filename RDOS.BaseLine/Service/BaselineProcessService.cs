@@ -273,8 +273,7 @@ namespace RDOS.BaseLine.Service
                         }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.POPROCESS, dataRequest.HistoryRefNumber);
                     }
 
-                    listRawPo = listRawPo.ToList();
-                    var itemRemoves = _mapper.Map<List<BlRawPo>>(listRawPo);
+                    var itemRemoves = listRawPo.ToList();
 
                     // Remove record by baseline date
                     if (itemRemoves != null && itemRemoves.Count() > 0)
@@ -1184,7 +1183,6 @@ namespace RDOS.BaseLine.Service
                         }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS, dataRequest.HistoryRefNumber);
                     }
 
-                    listRawSo = listRawSo.ToList();
                     var itemRemoves = listRawSo.ToList();
 
                     // Remove record by baseline date
@@ -2529,12 +2527,15 @@ namespace RDOS.BaseLine.Service
 
         public async Task<BaseResultModel> ProcessCusPerDaily(ProcessRequest dataRequest)
         {
-            DateTime baselineDateNew = DateTime.Parse(dataRequest.BaselineDate);
+            DateTime baselineDateParse = DateTime.Parse(dataRequest.BaselineDate);
             try
             {
+                bool isRebaseline = false;
+                var baselineCurrent = baselineDateParse;
                 var userLogin = _blSettingInfoRepo.Find(x => !x.IsDeleted).OrderByDescending(x => x.CreatedDate).First().CreatedBy;
+
                 // Get sales calendar
-                var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == baselineDateNew.Year);
+                var salesCalendar = _salesCalendarRepo.FirstOrDefault(x => x.SaleYear == (DateTime.Parse(dataRequest.BaselineDate)).Year);
                 if (salesCalendar == null)
                 {
                     return await CreateAuditLog(new BaseResultModel
@@ -2542,26 +2543,10 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found sales calendar"
-                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                    }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                 }
 
-                // Get sales period
-                var salesPeriod = _saleCalendarGenerateRepo.FirstOrDefault(x => x.SaleCalendarId == salesCalendar.Id &&
-                                                                 x.Type == CalendarConstant.MONTH &&
-                                                                 x.StartDate.Value.Date <= baselineDateNew.Date &&
-                                                                 x.EndDate.Value.Date >= baselineDateNew.Date);
-
-                if (salesPeriod == null)
-                {
-                    return await CreateAuditLog(new BaseResultModel
-                    {
-                        IsSuccess = false,
-                        Code = 404,
-                        Message = "Cannot found sales period"
-                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
-                }
-
-                // Get week
+                // Get list calendar generate
                 var listCalendarGenerate = _saleCalendarGenerateRepo.Find(x => x.SaleCalendarId == salesCalendar.Id).ToList();
 
                 if (listCalendarGenerate.Count == 0)
@@ -2571,550 +2556,692 @@ namespace RDOS.BaseLine.Service
                         IsSuccess = false,
                         Code = 404,
                         Message = "Cannot found calendar generate"
-                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                    }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                 }
 
-                var listRawSo = _blRawSo.Find(x => x.BaselineDate.Date == baselineDateNew.Date &&
-                                             x.CusShiptoAttributeValueId4 != null &&
-                                            (x.Status == StatusSOConst.PARTIALDELIVERED ||
-                                            x.Status == StatusSOConst.DELIVERED)).ToList();
+                List<DateTime> listBaselineDate = new List<DateTime>();
 
-                var listRawSoGroup = listRawSo.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => x.First()).ToList();
-                var listSI = _blSalesIndicatorRepo.GetAll();
-
-                foreach (var rawSoGroup in listRawSoGroup)
+                if (string.IsNullOrWhiteSpace(dataRequest.Type) ||
+                    string.IsNullOrWhiteSpace(dataRequest.SalesOrgCode) ||
+                    dataRequest.ValueCodes == null ||
+                    (dataRequest.ValueCodes != null && dataRequest.ValueCodes.Count == 0))
                 {
-                    var listCusPerDailyInsert = new List<BlCustomerPerformanceDaily>();
-                    var listCusPerCurrentFilter = _blCurrentCusPerDailyRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId && x.CustomerShiptoId == rawSoGroup.CustomerShiptoId).ToList();
-                    var listDataRawSoFilter = listRawSo.Where(x => x.CustomerId == rawSoGroup.CustomerId && x.CustomerShiptoId == rawSoGroup.CustomerShiptoId).ToList();
+                    isRebaseline = false;
+                }
+                else
+                {
+                    isRebaseline = true;
+                }
 
-                    // Visited
-                    int visited = 0;
 
-                    foreach (var si in listSI.OrderBy(x => x.Index).ToList())
+                if (isRebaseline)
+                {
+                    // Handle baseline date current
+                    var currentData = _blCurrentCusPerDailyRepo.FirstOrDefault(x => x != null);
+                    if (currentData == null)
                     {
-                        var dataInsert = new BlCustomerPerformanceDaily();
-                        if (si.Siid != SIIDConst.SKUBUYED)
+                        return await CreateAuditLog(new BaseResultModel
                         {
-                            // Common
-                            dataInsert.SalesPeriod = salesPeriod.Code;
-                            dataInsert.BaselineDate = baselineDateNew.Date;
-                            dataInsert.CustomerId = rawSoGroup.CustomerId;
-                            dataInsert.CustomerName = rawSoGroup.CustomerName;
-                            dataInsert.CustomerShiptoId = rawSoGroup.CustomerShiptoId;
-                            dataInsert.CustomerShiptoName = rawSoGroup.CustomerShiptoName;
-                            dataInsert.CusShiptoAttributeId = rawSoGroup.CusShiptoAttributeId4;
-                            dataInsert.CusShiptoAttributeName = rawSoGroup.CusShiptoAttributeName4;
-                            dataInsert.CusShiptoAttributeDesc = rawSoGroup.CusShiptoAttributeDesc4;
-                            dataInsert.CusShiptoAttributeValueId = rawSoGroup.CusShiptoAttributeValueId4;
-                            dataInsert.CusShiptoAttributeValueDesc = rawSoGroup.CusShiptoAttributeValueDesc4;
-                            dataInsert.SalesOrgId = rawSoGroup.SalesOrgId;
-                            dataInsert.SalesOrgDesc = rawSoGroup.SalesOrgDesc;
-                            dataInsert.BranchId = rawSoGroup.BranchId;
-                            dataInsert.BranchName = rawSoGroup.BranchName;
-                            dataInsert.RegionId = rawSoGroup.RegionId;
-                            dataInsert.RegionName = rawSoGroup.RegionName;
-                            dataInsert.SubRegionId = rawSoGroup.SubRegionId;
-                            dataInsert.SubRegionName = rawSoGroup.SubRegionName;
-                            dataInsert.AreaId = rawSoGroup.AreaId;
-                            dataInsert.AreaName = rawSoGroup.AreaName;
-                            dataInsert.SubAreaId = rawSoGroup.SubAreaId;
-                            dataInsert.SubAreaName = rawSoGroup.SubAreaName;
-                            dataInsert.Dsaid = rawSoGroup.Dsaid;
-                            dataInsert.Dsadesc = rawSoGroup.Dsadesc;
-                            dataInsert.DistributorId = rawSoGroup.DistributorId;
-                            dataInsert.DistributorName = rawSoGroup.DistributorName;
-                            dataInsert.DistyBillToId = rawSoGroup.DistyBillToId;
-                            dataInsert.WarehouseId = rawSoGroup.WarehouseId;
-                            dataInsert.WarehouseName = rawSoGroup.WarehouseName;
-                            dataInsert.Sicid = rawSoGroup.Sicid;
-                            dataInsert.Sicdesc = rawSoGroup.Sicdesc;
-                            dataInsert.RouteZoneId = rawSoGroup.RouteZoneId;
-                            dataInsert.RouteZoneDesc = rawSoGroup.RouteZoneDesc;
-                            dataInsert.RouteZoneType = rawSoGroup.RouteZoneType;
-                            dataInsert.RouteZonelocation = rawSoGroup.RouteZonelocation;
-                            dataInsert.CreatedDate = DateTime.Now;
-                            dataInsert.CreatedBy = userLogin;
-                            dataInsert.Id = Guid.NewGuid();
+                            IsSuccess = false,
+                            Code = 404,
+                            Message = "Cannot reBaseline"
+                        }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                    }
 
-                            dataInsert.Siid = si.Siid;
-                            dataInsert.Sidesc = si.Description;
-                        }
+                    baselineCurrent = currentData.BaselineDate;
 
+                    for (var dateCurrent = baselineDateParse.Date; dateCurrent <= baselineCurrent; dateCurrent = dateCurrent.AddDays(1))
+                    {
+                        listBaselineDate.Add(dateCurrent);
+                    }
+                }
+                else
+                {
+                    listBaselineDate.Add(baselineDateParse);
+                }
 
-                        // Calculate Actual volume
-                        if (si.Siid == SIIDConst.ACTUALVOLUME)
+                foreach (var baselineDateNew in listBaselineDate)
+                {
+                    // Get sales period
+                    var salesPeriod = _saleCalendarGenerateRepo.FirstOrDefault(x => x.SaleCalendarId == salesCalendar.Id &&
+                                                                     x.Type == CalendarConstant.MONTH &&
+                                                                     x.StartDate.Value.Date <= baselineDateNew.Date &&
+                                                                     x.EndDate.Value.Date >= baselineDateNew.Date);
+
+                    if (salesPeriod == null)
+                    {
+                        return await CreateAuditLog(new BaseResultModel
                         {
-                            int value = 0;
-                            foreach (var dataValue in listDataRawSoFilter)
-                            {
-                                value += dataValue.ShippedBaseQuantities.HasValue ? dataValue.ShippedBaseQuantities.Value : 0;
-                            }
-                            if (listCusPerCurrentFilter.Count > 0)
-                            {
-                                var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALVOLUME);
-                                value += Int32.Parse(valueCurrent.Value);
-                            }
+                            IsSuccess = false,
+                            Code = 404,
+                            Message = "Cannot found sales period"
+                        }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                    }
 
-                            dataInsert.Value = value.ToString();
-                            listCusPerDailyInsert.Add(dataInsert);
-                            continue;
-                        }
+                    // Get list raw so
+                    var listRawSo = _blRawSo.Find(x => x.BaselineDate.Date == baselineDateNew.Date &&
+                                                 x.CusShiptoAttributeValueId4 != null &&
+                                                (x.Status == StatusSOConst.PARTIALDELIVERED ||
+                                                x.Status == StatusSOConst.DELIVERED)).ToList();
 
-                        // Calculate actual revenue
-                        if (si.Siid == SIIDConst.ACTUALREVENUE)
+                    var listRawSoGroup = listRawSo.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => x.First()).ToList();
+                    var listSI = _blSalesIndicatorRepo.GetAll();
+
+                    foreach (var rawSoGroup in listRawSoGroup)
+                    {
+                        var listCusPerDailyInsert = new List<BlCustomerPerformanceDaily>();
+
+                        // Get baseline date previous
+                        var baselineDatePrevious = _blCusPerDailyRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
+                                                                    x.CustomerShiptoId == rawSoGroup.CustomerShiptoId &&
+                                                                    x.BaselineDate.Date < baselineDateNew.Date)
+                                                    .OrderByDescending(x => x.BaselineDate.Date).FirstOrDefault();
+
+                        List<BlCustomerPerformanceDaily> listCusPerCurrentFilter = new List<BlCustomerPerformanceDaily>();
+                        if (baselineDatePrevious != null)
                         {
-                            decimal value = 0;
-                            foreach (var dataValue in listDataRawSoFilter)
-                            {
-                                value += dataValue.ShippedExtendAmt.HasValue ? dataValue.ShippedExtendAmt.Value : 0;
-                            }
+                            listCusPerCurrentFilter = _blCusPerDailyRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
+                                                                              x.CustomerShiptoId == rawSoGroup.CustomerShiptoId &&
+                                                                              x.BaselineDate.Date == baselineDatePrevious.BaselineDate.Date).ToList();
+                        }    
+                        
 
-                            if (listCusPerCurrentFilter.Count > 0)
-                            {
-                                var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALREVENUE);
-                                value += Decimal.Parse(valueCurrent.Value);
-                            }
+                        var listDataRawSoFilter = listRawSo.Where(x => x.CustomerId == rawSoGroup.CustomerId && x.CustomerShiptoId == rawSoGroup.CustomerShiptoId).ToList();
 
-                            dataInsert.Value = value.ToString();
-                            listCusPerDailyInsert.Add(dataInsert);
-                            continue;
-                        }
+                        // Visited
+                        int visited = 0;
 
-                        // Calculate actual PC
-                        if (si.Siid == SIIDConst.ACTUALPC)
+                        foreach (var si in listSI.OrderBy(x => x.Index).ToList())
                         {
-                            int value = 0;
-                            if (listCusPerCurrentFilter.Count > 0)
+                            var dataInsert = new BlCustomerPerformanceDaily();
+                            if (si.Siid != SIIDConst.SKUBUYED)
                             {
-                                var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALPC);
-                                value += Int32.Parse(valueCurrent.Value);
-                            }
-                            int countSalesOrder = listDataRawSoFilter.GroupBy(x => x.OrderRefNumber).Select(x => x.First()).ToList().Count();
-                            dataInsert.Value = (value + countSalesOrder).ToString();
-                            listCusPerDailyInsert.Add(dataInsert);
-                            continue;
-                        }
+                                // Common
+                                dataInsert.SalesPeriod = salesPeriod.Code;
+                                dataInsert.BaselineDate = baselineDateNew.Date;
+                                dataInsert.CustomerId = rawSoGroup.CustomerId;
+                                dataInsert.CustomerName = rawSoGroup.CustomerName;
+                                dataInsert.CustomerShiptoId = rawSoGroup.CustomerShiptoId;
+                                dataInsert.CustomerShiptoName = rawSoGroup.CustomerShiptoName;
+                                dataInsert.CusShiptoAttributeId = rawSoGroup.CusShiptoAttributeId4;
+                                dataInsert.CusShiptoAttributeName = rawSoGroup.CusShiptoAttributeName4;
+                                dataInsert.CusShiptoAttributeDesc = rawSoGroup.CusShiptoAttributeDesc4;
+                                dataInsert.CusShiptoAttributeValueId = rawSoGroup.CusShiptoAttributeValueId4;
+                                dataInsert.CusShiptoAttributeValueDesc = rawSoGroup.CusShiptoAttributeValueDesc4;
+                                dataInsert.SalesOrgId = rawSoGroup.SalesOrgId;
+                                dataInsert.SalesOrgDesc = rawSoGroup.SalesOrgDesc;
+                                dataInsert.BranchId = rawSoGroup.BranchId;
+                                dataInsert.BranchName = rawSoGroup.BranchName;
+                                dataInsert.RegionId = rawSoGroup.RegionId;
+                                dataInsert.RegionName = rawSoGroup.RegionName;
+                                dataInsert.SubRegionId = rawSoGroup.SubRegionId;
+                                dataInsert.SubRegionName = rawSoGroup.SubRegionName;
+                                dataInsert.AreaId = rawSoGroup.AreaId;
+                                dataInsert.AreaName = rawSoGroup.AreaName;
+                                dataInsert.SubAreaId = rawSoGroup.SubAreaId;
+                                dataInsert.SubAreaName = rawSoGroup.SubAreaName;
+                                dataInsert.Dsaid = rawSoGroup.Dsaid;
+                                dataInsert.Dsadesc = rawSoGroup.Dsadesc;
+                                dataInsert.DistributorId = rawSoGroup.DistributorId;
+                                dataInsert.DistributorName = rawSoGroup.DistributorName;
+                                dataInsert.DistyBillToId = rawSoGroup.DistyBillToId;
+                                dataInsert.WarehouseId = rawSoGroup.WarehouseId;
+                                dataInsert.WarehouseName = rawSoGroup.WarehouseName;
+                                dataInsert.Sicid = rawSoGroup.Sicid;
+                                dataInsert.Sicdesc = rawSoGroup.Sicdesc;
+                                dataInsert.RouteZoneId = rawSoGroup.RouteZoneId;
+                                dataInsert.RouteZoneDesc = rawSoGroup.RouteZoneDesc;
+                                dataInsert.RouteZoneType = rawSoGroup.RouteZoneType;
+                                dataInsert.RouteZonelocation = rawSoGroup.RouteZonelocation;
+                                dataInsert.CreatedDate = DateTime.Now;
+                                dataInsert.CreatedBy = userLogin;
+                                dataInsert.Id = Guid.NewGuid();
 
-                        // Calculate actual LPPC
-                        if (si.Siid == SIIDConst.ACTUALLPPC)
-                        {
-                            // Calculate ActualPC
-                            int actualPC = 0;
-                            if (listCusPerCurrentFilter.Count > 0)
-                            {
-                                var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALPC);
-                                actualPC += Int32.Parse(valueCurrent.Value);
+                                dataInsert.Siid = si.Siid;
+                                dataInsert.Sidesc = si.Description;
                             }
-                            actualPC = actualPC + listDataRawSoFilter.GroupBy(x => x.OrderRefNumber).Select(x => x.First()).ToList().Count;
 
-                            // Calculate ActualLPPC
-                            float value = 0;
-                            if (listCusPerCurrentFilter.Count > 0)
+
+                            // Calculate Actual volume
+                            if (si.Siid == SIIDConst.ACTUALVOLUME)
                             {
-                                var listSkuBuyedNew = listDataRawSoFilter.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
-                                var listSkuBuyerCurrent = listCusPerCurrentFilter.Where(x => x.Siid == SIIDConst.SKUBUYED).ToList();
-                                int skuBuyedFinal = listSkuBuyerCurrent.Count();
-                                foreach (var skuBuyedNew in listSkuBuyedNew)
+                                int value = 0;
+                                foreach (var dataValue in listDataRawSoFilter)
                                 {
-                                    if (!listSkuBuyerCurrent.Any(x => x.Value == skuBuyedNew.ItemId))
+                                    value += dataValue.ShippedBaseQuantities.HasValue ? dataValue.ShippedBaseQuantities.Value : 0;
+                                }
+                                if (listCusPerCurrentFilter.Count > 0 && listCusPerCurrentFilter.First().SalesPeriod == salesPeriod.Code)
+                                {
+                                    var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALVOLUME);
+                                    value += Int32.Parse(valueCurrent.Value);
+                                }
+
+                                dataInsert.Value = value.ToString();
+                                listCusPerDailyInsert.Add(dataInsert);
+                                continue;
+                            }
+
+                            // Calculate actual revenue
+                            if (si.Siid == SIIDConst.ACTUALREVENUE)
+                            {
+                                decimal value = 0;
+                                var listDataRowSoFilterGroup = listDataRawSoFilter.GroupBy(x => x.OrderRefNumber).Select(x => x.First()).ToList();
+                                foreach (var dataValue in listDataRowSoFilterGroup)
+                                {
+                                    value += dataValue.ShippedExtendAmt.HasValue ? dataValue.ShippedExtendAmt.Value : 0;
+                                }
+
+                                if (listCusPerCurrentFilter.Count > 0 && listCusPerCurrentFilter.First().SalesPeriod == salesPeriod.Code)
+                                {
+                                    var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALREVENUE);
+                                    value += Decimal.Parse(valueCurrent.Value);
+                                }
+
+                                dataInsert.Value = value.ToString();
+                                listCusPerDailyInsert.Add(dataInsert);
+                                continue;
+                            }
+
+                            // Calculate actual PC
+                            if (si.Siid == SIIDConst.ACTUALPC)
+                            {
+                                int value = 0;
+                                if (listCusPerCurrentFilter.Count > 0 && listCusPerCurrentFilter.First().SalesPeriod == salesPeriod.Code)
+                                {
+                                    var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALPC);
+                                    value += Int32.Parse(valueCurrent.Value);
+                                }
+                                int countSalesOrder = listDataRawSoFilter.GroupBy(x => x.OrderRefNumber).Select(x => x.First()).ToList().Count();
+                                dataInsert.Value = (value + countSalesOrder).ToString();
+                                listCusPerDailyInsert.Add(dataInsert);
+                                continue;
+                            }
+
+                            // Calculate actual LPPC
+                            if (si.Siid == SIIDConst.ACTUALLPPC)
+                            {
+                                // Calculate ActualPC
+                                int actualPC = 0;
+                                if (listCusPerCurrentFilter.Count > 0 && listCusPerCurrentFilter.First().SalesPeriod == salesPeriod.Code)
+                                {
+                                    var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALPC);
+                                    actualPC += Int32.Parse(valueCurrent.Value);
+                                }
+                                actualPC = actualPC + listDataRawSoFilter.GroupBy(x => x.OrderRefNumber).Select(x => x.First()).ToList().Count;
+
+                                // Calculate ActualLPPC
+                                float value = 0;
+                                if (listCusPerCurrentFilter.Count > 0 && listCusPerCurrentFilter.First().SalesPeriod == salesPeriod.Code)
+                                {
+                                    var listSkuBuyedNew = listDataRawSoFilter.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
+                                    var listSkuBuyerCurrent = listCusPerCurrentFilter.Where(x => x.Siid == SIIDConst.SKUBUYED).ToList();
+                                    int skuBuyedFinal = listSkuBuyerCurrent.Count();
+                                    foreach (var skuBuyedNew in listSkuBuyedNew)
                                     {
-                                        skuBuyedFinal++;
+                                        if (!listSkuBuyerCurrent.Any(x => x.Value == skuBuyedNew.ItemId))
+                                        {
+                                            skuBuyedFinal++;
+                                        }
+                                    }
+
+                                    value = skuBuyedFinal / actualPC;
+                                }
+                                else
+                                {
+                                    int skuBuedFinalCurrent = listDataRawSoFilter.GroupBy(x => x.ItemId).Select(x => x.First()).ToList().Count();
+                                    value = skuBuedFinalCurrent / actualPC;
+                                }
+                                dataInsert.Value = value.ToString();
+                                listCusPerDailyInsert.Add(dataInsert);
+                                continue;
+                            }
+
+                            // Calculate actual ASO
+                            if (si.Siid == SIIDConst.ASO)
+                            {
+                                int value = 0;
+                                if (listCusPerCurrentFilter.Count > 0 && listCusPerCurrentFilter.First().SalesPeriod == salesPeriod.Code)
+                                {
+                                    var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALPC);
+                                    value += Int32.Parse(valueCurrent.Value);
+                                }
+                                value += listDataRawSoFilter.Count;
+
+                                if (value > 0)
+                                {
+                                    dataInsert.Value = 1.ToString();
+                                }
+                                else
+                                {
+                                    dataInsert.Value = 0.ToString();
+                                }
+                                listCusPerDailyInsert.Add(dataInsert);
+                                continue;
+                            }
+
+                            // Calculate SKU Buyed
+                            if (si.Siid == SIIDConst.SKUBUYED)
+                            {
+                                var listSKUDaily = new List<BlCusPerDailySkubuyedDetail>();
+                                var listItemCode = new List<string>();
+
+                                // List item code new
+                                var listSkuBuyedNew = listDataRawSoFilter.GroupBy(x => x.ItemId).Select(x => x.First()).Select(x => x.ItemId).ToList();
+                                listItemCode.AddRange(listSkuBuyedNew);
+
+                                // List item code before
+                                if (listCusPerCurrentFilter.Count > 0 && listCusPerCurrentFilter.First().SalesPeriod == salesPeriod.Code)
+                                {
+                                    var listSkuBuyerCurrent = listCusPerCurrentFilter.Where(x => x.Siid == SIIDConst.SKUBUYED).Select(x => x.Value).ToList();
+                                    listItemCode.AddRange(listSkuBuyerCurrent);
+                                }
+
+                                var listItemCodeGroup = listItemCode.GroupBy(x => x).Select(x => x.First()).ToList();
+
+                                // Add data sku buyed
+                                foreach (var skuBuyedNew in listItemCodeGroup)
+                                {
+                                    // Common
+                                    var dataSkuInsert = new BlCustomerPerformanceDaily();
+                                    dataSkuInsert.SalesPeriod = salesPeriod.Code;
+                                    dataSkuInsert.BaselineDate = baselineDateNew.Date;
+                                    dataSkuInsert.CustomerId = rawSoGroup.CustomerId;
+                                    dataSkuInsert.CustomerName = rawSoGroup.CustomerName;
+                                    dataSkuInsert.CustomerShiptoId = rawSoGroup.CustomerShiptoId;
+                                    dataSkuInsert.CustomerShiptoName = rawSoGroup.CustomerShiptoName;
+                                    dataSkuInsert.CusShiptoAttributeId = rawSoGroup.CusShiptoAttributeId4;
+                                    dataSkuInsert.CusShiptoAttributeName = rawSoGroup.CusShiptoAttributeName4;
+                                    dataSkuInsert.CusShiptoAttributeDesc = rawSoGroup.CusShiptoAttributeDesc4;
+                                    dataSkuInsert.CusShiptoAttributeValueId = rawSoGroup.CusShiptoAttributeValueId4;
+                                    dataSkuInsert.CusShiptoAttributeValueDesc = rawSoGroup.CusShiptoAttributeValueDesc4;
+                                    dataSkuInsert.SalesOrgId = rawSoGroup.SalesOrgId;
+                                    dataSkuInsert.SalesOrgDesc = rawSoGroup.SalesOrgDesc;
+                                    dataSkuInsert.BranchId = rawSoGroup.BranchId;
+                                    dataSkuInsert.BranchName = rawSoGroup.BranchName;
+                                    dataSkuInsert.RegionId = rawSoGroup.RegionId;
+                                    dataSkuInsert.RegionName = rawSoGroup.RegionName;
+                                    dataSkuInsert.SubRegionId = rawSoGroup.SubRegionId;
+                                    dataSkuInsert.SubRegionName = rawSoGroup.SubRegionName;
+                                    dataSkuInsert.AreaId = rawSoGroup.AreaId;
+                                    dataSkuInsert.AreaName = rawSoGroup.AreaName;
+                                    dataSkuInsert.SubAreaId = rawSoGroup.SubAreaId;
+                                    dataSkuInsert.SubAreaName = rawSoGroup.SubAreaName;
+                                    dataSkuInsert.Dsaid = rawSoGroup.Dsaid;
+                                    dataSkuInsert.Dsadesc = rawSoGroup.Dsadesc;
+                                    dataSkuInsert.DistributorId = rawSoGroup.DistributorId;
+                                    dataSkuInsert.DistributorName = rawSoGroup.DistributorName;
+                                    dataSkuInsert.DistyBillToId = rawSoGroup.DistyBillToId;
+                                    dataSkuInsert.WarehouseId = rawSoGroup.WarehouseId;
+                                    dataSkuInsert.WarehouseName = rawSoGroup.WarehouseName;
+                                    dataSkuInsert.Sicid = rawSoGroup.Sicid;
+                                    dataSkuInsert.Sicdesc = rawSoGroup.Sicdesc;
+                                    dataSkuInsert.RouteZoneId = rawSoGroup.RouteZoneId;
+                                    dataSkuInsert.RouteZoneDesc = rawSoGroup.RouteZoneDesc;
+                                    dataSkuInsert.RouteZoneType = rawSoGroup.RouteZoneType;
+                                    dataSkuInsert.RouteZonelocation = rawSoGroup.RouteZonelocation;
+                                    dataSkuInsert.CreatedDate = DateTime.Now;
+                                    dataSkuInsert.CreatedBy = userLogin;
+                                    dataSkuInsert.Siid = si.Siid;
+                                    dataSkuInsert.Sidesc = si.Description;
+                                    dataSkuInsert.Id = Guid.NewGuid();
+
+                                    dataSkuInsert.Value = skuBuyedNew;
+                                    listCusPerDailyInsert.Add(dataSkuInsert);
+                                    listSKUDaily.Add(_mapper.Map<BlCusPerDailySkubuyedDetail>(dataSkuInsert));
+                                }
+
+                                // Handle flow sku buyed detail
+                                if (isRebaseline)
+                                {
+                                    var listSkubuyedDetailInDb = _blCusPerDailySkubuyedDetailRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
+                                                                              x.CustomerShiptoId == rawSoGroup.CustomerShiptoId &&
+                                                                              x.BaselineDate.Date == baselineDateNew.Date);
+
+                                    var itemSkubuyedRemoves = listSkubuyedDetailInDb.ToList();
+                                    if (itemSkubuyedRemoves.Count > 0)
+                                    {
+                                        _blCusPerDailySkubuyedDetailRepo.DeleteMany(itemSkubuyedRemoves);
+                                    }
+                                }
+                                _blCusPerDailySkubuyedDetailRepo.InsertMany(listSKUDaily);
+                                if (!isRebaseline)
+                                {
+                                    var listSkuBuyedCurrent = _blCurrentCusPerDailySkubuyedDetailRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId && x.CustomerShiptoId == rawSoGroup.CustomerShiptoId).ToList();
+                                    if (listSkuBuyedCurrent.Count > 0)
+                                    {
+                                        _blCurrentCusPerDailySkubuyedDetailRepo.DeleteMany(listSkuBuyedCurrent);
+                                    }
+                                    _blCurrentCusPerDailySkubuyedDetailRepo.InsertMany(_mapper.Map<List<BlCurrentCusPerDailySkubuyedDetail>>(listSKUDaily));
+                                }
+
+                                if (baselineDateNew.Date == baselineCurrent.Date && isRebaseline)
+                                {
+                                    var listSkuBuyedCurrent = _blCurrentCusPerDailySkubuyedDetailRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
+                                                                              x.CustomerShiptoId == rawSoGroup.CustomerShiptoId &&
+                                                                              x.BaselineDate.Date == baselineDateNew.Date);
+
+                                    var listSkuBuyedCurrentRemove = listSkuBuyedCurrent.ToList();
+                                    if (listSkuBuyedCurrentRemove.Count > 0)
+                                    {
+                                        _blCurrentCusPerDailySkubuyedDetailRepo.DeleteMany(listSkuBuyedCurrentRemove);
+                                    }
+                                    _blCurrentCusPerDailySkubuyedDetailRepo.InsertMany(_mapper.Map<List<BlCurrentCusPerDailySkubuyedDetail>>(listSKUDaily));
+                                }
+                                
+                                continue;
+                            }
+
+                            // Handle week visited
+                            if (si.Siid == SIIDConst.WEEKVISITED)
+                            {
+                                bool checkWeek = true;
+                                if (listCusPerCurrentFilter.Count > 0)
+                                {
+                                    // Get week current
+                                    var weekCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, baselineDateNew.Date, false);
+                                    if (!weekCurrentInfo.IsSuccess)
+                                    {
+                                        return await CreateAuditLog(new BaseResultModel
+                                        {
+                                            IsSuccess = false,
+                                            Code = weekCurrentInfo.Code,
+                                            Message = weekCurrentInfo.Message
+                                        }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                    }
+
+                                    // Week current in Database
+                                    var weekCurrentInDb = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, listCusPerCurrentFilter.First().BaselineDate, false);
+
+                                    if (!weekCurrentInDb.IsSuccess)
+                                    {
+                                        return await CreateAuditLog(new BaseResultModel
+                                        {
+                                            IsSuccess = false,
+                                            Code = weekCurrentInDb.Code,
+                                            Message = weekCurrentInDb.Message
+                                        }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                    }
+
+                                    if (weekCurrentInDb.Data.Code != weekCurrentInfo.Data.Code)
+                                    {
+                                        checkWeek = false;
                                     }
                                 }
 
-                                value = skuBuyedFinal / actualPC;
-                            }
-                            else
-                            {
-                                int skuBuedFinalCurrent = listDataRawSoFilter.GroupBy(x => x.ItemId).Select(x => x.First()).ToList().Count();
-                                value = skuBuedFinalCurrent / actualPC;
-                            }
-                            dataInsert.Value = value.ToString();
-                            listCusPerDailyInsert.Add(dataInsert);
-                            continue;
-                        }
 
-                        // Calculate actual ASO
-                        if (si.Siid == SIIDConst.ASO)
-                        {
-                            int value = 0;
-                            if (listCusPerCurrentFilter.Count > 0)
-                            {
-                                var valueCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.ACTUALPC);
-                                value += Int32.Parse(valueCurrent.Value);
-                            }
-                            value += listDataRawSoFilter.Count;
+                                int value = 0;
+                                if (listCusPerCurrentFilter.Count > 0 && checkWeek)
+                                {
+                                    var weekVisitedCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.WEEKVISITED).Value;
+                                    value += Int32.Parse(weekVisitedCurrent);
+                                }
 
-                            if (value > 0)
-                            {
-                                dataInsert.Value = 1.ToString();
-                            }
-                            else
-                            {
-                                dataInsert.Value = 0.ToString();
-                            }
-                            listCusPerDailyInsert.Add(dataInsert);
-                            continue;
-                        }
+                                // Check visitlist
+                                var visitListInDb = _visitListRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
+                                                                        x.CusShiptoId == rawSoGroup.CustomerShiptoId &&
+                                                                        x.RzId == rawSoGroup.RouteZoneId &&
+                                                                        x.VisitDate.Value.Date == baselineDateNew.Date &&
+                                                                        !(bool)x.RemoteVisit).ToList();
 
-                        // Calculate SKU Buyed
-                        if (si.Siid == SIIDConst.SKUBUYED)
-                        {
-                            var listSKUDaily = new List<BlCusPerDailySkubuyedDetail>();
-                            var listItemCode = new List<string>();
-
-                            // List item code new
-                            var listSkuBuyedNew = listDataRawSoFilter.GroupBy(x => x.ItemId).Select(x => x.First()).Select(x => x.ItemId).ToList();
-                            listItemCode.AddRange(listSkuBuyedNew);
-
-                            // List item code before
-                            if (listCusPerCurrentFilter.Count > 0)
-                            {
-                                var listSkuBuyerCurrent = listCusPerCurrentFilter.Where(x => x.Siid == SIIDConst.SKUBUYED).Select(x => x.Value).ToList();
-                                listItemCode.AddRange(listSkuBuyerCurrent);
+                                if (visitListInDb.Count > 0)
+                                {
+                                    value += 1;
+                                    visited = 1;
+                                }
+                                dataInsert.Value = value.ToString();
+                                listCusPerDailyInsert.Add(dataInsert);
                             }
 
-                            var listItemCodeGroup = listItemCode.GroupBy(x => x).Select(x => x.First()).ToList();
-
-                            // Add data sku buyed
-                            foreach (var skuBuyedNew in listItemCodeGroup)
+                            // Handle sales period visited
+                            if (si.Siid == SIIDConst.SPVISITED)
                             {
-                                // Common
-                                var dataSkuInsert = new BlCustomerPerformanceDaily();
-                                dataSkuInsert.SalesPeriod = salesPeriod.Code;
-                                dataSkuInsert.BaselineDate = baselineDateNew.Date;
-                                dataSkuInsert.CustomerId = rawSoGroup.CustomerId;
-                                dataSkuInsert.CustomerName = rawSoGroup.CustomerName;
-                                dataSkuInsert.CustomerShiptoId = rawSoGroup.CustomerShiptoId;
-                                dataSkuInsert.CustomerShiptoName = rawSoGroup.CustomerShiptoName;
-                                dataSkuInsert.CusShiptoAttributeId = rawSoGroup.CusShiptoAttributeId4;
-                                dataSkuInsert.CusShiptoAttributeName = rawSoGroup.CusShiptoAttributeName4;
-                                dataSkuInsert.CusShiptoAttributeDesc = rawSoGroup.CusShiptoAttributeDesc4;
-                                dataSkuInsert.CusShiptoAttributeValueId = rawSoGroup.CusShiptoAttributeValueId4;
-                                dataSkuInsert.CusShiptoAttributeValueDesc = rawSoGroup.CusShiptoAttributeValueDesc4;
-                                dataSkuInsert.SalesOrgId = rawSoGroup.SalesOrgId;
-                                dataSkuInsert.SalesOrgDesc = rawSoGroup.SalesOrgDesc;
-                                dataSkuInsert.BranchId = rawSoGroup.BranchId;
-                                dataSkuInsert.BranchName = rawSoGroup.BranchName;
-                                dataSkuInsert.RegionId = rawSoGroup.RegionId;
-                                dataSkuInsert.RegionName = rawSoGroup.RegionName;
-                                dataSkuInsert.SubRegionId = rawSoGroup.SubRegionId;
-                                dataSkuInsert.SubRegionName = rawSoGroup.SubRegionName;
-                                dataSkuInsert.AreaId = rawSoGroup.AreaId;
-                                dataSkuInsert.AreaName = rawSoGroup.AreaName;
-                                dataSkuInsert.SubAreaId = rawSoGroup.SubAreaId;
-                                dataSkuInsert.SubAreaName = rawSoGroup.SubAreaName;
-                                dataSkuInsert.Dsaid = rawSoGroup.Dsaid;
-                                dataSkuInsert.Dsadesc = rawSoGroup.Dsadesc;
-                                dataSkuInsert.DistributorId = rawSoGroup.DistributorId;
-                                dataSkuInsert.DistributorName = rawSoGroup.DistributorName;
-                                dataSkuInsert.DistyBillToId = rawSoGroup.DistyBillToId;
-                                dataSkuInsert.WarehouseId = rawSoGroup.WarehouseId;
-                                dataSkuInsert.WarehouseName = rawSoGroup.WarehouseName;
-                                dataSkuInsert.Sicid = rawSoGroup.Sicid;
-                                dataSkuInsert.Sicdesc = rawSoGroup.Sicdesc;
-                                dataSkuInsert.RouteZoneId = rawSoGroup.RouteZoneId;
-                                dataSkuInsert.RouteZoneDesc = rawSoGroup.RouteZoneDesc;
-                                dataSkuInsert.RouteZoneType = rawSoGroup.RouteZoneType;
-                                dataSkuInsert.RouteZonelocation = rawSoGroup.RouteZonelocation;
-                                dataSkuInsert.CreatedDate = DateTime.Now;
-                                dataSkuInsert.CreatedBy = userLogin;
-                                dataSkuInsert.Siid = si.Siid;
-                                dataSkuInsert.Sidesc = si.Description;
-                                dataSkuInsert.Id = Guid.NewGuid();
+                                int value = 0;
+                                value += visited;
 
-                                dataSkuInsert.Value = skuBuyedNew;
-                                listCusPerDailyInsert.Add(dataSkuInsert);
-                                listSKUDaily.Add(_mapper.Map<BlCusPerDailySkubuyedDetail>(dataSkuInsert));
-                            }
+                                var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDateNew.Date, false);
 
-                            // Handle flow sku buyed detail
-                            _blCusPerDailySkubuyedDetailRepo.InsertMany(listSKUDaily);
-                            var listSkuBuyedCurrent = _blCurrentCusPerDailySkubuyedDetailRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId && x.CustomerShiptoId == rawSoGroup.CustomerShiptoId).ToList();
-                            if (listSkuBuyedCurrent.Count > 0)
-                            {
-                                _blCurrentCusPerDailySkubuyedDetailRepo.DeleteMany(listSkuBuyedCurrent);
-                            }
-                            _blCurrentCusPerDailySkubuyedDetailRepo.InsertMany(_mapper.Map<List<BlCurrentCusPerDailySkubuyedDetail>>(listSKUDaily));
-                            continue;
-                        }
-
-                        // Handle week visited
-                        if (si.Siid == SIIDConst.WEEKVISITED)
-                        {
-                            bool checkWeek = true;
-                            if (listCusPerCurrentFilter.Count > 0)
-                            {
-                                // Get week current
-                                var weekCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, baselineDateNew.Date, false);
-                                if (!weekCurrentInfo.IsSuccess)
+                                if (!spCurrentInfo.IsSuccess)
                                 {
                                     return await CreateAuditLog(new BaseResultModel
                                     {
                                         IsSuccess = false,
-                                        Code = weekCurrentInfo.Code,
-                                        Message = weekCurrentInfo.Message
-                                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                        Code = spCurrentInfo.Code,
+                                        Message = spCurrentInfo.Message
+                                    }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                                 }
 
-                                // Week current in Database
-                                var weekCurrentInDb = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.WEEK, listCusPerCurrentFilter.First().BaselineDate, false);
+                                if (listCusPerCurrentFilter.Count > 0)
+                                {
+                                    var dateCusPerDailyInDb = listCusPerCurrentFilter.First().BaselineDate;
+                                    var spCurrentInDbInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, dateCusPerDailyInDb.Date, false);
 
-                                if (!weekCurrentInDb.IsSuccess)
+                                    if (!spCurrentInDbInfo.IsSuccess)
+                                    {
+                                        return await CreateAuditLog(new BaseResultModel
+                                        {
+                                            IsSuccess = false,
+                                            Code = spCurrentInDbInfo.Code,
+                                            Message = spCurrentInDbInfo.Message
+                                        }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                    }
+
+                                    if (spCurrentInfo.Code == spCurrentInDbInfo.Code)
+                                    {
+                                        var spVisitedInDb = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.SPVISITED).Value;
+                                        value += Int32.Parse(spVisitedInDb);
+                                    }
+                                }
+
+                                dataInsert.Value = value.ToString();
+                                listCusPerDailyInsert.Add(dataInsert);
+                            }
+
+                            // Handle quater period visited
+                            if (si.Siid == SIIDConst.QUATERVISITED)
+                            {
+                                int value = 0;
+                                value += visited;
+
+                                var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.QUARTER, baselineDateNew.Date, false);
+
+                                if (!spCurrentInfo.IsSuccess)
                                 {
                                     return await CreateAuditLog(new BaseResultModel
                                     {
                                         IsSuccess = false,
-                                        Code = weekCurrentInDb.Code,
-                                        Message = weekCurrentInDb.Message
-                                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                        Code = spCurrentInfo.Code,
+                                        Message = spCurrentInfo.Message
+                                    }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                                 }
 
-                                if (weekCurrentInDb.Data.Code != weekCurrentInfo.Data.Code)
+                                if (listCusPerCurrentFilter.Count > 0)
                                 {
-                                    checkWeek = false;
+                                    var dateCusPerDailyInDb = listCusPerCurrentFilter.First().BaselineDate;
+                                    var spCurrentInDbInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.QUARTER, dateCusPerDailyInDb.Date, false);
+
+                                    if (!spCurrentInDbInfo.IsSuccess)
+                                    {
+                                        return await CreateAuditLog(new BaseResultModel
+                                        {
+                                            IsSuccess = false,
+                                            Code = spCurrentInDbInfo.Code,
+                                            Message = spCurrentInDbInfo.Message
+                                        }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                    }
+
+                                    if (spCurrentInfo.Code == spCurrentInDbInfo.Code)
+                                    {
+                                        var spVisitedInDb = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.YEARVISITED).Value;
+                                        value += Int32.Parse(spVisitedInDb);
+                                    }
                                 }
+
+                                dataInsert.Value = value.ToString();
+                                listCusPerDailyInsert.Add(dataInsert);
                             }
 
-
-                            int value = 0;
-                            if (listCusPerCurrentFilter.Count > 0 && checkWeek)
+                            // Handle year period visited
+                            if (si.Siid == SIIDConst.YEARVISITED)
                             {
-                                var weekVisitedCurrent = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.WEEKVISITED).Value;
-                                value += Int32.Parse(weekVisitedCurrent);
-                            }
+                                int value = 0;
+                                value += visited;
+                                int year = baselineDateNew.Year;
 
-                            // Check visitlist
-                            var visitListInDb = _visitListRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
-                                                                    x.CusShiptoId == rawSoGroup.CustomerShiptoId &&
-                                                                    x.RzId == rawSoGroup.RouteZoneId &&
-                                                                    x.VisitDate.Value.Date == baselineDateNew.Date &&
-                                                                    !(bool)x.RemoteVisit).ToList();
-
-                            if (visitListInDb.Count > 0)
-                            {
-                                value += 1;
-                                visited = 1;
-                            }
-                            dataInsert.Value = value.ToString();
-                            listCusPerDailyInsert.Add(dataInsert);
-                        }
-
-                        // Handle sales period visited
-                        if (si.Siid == SIIDConst.SPVISITED)
-                        {
-                            int value = 0;
-                            value += visited;
-
-                            var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDateNew.Date, false);
-
-                            if (!spCurrentInfo.IsSuccess)
-                            {
-                                return await CreateAuditLog(new BaseResultModel
+                                if (listCusPerCurrentFilter.Count > 0)
                                 {
-                                    IsSuccess = false,
-                                    Code = spCurrentInfo.Code,
-                                    Message = spCurrentInfo.Message
-                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                    int yearCusPerInDb = listCusPerCurrentFilter.First().BaselineDate.Year;
+                                    if (year == yearCusPerInDb)
+                                    {
+                                        var spVisitedInDb = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.YEARVISITED).Value;
+                                        value += Int32.Parse(spVisitedInDb);
+                                    }
+                                }
+
+                                dataInsert.Value = value.ToString();
+                                listCusPerDailyInsert.Add(dataInsert);
                             }
 
-                            if (listCusPerCurrentFilter.Count > 0)
+                            // Handle VPO
+                            if (si.Siid == SIIDConst.VPO)
                             {
-                                var dateCusPerDailyInDb = listCusPerCurrentFilter.First().BaselineDate;
-                                var spCurrentInDbInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, dateCusPerDailyInDb.Date, false);
-
-                                if (!spCurrentInDbInfo.IsSuccess)
+                                var actualVolumeInserted = listCusPerDailyInsert.FirstOrDefault(x => x.Siid == SIIDConst.ACTUALVOLUME);
+                                if (actualVolumeInserted == null)
                                 {
                                     return await CreateAuditLog(new BaseResultModel
                                     {
                                         IsSuccess = false,
-                                        Code = spCurrentInDbInfo.Code,
-                                        Message = spCurrentInDbInfo.Message
-                                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                        Code = 404,
+                                        Message = "Cannot found Actual volume"
+                                    }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                                 }
 
-                                if (spCurrentInfo.Code == spCurrentInDbInfo.Code)
-                                {
-                                    var spVisitedInDb = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.SPVISITED).Value;
-                                    value += Int32.Parse(spVisitedInDb);
-                                }
-                            }
-
-                            dataInsert.Value = value.ToString();
-                            listCusPerDailyInsert.Add(dataInsert);
-                        }
-
-                        // Handle quater period visited
-                        if (si.Siid == SIIDConst.QUATERVISITED)
-                        {
-                            int value = 0;
-                            value += visited;
-
-                            var spCurrentInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.QUARTER, baselineDateNew.Date, false);
-
-                            if (!spCurrentInfo.IsSuccess)
-                            {
-                                return await CreateAuditLog(new BaseResultModel
-                                {
-                                    IsSuccess = false,
-                                    Code = spCurrentInfo.Code,
-                                    Message = spCurrentInfo.Message
-                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
-                            }
-
-                            if (listCusPerCurrentFilter.Count > 0)
-                            {
-                                var dateCusPerDailyInDb = listCusPerCurrentFilter.First().BaselineDate;
-                                var spCurrentInDbInfo = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.QUARTER, dateCusPerDailyInDb.Date, false);
-
-                                if (!spCurrentInDbInfo.IsSuccess)
+                                var salePeriodVPO = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDateNew.Date, true);
+                                if (!salePeriodVPO.IsSuccess)
                                 {
                                     return await CreateAuditLog(new BaseResultModel
                                     {
                                         IsSuccess = false,
-                                        Code = spCurrentInDbInfo.Code,
-                                        Message = spCurrentInDbInfo.Message
-                                    }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                        Code = salePeriodVPO.Code,
+                                        Message = salePeriodVPO.Message
+                                    }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
                                 }
-
-                                if (spCurrentInfo.Code == spCurrentInDbInfo.Code)
-                                {
-                                    var spVisitedInDb = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.YEARVISITED).Value;
-                                    value += Int32.Parse(spVisitedInDb);
-                                }
-                            }
-
-                            dataInsert.Value = value.ToString();
-                            listCusPerDailyInsert.Add(dataInsert);
-                        }
-
-                        // Handle year period visited
-                        if (si.Siid == SIIDConst.YEARVISITED)
-                        {
-                            int value = 0;
-                            value += visited;
-                            int year = baselineDateNew.Year;
-
-                            if (listCusPerCurrentFilter.Count > 0)
-                            {
-                                int yearCusPerInDb = listCusPerCurrentFilter.First().BaselineDate.Year;
-                                if (year == yearCusPerInDb)
-                                {
-                                    var spVisitedInDb = listCusPerCurrentFilter.First(x => x.Siid == SIIDConst.YEARVISITED).Value;
-                                    value += Int32.Parse(spVisitedInDb);
-                                }
-                            }
-
-                            dataInsert.Value = value.ToString();
-                            listCusPerDailyInsert.Add(dataInsert);
-                        }
-
-                        // Handle VPO
-                        if (si.Siid == SIIDConst.VPO)
-                        {
-                            var actualVolumeInserted = listCusPerDailyInsert.FirstOrDefault(x => x.Siid == SIIDConst.ACTUALVOLUME);
-                            if (actualVolumeInserted == null)
-                            {
-                                return await CreateAuditLog(new BaseResultModel
-                                {
-                                    IsSuccess = false,
-                                    Code = 404,
-                                    Message = "Cannot found Actual volume"
-                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
-                            }
-
-                            var salePeriodVPO = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDateNew.Date, true);
-                            if (!salePeriodVPO.IsSuccess)
-                            {
-                                return await CreateAuditLog(new BaseResultModel
-                                {
-                                    IsSuccess = false,
-                                    Code = salePeriodVPO.Code,
-                                    Message = salePeriodVPO.Message
-                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
-                            }
-                            var normVPO = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId &&
-                                                                                    x.SalesPeriod == salePeriodVPO.Data.Code &&
-                                                                                    x.Siid == si.Siid);
-                            if (normVPO == null)
-                            {
-                                dataInsert.Value = 0.ToString();
-                            }
-                            else
-                            {
-                                if (Int32.Parse(normVPO.Value) <= Int32.Parse(actualVolumeInserted.Value))
-                                {
-                                    dataInsert.Value = 1.ToString();
-                                }
-                                else
+                                var normVPO = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId &&
+                                                                                        x.SalesPeriod == salePeriodVPO.Data.Code &&
+                                                                                        x.Siid == si.Siid);
+                                if (normVPO == null)
                                 {
                                     dataInsert.Value = 0.ToString();
                                 }
-                            }
-                            listCusPerDailyInsert.Add(dataInsert);
-                        }
-
-                        // Handle LPPC
-                        if (si.Siid == SIIDConst.LPPC)
-                        {
-                            var actualLPPCInserted = listCusPerDailyInsert.FirstOrDefault(x => x.Siid == SIIDConst.ACTUALLPPC);
-                            if (actualLPPCInserted == null)
-                            {
-                                return await CreateAuditLog(new BaseResultModel
-                                {
-                                    IsSuccess = false,
-                                    Code = 404,
-                                    Message = "Cannot found Actual LPPC"
-                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
-                            }
-
-                            var salePeriodLPPC = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDateNew.Date, true);
-                            if (!salePeriodLPPC.IsSuccess)
-                            {
-                                return await CreateAuditLog(new BaseResultModel
-                                {
-                                    IsSuccess = false,
-                                    Code = salePeriodLPPC.Code,
-                                    Message = salePeriodLPPC.Message
-                                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
-                            }
-                            var normLPPC = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId &&
-                                                                                    x.SalesPeriod == salePeriodLPPC.Data.Code &&
-                                                                                    x.Siid == si.Siid);
-                            if (normLPPC == null)
-                            {
-                                dataInsert.Value = 0.ToString();
-                            }
-                            else
-                            {
-                                if (float.Parse(normLPPC.Value) <= float.Parse(actualLPPCInserted.Value))
-                                {
-                                    dataInsert.Value = 1.ToString();
-                                }
                                 else
+                                {
+                                    if (Int32.Parse(normVPO.Value) <= Int32.Parse(actualVolumeInserted.Value))
+                                    {
+                                        dataInsert.Value = 1.ToString();
+                                    }
+                                    else
+                                    {
+                                        dataInsert.Value = 0.ToString();
+                                    }
+                                }
+                                listCusPerDailyInsert.Add(dataInsert);
+                            }
+
+                            // Handle LPPC
+                            if (si.Siid == SIIDConst.LPPC)
+                            {
+                                var actualLPPCInserted = listCusPerDailyInsert.FirstOrDefault(x => x.Siid == SIIDConst.ACTUALLPPC);
+                                if (actualLPPCInserted == null)
+                                {
+                                    return await CreateAuditLog(new BaseResultModel
+                                    {
+                                        IsSuccess = false,
+                                        Code = 404,
+                                        Message = "Cannot found Actual LPPC"
+                                    }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                }
+
+                                var salePeriodLPPC = await GetCalendarGenerate(listCalendarGenerate, CalendarConstant.MONTH, baselineDateNew.Date, true);
+                                if (!salePeriodLPPC.IsSuccess)
+                                {
+                                    return await CreateAuditLog(new BaseResultModel
+                                    {
+                                        IsSuccess = false,
+                                        Code = salePeriodLPPC.Code,
+                                        Message = salePeriodLPPC.Message
+                                    }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                                }
+                                var normLPPC = _blNormOfBussinessModelRepo.FirstOrDefault(x => x.BusinessModelId == dataInsert.CusShiptoAttributeId &&
+                                                                                        x.SalesPeriod == salePeriodLPPC.Data.Code &&
+                                                                                        x.Siid == si.Siid);
+                                if (normLPPC == null)
                                 {
                                     dataInsert.Value = 0.ToString();
                                 }
+                                else
+                                {
+                                    if (float.Parse(normLPPC.Value) <= float.Parse(actualLPPCInserted.Value))
+                                    {
+                                        dataInsert.Value = 1.ToString();
+                                    }
+                                    else
+                                    {
+                                        dataInsert.Value = 0.ToString();
+                                    }
+                                }
+                                listCusPerDailyInsert.Add(dataInsert);
                             }
-                            listCusPerDailyInsert.Add(dataInsert);
                         }
-                    }
-                    _blCusPerDailyRepo.InsertMany(listCusPerDailyInsert);
-                    if (listCusPerCurrentFilter.Count > 0)
-                    {
-                        _blCurrentCusPerDailyRepo.DeleteMany(listCusPerCurrentFilter);
-                    }
+                        // Handle remove if rebaseline
+                        if (isRebaseline)
+                        {
+                            var listCusPerDailyInDb = _blCusPerDailyRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
+                                                                              x.CustomerShiptoId == rawSoGroup.CustomerShiptoId &&
+                                                                              x.BaselineDate.Date == baselineDateNew.Date);
 
-                    _blCurrentCusPerDailyRepo.InsertMany(_mapper.Map<List<BlCurrentCustomerPerformanceDaily>>(listCusPerDailyInsert));
+                            var itemCusPerDailyRemoves = listCusPerDailyInDb.ToList();
+                            if (itemCusPerDailyRemoves.Count > 0)
+                            {
+                                _blCusPerDailyRepo.DeleteMany(itemCusPerDailyRemoves);
+                            }
+                        }
+
+                        _blCusPerDailyRepo.InsertMany(listCusPerDailyInsert);
+
+                        // Handle customer performance daily current
+                        if (!isRebaseline)
+                        {
+                            var listCurrentCusPerDailyInDb = _blCurrentCusPerDailyRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId && x.CustomerShiptoId == rawSoGroup.CustomerShiptoId).ToList();
+                            if (listCurrentCusPerDailyInDb.Count > 0)
+                            {
+                                _blCurrentCusPerDailyRepo.DeleteMany(listCurrentCusPerDailyInDb);
+                            }
+                            _blCurrentCusPerDailyRepo.InsertMany(_mapper.Map<List<BlCurrentCustomerPerformanceDaily>>(listCusPerDailyInsert));
+                        }
+
+                        if (baselineDateNew.Date == baselineCurrent.Date && isRebaseline)
+                        {
+                          
+                            var listCurrentCusPerDailyInDb = _blCurrentCusPerDailyRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
+                                                                              x.CustomerShiptoId == rawSoGroup.CustomerShiptoId &&
+                                                                              x.BaselineDate.Date == baselineDateNew.Date);
+
+
+                            var itemCurrentCusPerDailyRemoves = listCurrentCusPerDailyInDb.ToList();
+                            if (itemCurrentCusPerDailyRemoves.Count > 0)
+                            {
+                                _blCurrentCusPerDailyRepo.DeleteMany(itemCurrentCusPerDailyRemoves);
+                            }
+                            _blCurrentCusPerDailyRepo.InsertMany(_mapper.Map<List<BlCurrentCustomerPerformanceDaily>>(listCusPerDailyInsert));
+                        }
+                        
+                    }
                 }
-
                 return await CreateAuditLog(new BaseResultModel
                 {
                     Code = 200,
                     IsSuccess = true,
                     Message = "Successfully"
-                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
             }
             catch (Exception ex)
             {
@@ -3125,7 +3252,7 @@ namespace RDOS.BaseLine.Service
                     Code = 500,
                     IsSuccess = false,
                     Message = ex.InnerException?.Message ?? ex.Message
-                }, baselineDateNew, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
+                }, baselineDateParse, null, BlProcessConst.CUS_PER_DAILY, dataRequest.HistoryRefNumber);
             }
         }
 
