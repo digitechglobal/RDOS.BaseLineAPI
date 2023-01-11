@@ -144,7 +144,7 @@ namespace RDOS.BaseLine.Service
                 if (string.IsNullOrWhiteSpace(dataRequest.Type) ||
                     string.IsNullOrWhiteSpace(dataRequest.SalesOrgCode) ||
                     dataRequest.ValueCodes == null ||
-                    (dataRequest.ValueCodes != null && dataRequest.ValueCodes.Count == 0) )
+                    (dataRequest.ValueCodes != null && dataRequest.ValueCodes.Count == 0))
                 {
                     // List record po by baseline date
                     var listRawPo = _blRawPo.Find(x => x.BaselineDate.Date == baselineDateNew.Date).ToList();
@@ -1203,7 +1203,7 @@ namespace RDOS.BaseLine.Service
                     }, baselineDateNew, dataRequest.SettingRef, BlProcessConst.SOPROCESS, dataRequest.HistoryRefNumber);
                 }
 
-                
+
             }
             catch (Exception ex)
             {
@@ -3348,12 +3348,23 @@ namespace RDOS.BaseLine.Service
         {
             try
             {
-                var res = _blHistoryRepo.Find(x => x.BaselineDate.Date == parameters.BaslineDate.Date && (!string.IsNullOrWhiteSpace(x.Type) && x.Type != BaselineType.MONTHLY));
+                var res = _blHistoryRepo.Find(x =>
+                    (parameters.BaselineDate.HasValue ? x.BaselineDate.HasValue && x.BaselineDate.Value.Date == parameters.BaselineDate.Value.Date : true) &&
+                    (!string.IsNullOrWhiteSpace(x.Type) && x.Type == parameters.Type));
 
+                if (!string.IsNullOrWhiteSpace(parameters.SalesOrgId))
+                {
+                    res = res.Where(x => !string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgId);
+                }
+
+                if (!string.IsNullOrWhiteSpace(parameters.SalesPeriod))
+                {
+                    res = res.Where(x => !string.IsNullOrWhiteSpace(x.SalesPeriod) && x.SalesPeriod == parameters.SalesPeriod);
+                }
                 if (!string.IsNullOrWhiteSpace(parameters.SearchValue))
                 {
                     res = res.Where(x =>
-                    (!string.IsNullOrWhiteSpace(x.RefNumber) && x.RefNumber.ToLower().Contains(parameters.SearchValue.ToLower()))).ToList();
+                    (!string.IsNullOrWhiteSpace(x.RefNumber) && x.RefNumber.ToLower().Contains(parameters.SearchValue.ToLower())));
                 }
 
                 if (parameters.FromDate.HasValue)
@@ -3368,9 +3379,7 @@ namespace RDOS.BaseLine.Service
 
                 res = res.ToList();
                 var listHistory = res.ToList();
-
                 var listProcessInDb = _blProcessRepo.GetAll();
-
                 var listDataRes = new List<HistoryDetailModel>();
 
                 foreach (var item in listHistory)

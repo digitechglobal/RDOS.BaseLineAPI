@@ -253,7 +253,10 @@ namespace RDOS.BaseLine.Models.Request
 
     public class FilterHistoryModel : EcoParameters
     {
-        public DateTime BaslineDate { get; set; }
+        public DateTime? BaselineDate { get; set; }
+        public string Type { get; set; } = BaselineType.DAILY;
+        public string SalesOrgId { get; set; }
+        public string SalesPeriod { get; set; }
     }
 
     public class ListHistoryResponse
@@ -265,7 +268,7 @@ namespace RDOS.BaseLine.Models.Request
     public class HistoryDetailModel
     {
         public BlHistory HistoryInfo { get; set; } = new BlHistory();
-        public List<AuditlogDetailModel> listAuditlog { get; set; } = new List<AuditlogDetailModel>(); 
+        public List<AuditlogDetailModel> listAuditlog { get; set; } = new List<AuditlogDetailModel>();
     }
 
     public class AuditlogDetailModel : BlAuditLog

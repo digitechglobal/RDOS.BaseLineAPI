@@ -42,7 +42,6 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<SaleCalendar> _salesCalendarRepo;
         private readonly IBaselineProcessService _blProcessService;
         private readonly IBaseRepository<BlAuditLog> _blAuditLogRepo;
-        private string _username;
         private readonly IBaseRepository<BlRawSo> _blRawSo;
         private readonly IBaseRepository<SaleCalendarGenerate> _saleCalendarGenerateRepo;
         private readonly IBaseRepository<Kpisetting> _kpiSettingRepo;
@@ -50,6 +49,7 @@ namespace RDOS.BaseLine.Service
         private readonly IDapperRepositories _dapper;
         private readonly IBaseRepository<ScSalesOrganizationStructure> _salesOrgRepo;
         private string _token;
+        private string _username;
 
         public PhattvBLProcessService(
             ILogger<PhattvBLProcessService> logger,
@@ -1523,11 +1523,33 @@ namespace RDOS.BaseLine.Service
 
 
 
-        public async Task<BaseResultModel> HandleMonthlyBaseLine(int salesYear, string salesPeriod, int ordinal, string saleOrgId, string token)
+        public async Task<BaseResultModel> HandleMonthlyBaseLine(MonthlyBaseLineReqModel req, string token, string username)
         {
             _token = token;
+            _username = username;
+            var insertHistory = await CommonInsertHistory(new BlHistory
+            {
+                Id = Guid.NewGuid(),
+                BaselineSettingRef = req.settingRef,
+                BaselineDate = DateTime.MinValue,
+                SalesPeriod = req.salesPeriod,
+                StartTimeDate = DateTime.Now,
+                EndTimeDate = null,
+                IsCompleted = false,
+                Type = BaselineType.MONTHLY,
+                Scope = ScopeTypeConst.ALL,
+                CreatedDate = DateTime.Now,
+                UpdatedDate = null,
+                CreatedBy = username,
+                UpdatedBy = null,
+                SalesOrgId = req.saleOrgId,
+                SalesOrgDesc = req.SalesOrgDesc,
+                // RefNumber = ,
+            });
+            
             try
             {
+
                 #region PnM
                 List<BlPnM> insertPnMList = new();
                 var kpiSetting = _kpiSettingRepo.Find(x => x.SaleYear == DateTime.Now.Year).FirstOrDefault();
@@ -1537,9 +1559,9 @@ namespace RDOS.BaseLine.Service
                 {
                     n = kpiSetting.BasedPastMonths;
                 }
-                var saleCalendar = _salesCalendarRepo.Find(x => x.SaleYear == salesYear).FirstOrDefault();
-                var calendarGenerates = _saleCalendarGenerateRepo.Find(x => x.Type == CalendarConstant.MONTH && x.SaleCalendarId == saleCalendar.Id && x.Ordinal <= ordinal && x.Ordinal > ordinal - n).ToList();
-                List<string> salePeriodList = new List<string> { salesPeriod };
+                var saleCalendar = _salesCalendarRepo.Find(x => x.SaleYear == req.salesYear).FirstOrDefault();
+                var calendarGenerates = _saleCalendarGenerateRepo.Find(x => x.Type == CalendarConstant.MONTH && x.SaleCalendarId == saleCalendar.Id && x.Ordinal <= req.ordinal && x.Ordinal > req.ordinal - n).ToList();
+                List<string> salePeriodList = new List<string> { req.salesPeriod };
                 if (calendarGenerates != null && calendarGenerates.Count > 0)
                 {
                     salePeriodList.AddRange(calendarGenerates.Select(x => x.Code).ToList());
@@ -1559,8 +1581,8 @@ namespace RDOS.BaseLine.Service
                 {
                     // Handle parameter
                     DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("@salesperiod", salesPeriod);
-                    parameters.Add("@saleorgid", saleOrgId);
+                    parameters.Add("@salesperiod", req.salesPeriod);
+                    parameters.Add("@saleorgid", req.saleOrgId);
                     var listVol = ((List<BlPnM>)_dapper.QueryWithParams<BlPnM>(queryvol, parameters));
                     if (listVol != null && listVol.Count > 0)
                     {
@@ -1578,7 +1600,7 @@ namespace RDOS.BaseLine.Service
                 var groupeVoldData = listVolData.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => new BlPnM
                 {
                     Id = Guid.NewGuid(),
-                    SalesPeriod = salesPeriod,
+                    SalesPeriod = req.salesPeriod,
                     CustomerId = x.Key.CustomerId,
                     CustomerName = x.Select(x => x.CustomerName).FirstOrDefault(),
                     CustomerShiptoId = x.Key.CustomerShiptoId,
@@ -1596,7 +1618,7 @@ namespace RDOS.BaseLine.Service
                 var groupeRevdData = listRevData.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => new BlPnM
                 {
                     Id = Guid.NewGuid(),
-                    SalesPeriod = salesPeriod,
+                    SalesPeriod = req.salesPeriod,
                     CustomerId = x.Key.CustomerId,
                     CustomerName = x.Select(x => x.CustomerName).FirstOrDefault(),
                     CustomerShiptoId = x.Key.CustomerShiptoId,
@@ -1618,20 +1640,20 @@ namespace RDOS.BaseLine.Service
                 var listAttByCUS04 = ((List<ActiveAttCUS04Model>)_dapper.QueryWithParams<ActiveAttCUS04Model>(queryShiptoList, queryShiptoListparameters));
                 if (listAttByCUS04 != null && listAttByCUS04.Count > 0)
                 {
-                    var listRawSo = _blRawSo.Find(x => x.SalesPeriodId == salesPeriod).ToList();
+                    var listRawSo = _blRawSo.Find(x => x.SalesPeriodId == req.salesPeriod).ToList();
                     // var GroupedShiptohasByed = listRawSo.Where(x => x.Status == StatusSOConst.DELIVERED || x.Status == StatusSOConst.PARTIALDELIVERED).GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => x.First()).ToList();
                     var listNorm = new List<BlNormOfBussinessModel>();
                     foreach (var model in listAttByCUS04)
                     {
                         var rawSobyAttribute = listRawSo.Where(x => x.CusShiptoAttributeValueId4 == model.Code).ToList();
                         var GroupedShiptohasByed = rawSobyAttribute.Where(x => x.Status == StatusSOConst.DELIVERED || x.Status == StatusSOConst.PARTIALDELIVERED).GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => x.First()).ToList();
+
                         //VPO
                         decimal vpoValue = (decimal)(rawSobyAttribute.Sum(x => x.OrderBaseQuantities) / GroupedShiptohasByed.Count);
-
                         var normVPO = new BlNormOfBussinessModel
                         {
                             Id = Guid.NewGuid(),
-                            SalesPeriod = salesPeriod,
+                            SalesPeriod = req.salesPeriod,
                             BusinessModelId = model.Code,
                             BusinessModelDesr = null,
                             Siid = "VPO",
@@ -1648,7 +1670,7 @@ namespace RDOS.BaseLine.Service
                         var normPC = new BlNormOfBussinessModel
                         {
                             Id = Guid.NewGuid(),
-                            SalesPeriod = salesPeriod,
+                            SalesPeriod = req.salesPeriod,
                             BusinessModelId = model.Code,
                             BusinessModelDesr = null,
                             Siid = "%PC",
@@ -1661,12 +1683,11 @@ namespace RDOS.BaseLine.Service
                         };
 
                         // %ASO	
-
                         decimal ASOValue = GroupedShiptohasByed.Count * 100 / rawSobyAttribute.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => x.First()).ToList().Count;
                         var normASO = new BlNormOfBussinessModel
                         {
                             Id = Guid.NewGuid(),
-                            SalesPeriod = salesPeriod,
+                            SalesPeriod = req.salesPeriod,
                             BusinessModelId = model.Code,
                             BusinessModelDesr = null,
                             Siid = "%ASO",
@@ -1677,13 +1698,13 @@ namespace RDOS.BaseLine.Service
                             CreatedBy = null,
                             UpdatedBy = null,
                         };
-                        // LPPC		- shippedExtend / Count of Refnumber
 
+                        // LPPC		- shippedExtend / Count of Refnumber
                         decimal LPPCValue = (decimal)(rawSobyAttribute.Sum(x => x.ShippedBaseQuantities) / rawSobyAttribute.Where(x => x.Status == StatusSOConst.DELIVERED || x.Status == StatusSOConst.PARTIALDELIVERED).GroupBy(x => x.OrderRefNumber).Select(x => x.First()).Count());
                         var normLPPC = new BlNormOfBussinessModel
                         {
                             Id = Guid.NewGuid(),
-                            SalesPeriod = salesPeriod,
+                            SalesPeriod = req.salesPeriod,
                             BusinessModelId = model.Code,
                             BusinessModelDesr = null,
                             Siid = "LPPC",
@@ -1701,7 +1722,7 @@ namespace RDOS.BaseLine.Service
                         var normLPPCValue = new BlNormOfBussinessModel
                         {
                             Id = Guid.NewGuid(),
-                            SalesPeriod = salesPeriod,
+                            SalesPeriod = req.salesPeriod,
                             BusinessModelId = model.Code,
                             BusinessModelDesr = null,
                             Siid = "LPPCValue",
@@ -1718,7 +1739,7 @@ namespace RDOS.BaseLine.Service
                         var normDropSize = new BlNormOfBussinessModel
                         {
                             Id = Guid.NewGuid(),
-                            SalesPeriod = salesPeriod,
+                            SalesPeriod = req.salesPeriod,
                             BusinessModelId = model.Code,
                             BusinessModelDesr = null,
                             Siid = "DropSize",
@@ -1742,7 +1763,7 @@ namespace RDOS.BaseLine.Service
                 }
 
                 //KPI
-                var currentSalesCalendar = calendarGenerates.Where(x => x.Code == salesPeriod).FirstOrDefault();
+                var currentSalesCalendar = calendarGenerates.Where(x => x.Code == req.salesPeriod).FirstOrDefault();
                 if (currentSalesCalendar != null)
                 {
                     for (DateTime i = currentSalesCalendar.StartDate.Value.Date; i <= currentSalesCalendar.EndDate.Value.Date; i.AddDays(1))
@@ -1750,6 +1771,16 @@ namespace RDOS.BaseLine.Service
                         await _blProcessService.ProcessSoKPI(i, _token);
                     };
                 }
+
+
+                insertHistory.UpdatedBy = username;
+                insertHistory.UpdatedDate = DateTime.Now;
+                insertHistory.EndTimeDate = DateTime.Now;
+
+
+
+                insertHistory.IsCompleted = true;
+                _blHistoryRepo.Update(insertHistory);
 
                 return new BaseResultModel
                 {
@@ -1760,6 +1791,12 @@ namespace RDOS.BaseLine.Service
             }
             catch (System.Exception ex)
             {
+                insertHistory.UpdatedBy = username;
+                insertHistory.UpdatedDate = DateTime.Now;
+                insertHistory.EndTimeDate = DateTime.Now;
+
+                insertHistory.IsCompleted = false;
+                _blHistoryRepo.Update(insertHistory);
                 return new BaseResultModel
                 {
                     IsSuccess = false,
@@ -1769,6 +1806,21 @@ namespace RDOS.BaseLine.Service
             }
         }
 
+
+        public async Task<BlHistory> CommonInsertHistory(BlHistory model)
+        {
+            try
+            {
+                var historyRefNumber = await GenRefNumber();
+                model.RefNumber = historyRefNumber;
+                var result = _blHistoryRepo.Insert(model);
+                return result;
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
+        }
 
     }
 }

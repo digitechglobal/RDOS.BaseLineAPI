@@ -7,10 +7,10 @@ namespace RDOS.BaseLine.RDOSInfratructure
     {
         public Guid Id { get; set; }
         public string? BaselineSettingRef { get; set; }
-        public DateTime BaselineDate { get; set; }
+        public DateTime? BaselineDate { get; set; }
         public string? SalesPeriod { get; set; }
         public DateTime StartTimeDate { get; set; }
-        public DateTime EndTimeDate { get; set; }
+        public DateTime? EndTimeDate { get; set; }
         public bool IsCompleted { get; set; }
         public string? Type { get; set; }
         public string? Scope { get; set; }

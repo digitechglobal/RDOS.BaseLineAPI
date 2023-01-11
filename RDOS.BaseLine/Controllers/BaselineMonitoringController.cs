@@ -5,6 +5,7 @@ using nProx.Helpers.Services.Base;
 using Quartz;
 using RDOS.BaseLine.Constants;
 using RDOS.BaseLine.Models.Request;
+using RDOS.BaseLine.Models.Result;
 using RDOS.BaseLine.RDOSInfratructure;
 using RDOS.BaseLine.Service.Interface;
 using System.Security.Cryptography;
@@ -57,6 +58,15 @@ namespace RDOS.BaseLine.Controllers
             dataInput.Type = BaselineType.REBASELINE;
             dataInput.ByUser = username;
             return Ok(await _phattvBaseLineSettingService.HandleBaseLineProcess(dataInput));
+        }
+
+        
+        [HttpPost]
+        [Route("HandleMonthlyBaseLine")]
+        public async Task<IActionResult> HandleMonthlyBaseLine(MonthlyBaseLineReqModel req)
+        {
+            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
+            return Ok(await _phattvBaseLineSettingService.HandleMonthlyBaseLine(req, _token, username));
         }
     }
 }

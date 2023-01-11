@@ -2,6 +2,7 @@
 using RDOS.BaseLine.Constants;
 using RDOS.BaseLine.Models;
 using RDOS.BaseLine.Models.Request;
+using RDOS.BaseLine.Models.Result;
 using static RDOS.BaseLine.Constants.Constants;
 using static RDOS.BaseLine.Models.Results;
 
@@ -17,5 +18,6 @@ namespace RDOS.BaseLine.Service.Interface
         Task<bool> DeleteJob(JobMetadata jobMetadata);
         Task<BaseResultModel> HandleBaseLineProcess(BaselineProcessRequest dataRequest);
         Task<BaseResultModel> ValidateRebaseline(BaselineProcessRequest dataInput);
+        Task<BaseResultModel> HandleMonthlyBaseLine(MonthlyBaseLineReqModel req, string token, string username);
     }
 }
