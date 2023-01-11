@@ -31,6 +31,7 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlBlprocess> _blProcessRepo;
         private readonly IBaseRepository<BlHistory> _blHistoryRepo;
         private readonly IBaseRepository<BlOutletAccumulate> _blOutletAccumulateRepo;
+        private readonly IBaseRepository<BlNormOfBussinessModel> _blNormOfBussinessModelRepo;
         private readonly IMapper _mapper;
 
         private readonly IBaselineSettingService _settingService;
@@ -45,8 +46,10 @@ namespace RDOS.BaseLine.Service
         private readonly IBaseRepository<BlRawSo> _blRawSo;
         private readonly IBaseRepository<SaleCalendarGenerate> _saleCalendarGenerateRepo;
         private readonly IBaseRepository<Kpisetting> _kpiSettingRepo;
+        private readonly IBaseRepository<KpivisitFrequency> _kpivisitFrequencyRepo;
         private readonly IDapperRepositories _dapper;
         private readonly IBaseRepository<ScSalesOrganizationStructure> _salesOrgRepo;
+        private string _token;
 
         public PhattvBLProcessService(
             ILogger<PhattvBLProcessService> logger,
@@ -70,7 +73,9 @@ namespace RDOS.BaseLine.Service
             IBaseRepository<BlOutletAccumulate> blOutletAccumulateRepo,
             IDapperRepositories dapper,
             IBaseRepository<ScSalesOrganizationStructure> salesOrgRepo,
-            IBaseRepository<Kpisetting> kpiSettingRepo
+            IBaseRepository<Kpisetting> kpiSettingRepo,
+            IBaseRepository<BlNormOfBussinessModel> blNormOfBussinessModelRepo,
+            IBaseRepository<KpivisitFrequency> kpivisitFrequencyRepo
             )
         {
             _logger = logger;
@@ -95,6 +100,8 @@ namespace RDOS.BaseLine.Service
             _dapper = dapper;
             _salesOrgRepo = salesOrgRepo;
             _kpiSettingRepo = kpiSettingRepo;
+            _blNormOfBussinessModelRepo = blNormOfBussinessModelRepo;
+            _kpivisitFrequencyRepo = kpivisitFrequencyRepo;
         }
 
         public async Task<List<DateTime>> GetBaseLineDate()
@@ -1112,13 +1119,419 @@ namespace RDOS.BaseLine.Service
 
 
 
-        public async Task<BaseResultModel> HandleMonthlyBaseLine(int salesYear, string salesPeriod, int ordinal, string saleOrgId)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<BaseResultModel> HandleMonthlyBaseLine(int salesYear, string salesPeriod, int ordinal, string saleOrgId, string token)
         {
+            _token = token;
             try
             {
                 #region PnM
                 List<BlPnM> insertPnMList = new();
                 var kpiSetting = _kpiSettingRepo.Find(x => x.SaleYear == DateTime.Now.Year).FirstOrDefault();
+                var kpiFrequencySettings = _kpivisitFrequencyRepo.Find(x => x.KpisettingId == kpiSetting.Id).ToList();
                 int n = 0;
                 if (kpiSetting != null)
                 {
@@ -1196,14 +1609,147 @@ namespace RDOS.BaseLine.Service
                     UpdatedBy = null,
                 }).ToList();
 
-
                 #endregion
-                
 
+                var queryShiptoList = @"SELECT * FROM collectshiptobycus04()";
+                // Handle parameter
+                DynamicParameters queryShiptoListparameters = new DynamicParameters();
+                // parameters.Add("@salesperiod", salesPeriod);
+                var listAttByCUS04 = ((List<ActiveAttCUS04Model>)_dapper.QueryWithParams<ActiveAttCUS04Model>(queryShiptoList, queryShiptoListparameters));
+                if (listAttByCUS04 != null && listAttByCUS04.Count > 0)
+                {
+                    var listRawSo = _blRawSo.Find(x => x.SalesPeriodId == salesPeriod).ToList();
+                    // var GroupedShiptohasByed = listRawSo.Where(x => x.Status == StatusSOConst.DELIVERED || x.Status == StatusSOConst.PARTIALDELIVERED).GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => x.First()).ToList();
+                    var listNorm = new List<BlNormOfBussinessModel>();
+                    foreach (var model in listAttByCUS04)
+                    {
+                        var rawSobyAttribute = listRawSo.Where(x => x.CusShiptoAttributeValueId4 == model.Code).ToList();
+                        var GroupedShiptohasByed = rawSobyAttribute.Where(x => x.Status == StatusSOConst.DELIVERED || x.Status == StatusSOConst.PARTIALDELIVERED).GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => x.First()).ToList();
+                        //VPO
+                        decimal vpoValue = (decimal)(rawSobyAttribute.Sum(x => x.OrderBaseQuantities) / GroupedShiptohasByed.Count);
 
+                        var normVPO = new BlNormOfBussinessModel
+                        {
+                            Id = Guid.NewGuid(),
+                            SalesPeriod = salesPeriod,
+                            BusinessModelId = model.Code,
+                            BusinessModelDesr = null,
+                            Siid = "VPO",
+                            Sidesc = "Value of Outlet",
+                            Value = vpoValue.ToString(),
+                            CreatedDate = DateTime.Now,
+                            UpdatedDate = DateTime.Now,
+                            CreatedBy = null,
+                            UpdatedBy = null,
+                        };
 
+                        // %PC
+                        decimal pcValue = rawSobyAttribute.Where(x => x.Status == StatusSOConst.DELIVERED || x.Status == StatusSOConst.PARTIALDELIVERED).GroupBy(x => x.ReferenceRefNbr).Select(x => x.First()).ToList().Count * 100 / rawSobyAttribute.GroupBy(x => x.ReferenceRefNbr).Select(x => x.First()).ToList().Count;
+                        var normPC = new BlNormOfBussinessModel
+                        {
+                            Id = Guid.NewGuid(),
+                            SalesPeriod = salesPeriod,
+                            BusinessModelId = model.Code,
+                            BusinessModelDesr = null,
+                            Siid = "%PC",
+                            Sidesc = "% Productive Call",
+                            Value = pcValue.ToString() + "%",
+                            CreatedDate = DateTime.Now,
+                            UpdatedDate = DateTime.Now,
+                            CreatedBy = null,
+                            UpdatedBy = null,
+                        };
 
+                        // %ASO	
 
+                        decimal ASOValue = GroupedShiptohasByed.Count * 100 / rawSobyAttribute.GroupBy(x => new { x.CustomerId, x.CustomerShiptoId }).Select(x => x.First()).ToList().Count;
+                        var normASO = new BlNormOfBussinessModel
+                        {
+                            Id = Guid.NewGuid(),
+                            SalesPeriod = salesPeriod,
+                            BusinessModelId = model.Code,
+                            BusinessModelDesr = null,
+                            Siid = "%ASO",
+                            Sidesc = "% Active Selling Outlet",
+                            Value = ASOValue.ToString() + "%",
+                            CreatedDate = DateTime.Now,
+                            UpdatedDate = DateTime.Now,
+                            CreatedBy = null,
+                            UpdatedBy = null,
+                        };
+                        // LPPC		- shippedExtend / Count of Refnumber
+
+                        decimal LPPCValue = (decimal)(rawSobyAttribute.Sum(x => x.ShippedBaseQuantities) / rawSobyAttribute.Where(x => x.Status == StatusSOConst.DELIVERED || x.Status == StatusSOConst.PARTIALDELIVERED).GroupBy(x => x.OrderRefNumber).Select(x => x.First()).Count());
+                        var normLPPC = new BlNormOfBussinessModel
+                        {
+                            Id = Guid.NewGuid(),
+                            SalesPeriod = salesPeriod,
+                            BusinessModelId = model.Code,
+                            BusinessModelDesr = null,
+                            Siid = "LPPC",
+                            Sidesc = "Line Per Productivity Call",
+                            Value = LPPCValue.ToString(),
+                            CreatedDate = DateTime.Now,
+                            UpdatedDate = DateTime.Now,
+                            CreatedBy = null,
+                            UpdatedBy = null,
+                        };
+
+                        int visitFrequency = kpiFrequencySettings.Where(x => x.BusinessModel == model.Code).Select(x => x.VisitFrequency).FirstOrDefault();// temp - get later 
+                        //LPPC Value  - (VPO / (%PC * Visit frequency)) / LPPC. * Visit frequency theo từng Business Model được lấy từ định nghĩa KPIs setting								
+                        decimal LPPCValueCal = visitFrequency != 0 ? (vpoValue / (pcValue * visitFrequency)) / LPPCValue : 0;
+                        var normLPPCValue = new BlNormOfBussinessModel
+                        {
+                            Id = Guid.NewGuid(),
+                            SalesPeriod = salesPeriod,
+                            BusinessModelId = model.Code,
+                            BusinessModelDesr = null,
+                            Siid = "LPPCValue",
+                            Sidesc = "Line Per Productivity Call Value",
+                            Value = LPPCValueCal.ToString(),
+                            CreatedDate = DateTime.Now,
+                            UpdatedDate = DateTime.Now,
+                            CreatedBy = null,
+                            UpdatedBy = null,
+                        };
+
+                        //Drop Size - VPO / ( %PC * Visit frequency). * Visit frequency theo từng Business Model được lấy từ định nghĩa KPIs setting								
+                        decimal DropsizeValue = visitFrequency != 0 ? vpoValue / (pcValue * visitFrequency) : 0;
+                        var normDropSize = new BlNormOfBussinessModel
+                        {
+                            Id = Guid.NewGuid(),
+                            SalesPeriod = salesPeriod,
+                            BusinessModelId = model.Code,
+                            BusinessModelDesr = null,
+                            Siid = "DropSize",
+                            Sidesc = "Drop Size",
+                            Value = DropsizeValue.ToString(),
+                            CreatedDate = DateTime.Now,
+                            UpdatedDate = DateTime.Now,
+                            CreatedBy = null,
+                            UpdatedBy = null,
+                        };
+
+                        listNorm.Add(normASO);
+                        listNorm.Add(normDropSize);
+                        listNorm.Add(normLPPC);
+                        listNorm.Add(normLPPCValue);
+                        listNorm.Add(normPC);
+                        listNorm.Add(normVPO);
+                    }
+
+                    _blNormOfBussinessModelRepo.InsertMany(listNorm);
+                }
+
+                //KPI
+                var currentSalesCalendar = calendarGenerates.Where(x => x.Code == salesPeriod).FirstOrDefault();
+                if (currentSalesCalendar != null)
+                {
+                    for (DateTime i = currentSalesCalendar.StartDate.Value.Date; i <= currentSalesCalendar.EndDate.Value.Date; i.AddDays(1))
+                    {
+                        await _blProcessService.ProcessSoKPI(i, _token);
+                    };
+                }
 
                 return new BaseResultModel
                 {
@@ -1222,8 +1768,6 @@ namespace RDOS.BaseLine.Service
                 };
             }
         }
-
-
 
 
     }

@@ -2495,22 +2495,22 @@ namespace RDOS.BaseLine.RDOSInfratructure
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.BusinessModelDesc).HasMaxLength(255);
+                entity.Property(e => e.BusinessModelDesr).HasMaxLength(255);
 
-                entity.Property(e => e.BusinessModelId).HasMaxLength(100);
+                entity.Property(e => e.BusinessModelId).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(255);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("timestamp without time zone");
 
-                entity.Property(e => e.SalesPeriod).HasMaxLength(100);
+                entity.Property(e => e.SalesPeriod).HasMaxLength(255);
 
                 entity.Property(e => e.Sidesc)
                     .HasMaxLength(255)
                     .HasColumnName("SIDesc");
 
                 entity.Property(e => e.Siid)
-                    .HasMaxLength(100)
+                    .HasMaxLength(255)
                     .HasColumnName("SIId");
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(255);
@@ -11067,6 +11067,8 @@ namespace RDOS.BaseLine.RDOSInfratructure
                 entity.Property(e => e.PromotionCode).HasMaxLength(250);
 
                 entity.Property(e => e.PromotionDescription).HasMaxLength(250);
+
+                entity.Property(e => e.PromotionLevel).HasMaxLength(250);
 
                 entity.Property(e => e.PromotionType).HasMaxLength(250);
 
