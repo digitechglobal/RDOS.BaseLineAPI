@@ -1531,7 +1531,7 @@ namespace RDOS.BaseLine.Service
             {
                 Id = Guid.NewGuid(),
                 BaselineSettingRef = req.settingRef,
-                BaselineDate = DateTime.MinValue,
+                BaselineDate = null,
                 SalesPeriod = req.salesPeriod,
                 StartTimeDate = DateTime.Now,
                 EndTimeDate = null,
@@ -1546,21 +1546,21 @@ namespace RDOS.BaseLine.Service
                 SalesOrgDesc = req.SalesOrgDesc,
                 // RefNumber = ,
             });
-            
+
             try
             {
 
                 #region PnM
                 List<BlPnM> insertPnMList = new();
                 var kpiSetting = _kpiSettingRepo.Find(x => x.SaleYear == DateTime.Now.Year).FirstOrDefault();
-                var kpiFrequencySettings = _kpivisitFrequencyRepo.Find(x => x.KpisettingId == kpiSetting.Id).ToList();
+                var kpiFrequencySettings = kpiSetting != null ? _kpivisitFrequencyRepo.Find(x => x.KpisettingId == kpiSetting.Id).ToList() : new List<KpivisitFrequency>();
                 int n = 0;
                 if (kpiSetting != null)
                 {
                     n = kpiSetting.BasedPastMonths;
                 }
                 var saleCalendar = _salesCalendarRepo.Find(x => x.SaleYear == req.salesYear).FirstOrDefault();
-                var calendarGenerates = _saleCalendarGenerateRepo.Find(x => x.Type == CalendarConstant.MONTH && x.SaleCalendarId == saleCalendar.Id && x.Ordinal <= req.ordinal && x.Ordinal > req.ordinal - n).ToList();
+                var calendarGenerates = saleCalendar != null ? _saleCalendarGenerateRepo.Find(x => x.Type == CalendarConstant.MONTH && x.SaleCalendarId == saleCalendar.Id && x.Ordinal <= req.ordinal && x.Ordinal > req.ordinal - n).ToList() : new List<SaleCalendarGenerate>();
                 List<string> salePeriodList = new List<string> { req.salesPeriod };
                 if (calendarGenerates != null && calendarGenerates.Count > 0)
                 {
