@@ -254,9 +254,9 @@ namespace RDOS.BaseLine.Models.Request
     public class FilterHistoryModel : EcoParameters
     {
         public DateTime? BaselineDate { get; set; }
-        public string Type { get; set; } = BaselineType.DAILY;
-        public string SalesOrgId { get; set; }
-        public string SalesPeriod { get; set; }
+        public List<string> BLType { get; set; } = new List<string> { BaselineType.DAILY, BaselineType.REBASELINE };
+        public string? SalesOrgId { get; set; }
+        public string? SalesPeriod { get; set; }
     }
 
     public class ListHistoryResponse

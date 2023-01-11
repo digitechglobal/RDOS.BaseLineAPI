@@ -3350,7 +3350,7 @@ namespace RDOS.BaseLine.Service
             {
                 var res = _blHistoryRepo.Find(x =>
                     (parameters.BaselineDate.HasValue ? x.BaselineDate.HasValue && x.BaselineDate.Value.Date == parameters.BaselineDate.Value.Date : true) &&
-                    (!string.IsNullOrWhiteSpace(x.Type) && x.Type == parameters.Type));
+                    (!string.IsNullOrWhiteSpace(x.Type) && parameters.BLType.Contains(x.Type)));
 
                 if (!string.IsNullOrWhiteSpace(parameters.SalesOrgId))
                 {

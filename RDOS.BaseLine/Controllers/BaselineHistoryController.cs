@@ -14,14 +14,14 @@ using static RDOS.BaseLine.Models.Results;
 namespace RDOS.BaseLine.Controllers
 {
     [Authorize]
-    public class BaselineMonthlyController : NormalController<object>
+    public class BaselineHistoryController : NormalController<BlHistory>
     {
         private readonly IBaselineProcessService _blProcessService;
         private readonly IPhattvBLProcessService _phattvBaseLineSettingService;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly string _token;
-        public BaselineMonthlyController(
-            IBaseService<object> service,
+        public BaselineHistoryController(
+            IBaseService<BlHistory> service,
             IBaselineProcessService blProcessService,
             IPhattvBLProcessService phattvBaseLineSettingService,
             IHttpContextAccessor contextAccessor) : base(service)
@@ -40,20 +40,12 @@ namespace RDOS.BaseLine.Controllers
             return Ok(await _blProcessService.GetListHistoryByBaselineDate(dataInput));
         }
 
-
         [HttpGet]
         [Route("GetDetailHistory/{refNumber}")]
         public async Task<IActionResult> GetDetail(string refNumber)
         {
             return Ok(await _blProcessService.GetDetailHistory(refNumber));
         }
-        
-        [HttpPost]
-        [Route("HandleMonthlyBaseLine")]
-        public async Task<IActionResult> HandleMonthlyBaseLine(MonthlyBaseLineReqModel req)
-        {
-            var username = User.Claims.FirstOrDefault(x => x.Type == CustomClaimType.UserName)?.Value;
-            return Ok(await _phattvBaseLineSettingService.HandleMonthlyBaseLine(req, _token, username));
-        }
+       
     }
 }
