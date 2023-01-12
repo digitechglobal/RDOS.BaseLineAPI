@@ -38,7 +38,6 @@ var connectStrings = Environment.GetEnvironmentVariable("CONNECTION");
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 //Get all url from table service
 builder.Services.AddScoped<ISystemUrlService, SystemUrlService>();
 SystemUrlService systemUrlService = new();

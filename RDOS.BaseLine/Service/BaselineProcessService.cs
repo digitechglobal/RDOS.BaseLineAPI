@@ -2643,8 +2643,8 @@ namespace RDOS.BaseLine.Service
                             listCusPerCurrentFilter = _blCusPerDailyRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
                                                                               x.CustomerShiptoId == rawSoGroup.CustomerShiptoId &&
                                                                               x.BaselineDate.Date == baselineDatePrevious.BaselineDate.Date).ToList();
-                        }    
-                        
+                        }
+
 
                         var listDataRawSoFilter = listRawSo.Where(x => x.CustomerId == rawSoGroup.CustomerId && x.CustomerShiptoId == rawSoGroup.CustomerShiptoId).ToList();
 
@@ -2927,7 +2927,7 @@ namespace RDOS.BaseLine.Service
                                     }
                                     _blCurrentCusPerDailySkubuyedDetailRepo.InsertMany(_mapper.Map<List<BlCurrentCusPerDailySkubuyedDetail>>(listSKUDaily));
                                 }
-                                
+
                                 continue;
                             }
 
@@ -3220,7 +3220,7 @@ namespace RDOS.BaseLine.Service
 
                         if (baselineDateNew.Date == baselineCurrent.Date && isRebaseline)
                         {
-                          
+
                             var listCurrentCusPerDailyInDb = _blCurrentCusPerDailyRepo.Find(x => x.CustomerId == rawSoGroup.CustomerId &&
                                                                               x.CustomerShiptoId == rawSoGroup.CustomerShiptoId &&
                                                                               x.BaselineDate.Date == baselineDateNew.Date);
@@ -3233,7 +3233,7 @@ namespace RDOS.BaseLine.Service
                             }
                             _blCurrentCusPerDailyRepo.InsertMany(_mapper.Map<List<BlCurrentCustomerPerformanceDaily>>(listCusPerDailyInsert));
                         }
-                        
+
                     }
                 }
                 return await CreateAuditLog(new BaseResultModel
@@ -3368,6 +3368,13 @@ namespace RDOS.BaseLine.Service
 
                 _blOutletAccumulateRepo.InsertMany(listData);
 
+                var nextBlDate = _blOutletAccumulateRepo.Find(x => x.BaselineDate.Date > baselineDateNew.Date).Select(x => x.BaselineDate).OrderBy(x => x).FirstOrDefault();
+                if (nextBlDate != null)
+                {
+                    var newReq = dataRequest;
+                    newReq.BaselineDate = nextBlDate.Date.ToString();
+                    await ProcessOutletAccumulate(newReq);
+                }
                 return await CreateAuditLog(new BaseResultModel
                 {
                     IsSuccess = true,

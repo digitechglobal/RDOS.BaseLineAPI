@@ -82,19 +82,20 @@ CREATE FUNCTION collectoutletaccumulate(baselinedate VARCHAR) RETURNS TABLE (
     case 
 		when display."SalesOutput" = 1 then rawSo."ShippedExtendAmt" --doanh Số    
 		when display."SalesOutput" = 2 then 
-			if conFromSales Is not NULL then
+			case 
+				when conFromSales Is not NULL then
 				case 
 					when conFromSales."DM" = 1 then rawSo."ShippedBaseQuantities" * conFromSales."ConversionFactor"
 					when conFromSales."DM" = 2 then rawSo."ShippedBaseQuantities" / conFromSales."ConversionFactor"
 					else 0
 				end
-			else if conToSales Is not NULL then
+				when conToSales Is not NULL then
 				case 
 					when conToSales."DM" = 1 then rawSo."ShippedBaseQuantities" / conToSales."ConversionFactor"
 					when conToSales."DM" = 2 then rawSo."ShippedBaseQuantities" * conToSales."ConversionFactor"
 					else 0
 				end
-			else 0
+				else 0
 			end
 	else NULL end::numeric, --"AccuByProdActual" 
     case 
