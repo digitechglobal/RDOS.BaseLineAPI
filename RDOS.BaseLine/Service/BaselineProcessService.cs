@@ -3478,6 +3478,7 @@ namespace RDOS.BaseLine.Service
         }
         #endregion
 
+        #region Handle History
         public async Task<ResultModelWithObject<ListHistoryResponse>> GetListHistoryByBaselineDate(FilterHistoryModel parameters)
         {
             try
@@ -3636,5 +3637,181 @@ namespace RDOS.BaseLine.Service
                 };
             }
         }
+        #endregion
+
+        #region REPORT
+        public async Task<ResultModelWithObject<ListDataReportRecipt>> ReportReceipt(ReportParameter parameters)
+        {
+            try
+            {
+                var res = _blReceiptyQty.Find(x => !x.IsDeleted);
+
+                if (!string.IsNullOrWhiteSpace(parameters.SalesOrgCode) &&
+                    !string.IsNullOrWhiteSpace(parameters.Scope) &&
+                    parameters.ValueScopes.Count > 0)
+                {
+                    if (parameters.Scope.ToLower() == ScopeTypeConst.BRANCH.ToLower())
+                    {
+                        res = res.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.BranchId) && parameters.ValueScopes.Contains(x.BranchId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.REGION.ToLower())
+                    {
+                        res = res.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.RegionId) && parameters.ValueScopes.Contains(x.RegionId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
+                    {
+                        res = res.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.SubRegionId) && parameters.ValueScopes.Contains(x.SubRegionId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.AREA.ToLower())
+                    {
+                        res = res.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.AreaId) && parameters.ValueScopes.Contains(x.AreaId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
+                    {
+                        res = res.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.SubAreaId) && parameters.ValueScopes.Contains(x.SubAreaId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.DSA.ToLower())
+                    {
+                        res = res.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.Dsaid) && parameters.ValueScopes.Contains(x.Dsaid)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
+                    {
+                        res = res.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.RouteZoneId) && parameters.ValueScopes.Contains(x.RouteZoneId)) &&
+                        (!string.IsNullOrWhiteSpace(x.SalesOrgId) && x.SalesOrgId == parameters.SalesOrgCode)).ToList();
+                    }
+                    else
+                    {
+                        return new ResultModelWithObject<ListDataReportRecipt>
+                        {
+                            IsSuccess = false,
+                            Code = 400,
+                            Message = "Type is incorrect"
+                        };
+                    }
+                }
+
+                if (parameters.TransactionType.Count > 0)
+                {
+                    res = res.Where(x =>
+                        (!string.IsNullOrWhiteSpace(x.InQuantityType) && parameters.TransactionType.Contains(x.InQuantityType))).ToList();
+                }
+
+                if (parameters.FromDate.HasValue)
+                {
+                    res = res.Where(x => x.BaselineDate.Date >= parameters.FromDate.Value.Date);
+                }
+
+                if (parameters.ToDate.HasValue)
+                {
+                    res = res.Where(x => x.BaselineDate.Date <= parameters.ToDate.Value.Date.AddDays(1).AddTicks(-1));
+                }
+
+                var listDataFilter = res.ToList();
+
+                List<ReportReciptModel> listRes = new List<ReportReciptModel>();
+                foreach (var item in listDataFilter)
+                {
+                    var itemRes = new ReportReciptModel();
+                    if (parameters.Scope.ToLower() == ScopeTypeConst.BRANCH.ToLower())
+                    {
+                        itemRes.FilterValueCode = item.BranchId;
+                        itemRes.FilterValueDescription = item.BranchName;
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.REGION.ToLower())
+                    {
+                        itemRes.FilterValueCode = item.RegionId;
+                        itemRes.FilterValueDescription = item.RegionName;
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.SUBREGION.ToLower())
+                    {
+                        itemRes.FilterValueCode = item.SubRegionId;
+                        itemRes.FilterValueDescription = item.SubRegionName;
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.AREA.ToLower())
+                    {
+                        itemRes.FilterValueCode = item.AreaId;
+                        itemRes.FilterValueDescription = item.AreaName;
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.SUBAREA.ToLower())
+                    {
+                        itemRes.FilterValueCode = item.SubAreaId;
+                        itemRes.FilterValueDescription = item.SubAreaName;
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.DSA.ToLower())
+                    {
+                        itemRes.FilterValueCode = item.Dsaid;
+                        itemRes.FilterValueDescription = item.Dsadesc;
+                    }
+                    else if (parameters.Scope.ToLower() == ScopeTypeConst.ROUTEZONE.ToLower())
+                    {
+                        itemRes.FilterValueCode = item.RouteZoneId;
+                        itemRes.FilterValueDescription = item.RouteZoneDesc;
+                    }
+
+                    itemRes.ReceiptTypeCode = item.InQuantityType;
+                    itemRes.ReceiptTypeDesc = item.InQuantityTypeDesc;
+                    itemRes.Item = item.ItemId;
+                    itemRes.Description = item.InventoryReportName;
+                    itemRes.BaseQuantity = item.InQuantity.Value;
+                    itemRes.BaseUom = item.InBaseUom;
+                    itemRes.SalesQuantity = item.InSalesQuantity.Value;
+                    itemRes.SalesUom = item.InSalesUom;
+                    itemRes.PurchaseQuantity = item.InPurchaseQuantity.Value;
+                    itemRes.PurchaseUom = item.InPurchaseUom;
+                    listRes.Add(itemRes);
+                }
+
+                if (parameters.IsDropdown)
+                {
+                    var reponse = new ListDataReportRecipt { Items = listRes };
+
+                    return new ResultModelWithObject<ListDataReportRecipt>
+                    {
+                        IsSuccess = true,
+                        Code = 200,
+                        Message = "Success",
+                        Data = reponse
+                    };
+                }
+                else
+                {
+                    var baselineTempPagged = PagedList<ReportReciptModel>.ToPagedList(listRes, (parameters.PageNumber - 1) * parameters.PageSize, parameters.PageSize);
+                    var repsonse = new ListDataReportRecipt { Items = baselineTempPagged, MetaData = baselineTempPagged.MetaData };
+
+                    //return metadata
+                    return new ResultModelWithObject<ListDataReportRecipt>
+                    {
+                        IsSuccess = true,
+                        Code = 200,
+                        Message = "Success",
+                        Data = repsonse
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException?.Message ?? ex.Message);
+                return new ResultModelWithObject<ListDataReportRecipt>
+                {
+                    IsSuccess = false,
+                    Code = 500,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
+        #endregion
     }
 }

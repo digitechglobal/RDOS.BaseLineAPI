@@ -18,5 +18,6 @@ namespace RDOS.BaseLine.Service.Interface
         Task<BaseResultModel> ProcessOutletAccumulate(ProcessRequest dataRequest);
         Task<ResultModelWithObject<ListHistoryResponse>> GetListHistoryByBaselineDate(FilterHistoryModel parameters);
         Task<BaseResultModel> GetDetailHistory(string refNumber);
+        Task<ResultModelWithObject<ListDataReportRecipt>> ReportReceipt(ReportParameter parameters);
     }
 }

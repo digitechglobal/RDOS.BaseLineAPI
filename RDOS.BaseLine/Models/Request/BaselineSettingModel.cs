@@ -275,4 +275,34 @@ namespace RDOS.BaseLine.Models.Request
     {
         public BlBlprocess ProcessInfo { get; set; }
     }
+
+    public class ReportParameter : EcoParameters
+    {
+        public string SalesOrgCode { get; set; }
+        public string Scope { get; set; }
+        public List<string>? ValueScopes { get; set; }
+        public List<string>? TransactionType { get; set; }
+    }
+
+    public class ListDataReportRecipt
+    {
+        public List<ReportReciptModel> Items { get; set; }
+        public MetaData MetaData { get; set; }
+    }
+
+    public class ReportReciptModel
+    {
+        public string? FilterValueCode { get; set; }
+        public string? FilterValueDescription { get; set; }
+        public string? ReceiptTypeCode { get; set; }
+        public string? ReceiptTypeDesc { get; set; }
+        public string? Item { get; set; }
+        public string? Description { get; set; }
+        public int BaseQuantity { get; set; }
+        public string? BaseUom { get; set; }
+        public int SalesQuantity { get; set; }
+        public string? SalesUom { get; set; }
+        public int PurchaseQuantity { get; set; }
+        public string? PurchaseUom { get; set; }
+    }
 }
