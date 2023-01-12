@@ -39,11 +39,11 @@ namespace RDOS.BaseLine.Models.Request
 
     public class BaselineSettingEmailModel
     {
-        public string From { get; set; }
-        public string To { get; set; }
-        public string Cc { get; set; }
-        public string Subject { get; set; }
-        public string Description { get; set; }
+        public string? From { get; set; }
+        public string? To { get; set; }
+        public string? Cc { get; set; }
+        public string? Subject { get; set; }
+        public string? Description { get; set; }
     }
 
     // Model detail
